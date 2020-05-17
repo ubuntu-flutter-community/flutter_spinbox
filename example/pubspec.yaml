@@ -1,0 +1,15 @@
+name: flutter_spinbox_example
+description: SpinBox for Flutter example app.
+publish_to: 'none'
+
+environment:
+  sdk: '>=2.7.0 <3.0.0'
+
+dependencies:
+  flutter_spinbox:
+    path: ../
+  flutter:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

@@ -20,6 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-library flutter_spinbox;
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
-export 'src/spin_box.dart';
+@visibleForTesting
+class SpinFormatter extends TextInputFormatter {
+  SpinFormatter({this.min, this.max, this.decimals});
+
+  final double min;
+  final double max;
+  final int decimals;
+
+  @override
+  TextEditingValue formatEditUpdate(oldValue, newValue) {
+    final input = newValue.text;
+    if (input.isEmpty || (min < 0 && input == '-')) {
+      return newValue;
+    }
+    final value = double.tryParse(input);
+    if (value == null ||
+        value < min ||
+        value > max ||
+        (decimals <= 0 && input.contains('.'))) {
+      return oldValue;
+    }
+    if (!input.endsWith('.')) {
+      var pattern = NumberFormat.decimalPattern();
+      pattern.minimumFractionDigits = decimals;
+      pattern.maximumFractionDigits = decimals;
+      pattern.turnOffGrouping();
+      final format = pattern.format(value);
+      if (format.length < input.length) {
+        return oldValue;
+      }
+    }
+    return newValue;
+  }
+}
