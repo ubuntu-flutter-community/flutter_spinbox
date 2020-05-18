@@ -88,21 +88,25 @@ class HorizontalSpinBoxPage extends StatelessWidget {
 class VerticalSpinBoxPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 128,
-        child: SpinBox(
-          min: -50,
-          max: 50,
-          value: 15,
-          spacing: 24,
-          direction: Axis.vertical,
-          textStyle: TextStyle(fontSize: 48),
-          incrementIcon: Icon(Icons.keyboard_arrow_up, size: 64),
-          decrementIcon: Icon(Icons.keyboard_arrow_down, size: 64),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: const EdgeInsets.all(24),
+    return Scrollbar(
+      child: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            width: 128,
+            child: SpinBox(
+              min: -50,
+              max: 50,
+              value: 15,
+              spacing: 24,
+              direction: Axis.vertical,
+              textStyle: TextStyle(fontSize: 48),
+              incrementIcon: Icon(Icons.keyboard_arrow_up, size: 64),
+              decrementIcon: Icon(Icons.keyboard_arrow_down, size: 64),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: const EdgeInsets.all(24),
+              ),
+            ),
           ),
         ),
       ),
