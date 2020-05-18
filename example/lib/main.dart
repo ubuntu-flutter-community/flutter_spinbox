@@ -67,7 +67,7 @@ class HorizontalSpinBoxPage extends StatelessWidget {
             title: Text('Decorated', style: caption),
             subtitle: SpinBox(
               value: 50,
-              inputDecoration: InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Hint',
                 labelText: 'Label',
                 helperText: 'Helper',
@@ -75,7 +75,7 @@ class HorizontalSpinBoxPage extends StatelessWidget {
                 suffixText: 'Suffix',
                 counterText: 'Counter',
               ),
-              inputValidator: (text) => text.isEmpty ? 'Invalid' : null,
+              validator: (text) => text.isEmpty ? 'Invalid' : null,
             ),
             contentPadding: const EdgeInsets.all(16),
           ),
@@ -100,7 +100,7 @@ class VerticalSpinBoxPage extends StatelessWidget {
           textStyle: TextStyle(fontSize: 48),
           incrementIcon: Icon(Icons.keyboard_arrow_up, size: 64),
           decrementIcon: Icon(Icons.keyboard_arrow_down, size: 64),
-          inputDecoration: InputDecoration(
+          decoration: InputDecoration(
             border: OutlineInputBorder(),
             contentPadding: const EdgeInsets.all(24),
           ),

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+/// {@macro flutter_spinbox.SpinBox}
 library flutter_spinbox;
 
 export 'src/spin_box.dart';

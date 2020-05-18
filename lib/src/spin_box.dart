@@ -26,28 +26,37 @@ import 'package:flutter/services.dart';
 import 'spin_button.dart';
 import 'spin_formatter.dart';
 
+/// {@template flutter_spinbox.SpinBox}
+/// A numeric input widget with an input field for entering a specific value,
+/// and stepper buttons for quick, convenient, and accurate value adjustments.
+///
+/// SpinBox is best suited for such applications, where users typically know
+/// upfront the exact value they are entering, but may later have the need to
+/// accurately adjust a previously entered value.
+/// {@endtemplate}
 class SpinBox extends StatefulWidget {
   SpinBox({
     Key key,
     this.min = 0,
-    this.max = 99,
+    this.max = 100,
     this.step = 1,
     this.value = 0,
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
     this.decimals = 0,
-    this.enabled = true,
+    bool enabled,
     this.autofocus = false,
-    TextInputType inputType,
-    this.inputAction,
-    InputDecoration inputDecoration,
-    this.inputValidator,
-    TextInputFormatter inputFormatter,
+    TextInputType keyboardType,
+    this.textInputAction,
+    InputDecoration decoration,
+    this.validator,
+    List<TextInputFormatter> inputFormatters,
     this.keyboardAppearance,
     Icon incrementIcon,
     Icon decrementIcon,
     this.direction = Axis.horizontal,
     this.textAlign = TextAlign.center,
+    this.textDirection,
     this.textStyle,
     this.toolbarOptions,
     this.showCursor,
@@ -56,57 +65,132 @@ class SpinBox extends StatefulWidget {
     this.onChanged,
   })  : assert(min != null),
         assert(max != null),
+        assert(min <= max),
         assert(value != null),
         assert(interval != null),
         assert(direction != null),
-        inputType = inputType ??
+        keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
               signed: min < 0,
               decimal: decimals > 0,
             ),
-        inputDecoration = inputDecoration ?? const InputDecoration(),
-        inputFormatter = inputFormatter ??
-            SpinFormatter(
-              min: min,
-              max: max,
-              decimals: decimals,
-            ),
+        enabled = (enabled ?? true) && min < max,
+        decoration = decoration ?? const InputDecoration(),
         incrementIcon = incrementIcon ?? Icon(Icons.add),
         decrementIcon = decrementIcon ?? Icon(Icons.remove),
         super(key: key);
 
+  /// The minimum value the user can enter.
+  ///
+  /// Defaults to `0.0`. Must be less than or equal to [max].
+  ///
+  /// If min is equal to [max], the spinbox is disabled.
   final double min;
+
+  /// The maximum value the user can enter.
+  ///
+  /// Defaults to `100.0`. Must be greater than or equal to [min].
+  ///
+  /// If max is equal to [min], the spinbox is disabled.
   final double max;
+
+  /// The step size for incrementing and decrementing the value.
+  ///
+  /// Defaults to `1.0`.
   final double step;
+
+  /// The current value.
+  ///
+  /// Defaults to `0.0`.
   final double value;
-  final Duration interval;
-  final double acceleration;
+
+  /// The number of decimal places used for formatting the value.
+  ///
+  /// Defaults to `0`.
   final int decimals;
-  final bool enabled;
-  final bool autofocus;
-  final TextInputType inputType;
-  final TextInputAction inputAction;
-  final TextInputFormatter inputFormatter;
-  final InputDecoration inputDecoration;
-  final FormFieldValidator<String> inputValidator;
-  final Brightness keyboardAppearance;
+
+  /// The interval used for auto-incrementing and -decrementing.
+  ///
+  /// When holding down the increment and decrement buttons, respectively.
+  ///
+  /// Defaults to `100` milliseconds.
+  final Duration interval;
+
+  /// The amount of acceleration that is added to the value on each step.
+  ///
+  /// When holding down the increment and decrement buttons, respectively.
+  ///
+  /// Defaults to `null` (no acceleration).
+  final double acceleration;
+
+  /// The visual icon for the increment button.
+  ///
+  /// Defaults to [Icons.add].
   final Icon incrementIcon;
+
+  /// The visual icon for the decrement button.
+  ///
+  /// Defaults to [Icons.remove].
   final Icon decrementIcon;
+
+  /// The visual direction of the spinbox layout.
+  ///
+  /// In horizontal mode the increment and decrement buttons are on the sides,
+  /// and in vertical mode the buttons are above and below the input field.
+  ///
+  /// Defaults to [Axis.horizontal].
   final Axis direction;
+
+  /// ### TODO
   final double spacing;
-  final bool showCursor;
-  final bool enableInteractiveSelection;
-  final TextAlign textAlign;
-  final TextStyle textStyle;
-  final ToolbarOptions toolbarOptions;
+
+  /// Called when the user has changed the value.
   final ValueChanged<double> onChanged;
 
+  /// See [TextField.enabled].
+  final bool enabled;
+
+  /// See [TextField.autofocus].
+  final bool autofocus;
+
+  /// See [TextField.keyboardType].
+  final TextInputType keyboardType;
+
+  /// See [TextField.textInputAction].
+  final TextInputAction textInputAction;
+
+  /// See [TextField.decoration].
+  final InputDecoration decoration;
+
+  /// See [FormField.validator].
+  final FormFieldValidator<String> validator;
+
+  /// See [TextField.keyboardAppearance].
+  final Brightness keyboardAppearance;
+
+  /// See [TextField.showCursor].
+  final bool showCursor;
+
+  /// See [TextField.enableInteractiveSelection].
+  final bool enableInteractiveSelection;
+
+  /// See [TextField.textAlign].
+  final TextAlign textAlign;
+
+  /// See [TextField.textDirection].
+  final TextDirection textDirection;
+
+  /// See [TextField.style].
+  final TextStyle textStyle;
+
+  /// See [TextField.toolbarOptions].
+  final ToolbarOptions toolbarOptions;
+
   @override
-  SpinBoxState createState() => SpinBoxState();
+  _SpinBoxState createState() => _SpinBoxState();
 }
 
-@visibleForTesting
-class SpinBoxState extends State<SpinBox> {
+class _SpinBoxState extends State<SpinBox> {
   double _value;
   FocusNode _focusNode;
   TextEditingController _controller;
@@ -137,7 +221,7 @@ class SpinBoxState extends State<SpinBox> {
 
   @override
   Widget build(BuildContext context) {
-    final errorText = widget.inputValidator?.call(_controller.text);
+    final errorText = widget.validator?.call(_controller.text);
     return Flex(
       direction: widget.direction,
       mainAxisSize: MainAxisSize.min,
@@ -160,12 +244,19 @@ class SpinBoxState extends State<SpinBox> {
             controller: _controller,
             style: widget.textStyle,
             textAlign: widget.textAlign,
-            keyboardType: widget.inputType,
-            textInputAction: widget.inputAction,
+            textDirection: widget.textDirection,
+            keyboardType: widget.keyboardType,
+            textInputAction: widget.textInputAction,
             toolbarOptions: widget.toolbarOptions,
             keyboardAppearance: widget.keyboardAppearance,
-            inputFormatters: [widget.inputFormatter],
-            decoration: widget.inputDecoration.copyWith(errorText: errorText),
+            inputFormatters: [
+              SpinFormatter(
+                min: widget.min,
+                max: widget.max,
+                decimals: widget.decimals,
+              ),
+            ],
+            decoration: widget.decoration.copyWith(errorText: errorText),
             enableInteractiveSelection: widget.enableInteractiveSelection,
             showCursor: widget.showCursor,
             autofocus: widget.autofocus,

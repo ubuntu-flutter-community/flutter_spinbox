@@ -46,5 +46,5 @@ class HasValueMatcher extends CustomMatcher {
   HasValueMatcher(double value)
       : super('SpinBox has value', 'value', equals(value));
   @override
-  Object featureValueOf(covariant SpinBoxState state) => state.value;
+  Object featureValueOf(dynamic state) => state.value;
 }
