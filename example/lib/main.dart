@@ -33,43 +33,42 @@ class HorizontalSpinBoxPage extends StatelessWidget {
     return Scrollbar(
       child: ListView(
         children: [
-          ListTile(
-            title: Text('Basic', style: caption),
-            subtitle: SpinBox(
+          Padding(
+            child: SpinBox(
               value: 10,
               autofocus: true,
+              decoration: InputDecoration(labelText: 'Basic'),
             ),
-            contentPadding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
           ),
-          ListTile(
-            title: Text('Decimals', style: caption),
-            subtitle: SpinBox(
+          Padding(
+            child: SpinBox(
               max: 10.0,
               value: 5.0,
               decimals: 1,
               step: 0.1,
+              decoration: InputDecoration(labelText: 'Decimals'),
             ),
-            contentPadding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
           ),
-          ListTile(
-            title: Text('Accelerated', style: caption),
-            subtitle: SpinBox(
+          Padding(
+            child: SpinBox(
               min: -1.0,
               max: 1.0,
               value: 0.25,
               decimals: 3,
               step: 0.001,
               acceleration: 0.001,
+              decoration: InputDecoration(labelText: 'Accelerated'),
             ),
-            contentPadding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
           ),
-          ListTile(
-            title: Text('Decorated', style: caption),
-            subtitle: SpinBox(
+          Padding(
+            child: SpinBox(
               value: 50,
               decoration: InputDecoration(
                 hintText: 'Hint',
-                labelText: 'Label',
+                labelText: 'Decorated',
                 helperText: 'Helper',
                 prefixText: 'Prefix',
                 suffixText: 'Suffix',
@@ -77,7 +76,7 @@ class HorizontalSpinBoxPage extends StatelessWidget {
               ),
               validator: (text) => text.isEmpty ? 'Invalid' : null,
             ),
-            contentPadding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
           ),
         ],
       ),
@@ -89,25 +88,30 @@ class VerticalSpinBoxPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
-      child: SingleChildScrollView(
-        child: Center(
-          child: Container(
-            width: 128,
-            child: SpinBox(
-              min: -50,
-              max: 50,
-              value: 15,
-              spacing: 24,
-              direction: Axis.vertical,
-              textStyle: TextStyle(fontSize: 48),
-              incrementIcon: Icon(Icons.keyboard_arrow_up, size: 64),
-              decrementIcon: Icon(Icons.keyboard_arrow_down, size: 64),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: const EdgeInsets.all(24),
+      child: Center(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Center(
+              child: Container(
+                width: 128,
+                child: SpinBox(
+                  min: -50,
+                  max: 50,
+                  value: 15,
+                  spacing: 24,
+                  direction: Axis.vertical,
+                  textStyle: TextStyle(fontSize: 48),
+                  incrementIcon: Icon(Icons.keyboard_arrow_up, size: 64),
+                  decrementIcon: Icon(Icons.keyboard_arrow_down, size: 64),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.all(24),
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

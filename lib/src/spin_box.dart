@@ -61,7 +61,7 @@ class SpinBox extends StatefulWidget {
     this.toolbarOptions,
     this.showCursor,
     this.enableInteractiveSelection = true,
-    this.spacing = 16,
+    this.spacing = 8,
     this.onChanged,
   })  : assert(min != null),
         assert(max != null),
@@ -123,6 +123,22 @@ class SpinBox extends StatefulWidget {
   /// Defaults to `null` (no acceleration).
   final double acceleration;
 
+  /// The visual direction of the spinbox layout.
+  ///
+  /// In horizontal mode the increment and decrement buttons are on the sides,
+  /// and in vertical mode the buttons are above and below the input field.
+  ///
+  /// Defaults to [Axis.horizontal].
+  final Axis direction;
+
+  /// The visual spacing of the spinbox layout.
+  ///
+  /// In horizontal mode the increment and decrement buttons are on the sides,
+  /// and in vertical mode the buttons are above and below the input field.
+  ///
+  /// Defaults to `8.0`.
+  final double spacing;
+
   /// The visual icon for the increment button.
   ///
   /// Defaults to [Icons.add].
@@ -132,17 +148,6 @@ class SpinBox extends StatefulWidget {
   ///
   /// Defaults to [Icons.remove].
   final Icon decrementIcon;
-
-  /// The visual direction of the spinbox layout.
-  ///
-  /// In horizontal mode the increment and decrement buttons are on the sides,
-  /// and in vertical mode the buttons are above and below the input field.
-  ///
-  /// Defaults to [Axis.horizontal].
-  final Axis direction;
-
-  /// ### TODO
-  final double spacing;
 
   /// Called when the user has changed the value.
   final ValueChanged<double> onChanged;
@@ -221,58 +226,137 @@ class _SpinBoxState extends State<SpinBox> {
 
   @override
   Widget build(BuildContext context) {
+    final incrementButton = SpinButton(
+      step: widget.step,
+      icon: widget.incrementIcon,
+      enabled: widget.enabled && value < widget.max,
+      interval: widget.interval,
+      acceleration: widget.acceleration,
+      onStep: (step) => _setValue(value + step),
+    );
+
+    final decrementButton = SpinButton(
+      step: widget.step,
+      icon: widget.decrementIcon,
+      enabled: widget.enabled && value > widget.min,
+      interval: widget.interval,
+      acceleration: widget.acceleration,
+      onStep: (step) => _setValue(value - step),
+    );
+
+    final isHorizontal = widget.direction == Axis.horizontal;
     final errorText = widget.validator?.call(_controller.text);
-    return Flex(
-      direction: widget.direction,
+
+    final inputDecoration = InputDecoration(
+      // all this because
+      // - InputDecoration.prefix/suffix and prefix/suffixText cannot be set at the same time
+      // - SpinBox wants to wrap prefix/suffix to be able to inject buttons
+      // - InputDecoration.copyWith() cannot set prefix/suffix to null
+      // -> so, let's make a manual copy of the whole thing :(
+      icon: widget.decoration.icon,
+      labelText: widget.decoration.labelText,
+      labelStyle: widget.decoration.labelStyle,
+      helperText: widget.decoration.helperText,
+      helperStyle: widget.decoration.helperStyle,
+      helperMaxLines: widget.decoration.helperMaxLines,
+      hintText: widget.decoration.hintText,
+      hintStyle: widget.decoration.hintStyle,
+      hintMaxLines: widget.decoration.hintMaxLines,
+      errorText: errorText ?? widget.decoration.errorText,
+      errorStyle: widget.decoration.errorStyle,
+      errorMaxLines: widget.decoration.errorMaxLines,
+      floatingLabelBehavior: widget.decoration.floatingLabelBehavior,
+      isCollapsed: widget.decoration.isCollapsed,
+      isDense: widget.decoration.isDense,
+      contentPadding: widget.decoration.contentPadding,
+      prefixStyle: widget.decoration.prefixStyle,
+      prefixIconConstraints: widget.decoration.prefixIconConstraints,
+      suffixStyle: widget.decoration.suffixStyle,
+      suffixIconConstraints: widget.decoration.suffixIconConstraints,
+      counter: widget.decoration.counter,
+      counterText: widget.decoration.counterText,
+      counterStyle: widget.decoration.counterStyle,
+      filled: widget.decoration.filled,
+      fillColor: widget.decoration.fillColor,
+      focusColor: widget.decoration.focusColor,
+      hoverColor: widget.decoration.hoverColor,
+      errorBorder: widget.decoration.errorBorder,
+      focusedBorder: widget.decoration.focusedBorder,
+      focusedErrorBorder: widget.decoration.focusedErrorBorder,
+      disabledBorder: widget.decoration.disabledBorder,
+      enabledBorder: widget.decoration.enabledBorder,
+      border: widget.decoration.border,
+      enabled: widget.decoration.enabled,
+      semanticCounterText: widget.decoration.semanticCounterText,
+      alignLabelWithHint: widget.decoration.alignLabelWithHint,
+      prefix: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isHorizontal) decrementButton,
+          if (isHorizontal) SizedBox(width: widget.spacing),
+          if (widget.decoration.prefixIcon != null)
+            widget.decoration.prefixIcon,
+          if (widget.decoration.prefix != null) widget.decoration.prefix,
+          if (widget.decoration.prefixText != null)
+            Text(
+              widget.decoration.prefixText,
+              style: widget.decoration.prefixStyle,
+            ),
+        ],
+      ),
+      suffix: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.decoration.suffixText != null)
+            Text(
+              widget.decoration.suffixText,
+              style: widget.decoration.suffixStyle,
+            ),
+          if (widget.decoration.suffix != null) widget.decoration.suffix,
+          if (widget.decoration.suffixIcon != null)
+            widget.decoration.suffixIcon,
+          if (isHorizontal) SizedBox(width: widget.spacing),
+          if (isHorizontal) incrementButton,
+        ],
+      ),
+    );
+
+    final textField = TextField(
+      controller: _controller,
+      style: widget.textStyle,
+      textAlign: widget.textAlign,
+      textDirection: widget.textDirection,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
+      toolbarOptions: widget.toolbarOptions,
+      keyboardAppearance: widget.keyboardAppearance,
+      inputFormatters: [
+        SpinFormatter(
+          min: widget.min,
+          max: widget.max,
+          decimals: widget.decimals,
+        ),
+      ],
+      decoration: inputDecoration,
+      enableInteractiveSelection: widget.enableInteractiveSelection,
+      showCursor: widget.showCursor,
+      autofocus: widget.autofocus,
+      enabled: widget.enabled,
+      focusNode: _focusNode,
+    );
+
+    if (isHorizontal) return textField;
+
+    return Column(
       mainAxisSize: MainAxisSize.min,
-      verticalDirection: VerticalDirection.up,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SpinButton(
-          step: widget.step,
-          icon: widget.decrementIcon,
-          enabled: widget.enabled && value > widget.min,
-          interval: widget.interval,
-          acceleration: widget.acceleration,
-          onStep: (step) => _setValue(value - step),
-        ),
-        SizedBox(width: widget.spacing, height: widget.spacing),
-        Flexible(
-          flex: widget.direction == Axis.horizontal ? 1 : 0,
-          child: TextField(
-            controller: _controller,
-            style: widget.textStyle,
-            textAlign: widget.textAlign,
-            textDirection: widget.textDirection,
-            keyboardType: widget.keyboardType,
-            textInputAction: widget.textInputAction,
-            toolbarOptions: widget.toolbarOptions,
-            keyboardAppearance: widget.keyboardAppearance,
-            inputFormatters: [
-              SpinFormatter(
-                min: widget.min,
-                max: widget.max,
-                decimals: widget.decimals,
-              ),
-            ],
-            decoration: widget.decoration.copyWith(errorText: errorText),
-            enableInteractiveSelection: widget.enableInteractiveSelection,
-            showCursor: widget.showCursor,
-            autofocus: widget.autofocus,
-            enabled: widget.enabled,
-            focusNode: _focusNode,
-          ),
-        ),
-        SizedBox(width: widget.spacing, height: widget.spacing),
-        SpinButton(
-          step: widget.step,
-          icon: widget.incrementIcon,
-          enabled: widget.enabled && value < widget.max,
-          interval: widget.interval,
-          acceleration: widget.acceleration,
-          onStep: (step) => _setValue(value + step),
-        )
+        incrementButton,
+        SizedBox(height: widget.spacing),
+        textField,
+        SizedBox(height: widget.spacing),
+        decrementButton,
       ],
     );
   }
