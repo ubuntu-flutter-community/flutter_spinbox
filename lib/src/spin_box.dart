@@ -78,7 +78,12 @@ class SpinBox extends StatefulWidget {
         decoration = decoration ?? const InputDecoration(),
         incrementIcon = incrementIcon ?? Icon(Icons.add),
         decrementIcon = decrementIcon ?? Icon(Icons.remove),
-        super(key: key);
+        super(key: key) {
+    assert(this.decoration.prefixIcon == null,
+        'InputDecoration.prefixIcon is reserved for SpinBox decrement icon');
+    assert(this.decoration.suffixIcon == null,
+        'InputDecoration.suffixIcon is reserved for SpinBox increment icon');
+  }
 
   /// The minimum value the user can enter.
   ///
@@ -201,6 +206,7 @@ class _SpinBoxState extends State<SpinBox> {
   TextEditingController _controller;
 
   double get value => _value;
+  bool get hasFocus => _focusNode?.hasFocus ?? false;
 
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) => value.toStringAsFixed(widget.decimals);
@@ -212,7 +218,7 @@ class _SpinBoxState extends State<SpinBox> {
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
     _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
-    _focusNode.addListener(_selectAll);
+    _focusNode.addListener(() => setState(() => _selectAll()));
   }
 
   @override
@@ -224,11 +230,41 @@ class _SpinBoxState extends State<SpinBox> {
     super.dispose();
   }
 
+  Color _getActiveColor(ThemeData themeData) {
+    if (hasFocus) {
+      switch (themeData.brightness) {
+        case Brightness.dark:
+          return themeData.accentColor;
+        case Brightness.light:
+          return themeData.primaryColor;
+      }
+    }
+    return themeData.hintColor;
+  }
+
+  Color _getIconColor(ThemeData themeData) {
+    if (!widget.enabled) return themeData.disabledColor;
+    if (hasFocus) return _getActiveColor(themeData);
+
+    switch (themeData.brightness) {
+      case Brightness.dark:
+        return Colors.white70;
+      case Brightness.light:
+        return Colors.black45;
+      default:
+        return themeData.iconTheme.color;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Color iconColor = _getIconColor(Theme.of(context));
+    final bool isHorizontal = widget.direction == Axis.horizontal;
+
     final incrementButton = SpinButton(
       step: widget.step,
-      icon: widget.incrementIcon,
+      color: iconColor,
+      icon: isHorizontal ? Icon(null) : widget.incrementIcon,
       enabled: widget.enabled && value < widget.max,
       interval: widget.interval,
       acceleration: widget.acceleration,
@@ -237,88 +273,18 @@ class _SpinBoxState extends State<SpinBox> {
 
     final decrementButton = SpinButton(
       step: widget.step,
-      icon: widget.decrementIcon,
+      color: iconColor,
+      icon: isHorizontal ? Icon(null) : widget.decrementIcon,
       enabled: widget.enabled && value > widget.min,
       interval: widget.interval,
       acceleration: widget.acceleration,
       onStep: (step) => _setValue(value - step),
     );
 
-    final isHorizontal = widget.direction == Axis.horizontal;
-    final errorText = widget.validator?.call(_controller.text);
-
-    final inputDecoration = InputDecoration(
-      // all this because
-      // - InputDecoration.prefix/suffix and prefix/suffixText cannot be set at the same time
-      // - SpinBox wants to wrap prefix/suffix to be able to inject buttons
-      // - InputDecoration.copyWith() cannot set prefix/suffix to null
-      // -> so, let's make a manual copy of the whole thing :(
-      icon: widget.decoration.icon,
-      labelText: widget.decoration.labelText,
-      labelStyle: widget.decoration.labelStyle,
-      helperText: widget.decoration.helperText,
-      helperStyle: widget.decoration.helperStyle,
-      helperMaxLines: widget.decoration.helperMaxLines,
-      hintText: widget.decoration.hintText,
-      hintStyle: widget.decoration.hintStyle,
-      hintMaxLines: widget.decoration.hintMaxLines,
-      errorText: errorText ?? widget.decoration.errorText,
-      errorStyle: widget.decoration.errorStyle,
-      errorMaxLines: widget.decoration.errorMaxLines,
-      floatingLabelBehavior: widget.decoration.floatingLabelBehavior,
-      isCollapsed: widget.decoration.isCollapsed,
-      isDense: widget.decoration.isDense,
-      contentPadding: widget.decoration.contentPadding,
-      prefixStyle: widget.decoration.prefixStyle,
-      prefixIconConstraints: widget.decoration.prefixIconConstraints,
-      suffixStyle: widget.decoration.suffixStyle,
-      suffixIconConstraints: widget.decoration.suffixIconConstraints,
-      counter: widget.decoration.counter,
-      counterText: widget.decoration.counterText,
-      counterStyle: widget.decoration.counterStyle,
-      filled: widget.decoration.filled,
-      fillColor: widget.decoration.fillColor,
-      focusColor: widget.decoration.focusColor,
-      hoverColor: widget.decoration.hoverColor,
-      errorBorder: widget.decoration.errorBorder,
-      focusedBorder: widget.decoration.focusedBorder,
-      focusedErrorBorder: widget.decoration.focusedErrorBorder,
-      disabledBorder: widget.decoration.disabledBorder,
-      enabledBorder: widget.decoration.enabledBorder,
-      border: widget.decoration.border,
-      enabled: widget.decoration.enabled,
-      semanticCounterText: widget.decoration.semanticCounterText,
-      alignLabelWithHint: widget.decoration.alignLabelWithHint,
-      prefix: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isHorizontal) decrementButton,
-          if (isHorizontal) SizedBox(width: widget.spacing),
-          if (widget.decoration.prefixIcon != null)
-            widget.decoration.prefixIcon,
-          if (widget.decoration.prefix != null) widget.decoration.prefix,
-          if (widget.decoration.prefixText != null)
-            Text(
-              widget.decoration.prefixText,
-              style: widget.decoration.prefixStyle,
-            ),
-        ],
-      ),
-      suffix: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.decoration.suffixText != null)
-            Text(
-              widget.decoration.suffixText,
-              style: widget.decoration.suffixStyle,
-            ),
-          if (widget.decoration.suffix != null) widget.decoration.suffix,
-          if (widget.decoration.suffixIcon != null)
-            widget.decoration.suffixIcon,
-          if (isHorizontal) SizedBox(width: widget.spacing),
-          if (isHorizontal) incrementButton,
-        ],
-      ),
+    final inputDecoration = widget.decoration.copyWith(
+      errorText: widget.validator?.call(_controller.text),
+      prefixIcon: isHorizontal ? widget.decrementIcon : null,
+      suffixIcon: isHorizontal ? widget.incrementIcon : null,
     );
 
     final textField = TextField(
@@ -345,20 +311,38 @@ class _SpinBoxState extends State<SpinBox> {
       focusNode: _focusNode,
     );
 
-    if (isHorizontal) return textField;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        incrementButton,
-        SizedBox(height: widget.spacing),
-        textField,
-        SizedBox(height: widget.spacing),
-        decrementButton,
-      ],
-    );
+    if (isHorizontal) {
+      return Stack(
+        children: [
+          textField,
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: decrementButton,
+            ),
+          ),
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: incrementButton,
+            ),
+          )
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          incrementButton,
+          SizedBox(height: widget.spacing),
+          textField,
+          SizedBox(height: widget.spacing),
+          decrementButton,
+        ],
+      );
+    }
   }
 
   bool _handleKey(RawKeyEvent event) {

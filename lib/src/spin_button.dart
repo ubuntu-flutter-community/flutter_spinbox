@@ -32,6 +32,7 @@ class SpinButton extends StatefulWidget {
   const SpinButton({
     Key key,
     this.icon,
+    this.color,
     this.enabled = true,
     @required this.step,
     this.acceleration,
@@ -44,6 +45,7 @@ class SpinButton extends StatefulWidget {
         super(key: key);
 
   final Icon icon;
+  final Color color;
   final bool enabled;
   final double step;
   final double acceleration;
@@ -75,6 +77,7 @@ class _SpinButtonState extends State<SpinButton> {
     return GestureDetector(
       child: IconButton(
         icon: widget.icon,
+        color: widget.color,
         iconSize: widget.icon.size ?? 24,
         onPressed: widget.enabled ? () => widget.onStep(step) : null,
       ),
