@@ -3,6 +3,7 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 
 void main() => runApp(
       MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -36,7 +37,6 @@ class HorizontalSpinBoxPage extends StatelessWidget {
           Padding(
             child: SpinBox(
               value: 10,
-              autofocus: true,
               decoration: InputDecoration(labelText: 'Basic'),
             ),
             padding: const EdgeInsets.all(16),
