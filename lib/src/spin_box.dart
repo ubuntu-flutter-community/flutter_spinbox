@@ -233,29 +233,29 @@ class _SpinBoxState extends State<SpinBox> {
     super.dispose();
   }
 
-  Color _getActiveColor(ThemeData themeData) {
+  Color _activeColor(ThemeData theme) {
     if (hasFocus) {
-      switch (themeData.brightness) {
+      switch (theme.brightness) {
         case Brightness.dark:
-          return themeData.accentColor;
+          return theme.accentColor;
         case Brightness.light:
-          return themeData.primaryColor;
+          return theme.primaryColor;
       }
     }
-    return themeData.hintColor;
+    return theme.hintColor;
   }
 
-  Color _getIconColor(ThemeData themeData) {
-    if (!widget.enabled) return themeData.disabledColor;
-    if (hasFocus) return _getActiveColor(themeData);
+  Color _iconColor(ThemeData theme, String errorText) {
+    if (!widget.enabled) return theme.disabledColor;
+    if (hasFocus && errorText == null) return _activeColor(theme);
 
-    switch (themeData.brightness) {
+    switch (theme.brightness) {
       case Brightness.dark:
         return Colors.white70;
       case Brightness.light:
         return Colors.black45;
       default:
-        return themeData.iconTheme.color;
+        return theme.iconTheme.color;
     }
   }
 
@@ -272,38 +272,37 @@ class _SpinBoxState extends State<SpinBox> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final iconColor = _getIconColor(theme);
-    final isHorizontal = widget.direction == Axis.horizontal;
     final decoration =
         widget.decoration.applyDefaults(theme.inputDecorationTheme);
+
     final errorText =
         decoration.errorText ?? widget.validator?.call(_controller.text);
+    final iconColor = _iconColor(theme, errorText);
 
     var bottom = 0.0;
-    final subTextGap = 8.0;
-    final caption = theme.textTheme.caption;
+    final isHorizontal = widget.direction == Axis.horizontal;
 
-    if (errorText != null)
-      bottom = _textHeight(errorText, caption.merge(decoration.errorStyle));
-
-    if (decoration.helperText != null)
-      bottom = max(
-          bottom,
-          _textHeight(
-              decoration.helperText, caption.merge(decoration.helperStyle)));
-
-    if (decoration.counterText != null)
-      bottom = max(
-          bottom,
-          _textHeight(
-              decoration.counterText, caption.merge(decoration.counterStyle)));
-
-    if (bottom > 0) bottom += subTextGap;
+    if (isHorizontal) {
+      final caption = theme.textTheme.caption;
+      if (errorText != null)
+        bottom = _textHeight(errorText, caption.merge(decoration.errorStyle));
+      if (decoration.helperText != null)
+        bottom = max(
+            bottom,
+            _textHeight(
+                decoration.helperText, caption.merge(decoration.helperStyle)));
+      if (decoration.counterText != null)
+        bottom = max(
+            bottom,
+            _textHeight(decoration.counterText,
+                caption.merge(decoration.counterStyle)));
+      if (bottom > 0) bottom += 8.0; // subTextGap
+    }
 
     final incrementButton = SpinButton(
       step: widget.step,
       color: iconColor,
-      icon: isHorizontal ? Icon(null) : widget.incrementIcon,
+      icon: widget.incrementIcon,
       enabled: widget.enabled && value < widget.max,
       interval: widget.interval,
       acceleration: widget.acceleration,
@@ -313,7 +312,7 @@ class _SpinBoxState extends State<SpinBox> {
     final decrementButton = SpinButton(
       step: widget.step,
       color: iconColor,
-      icon: isHorizontal ? Icon(null) : widget.decrementIcon,
+      icon: widget.decrementIcon,
       enabled: widget.enabled && value > widget.min,
       interval: widget.interval,
       acceleration: widget.acceleration,
@@ -322,8 +321,10 @@ class _SpinBoxState extends State<SpinBox> {
 
     final inputDecoration = widget.decoration.copyWith(
       errorText: errorText,
-      prefixIcon: isHorizontal ? widget.decrementIcon : null,
-      suffixIcon: isHorizontal ? widget.incrementIcon : null,
+      prefixIcon:
+          isHorizontal ? Icon(null, size: widget.decrementIcon.size) : null,
+      suffixIcon:
+          isHorizontal ? Icon(null, size: widget.incrementIcon.size) : null,
     );
 
     final textField = TextField(
