@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/jpnurmi/flutter_spinbox/branch/master/graph/badge.svg)](https://codecov.io/gh/jpnurmi/flutter_spinbox)
 
 SpinBox for [Flutter](https://flutter.dev) is a numeric input widget with an input field for
-entering a specific value, and stepper buttons for quick, convenient, and accurate value adjustments. 
+entering a specific value, and stepper buttons for quick, convenient, and accurate value adjustments.
 
 ![SpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/master/doc/images/spinbox.gif "SpinBox")
 
