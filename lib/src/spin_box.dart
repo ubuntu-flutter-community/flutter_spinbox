@@ -20,7 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'spin_button.dart';
@@ -56,7 +59,7 @@ class SpinBox extends StatefulWidget {
     Icon decrementIcon,
     this.direction = Axis.horizontal,
     this.textAlign = TextAlign.center,
-    this.textDirection,
+    this.textDirection = TextDirection.ltr,
     this.textStyle,
     this.toolbarOptions,
     this.showCursor,
@@ -256,10 +259,46 @@ class _SpinBoxState extends State<SpinBox> {
     }
   }
 
+  double _textHeight(String text, TextStyle style) {
+    final TextPainter painter = TextPainter(
+      textAlign: widget.textAlign,
+      textDirection: widget.textDirection,
+      text: TextSpan(style: style, text: text),
+    );
+    painter.layout();
+    return painter.height;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Color iconColor = _getIconColor(Theme.of(context));
-    final bool isHorizontal = widget.direction == Axis.horizontal;
+    final theme = Theme.of(context);
+    final iconColor = _getIconColor(theme);
+    final isHorizontal = widget.direction == Axis.horizontal;
+    final decoration =
+        widget.decoration.applyDefaults(theme.inputDecorationTheme);
+    final errorText =
+        decoration.errorText ?? widget.validator?.call(_controller.text);
+
+    var bottom = 0.0;
+    final subTextGap = 8.0;
+    final caption = theme.textTheme.caption;
+
+    if (errorText != null)
+      bottom = _textHeight(errorText, caption.merge(decoration.errorStyle));
+
+    if (decoration.helperText != null)
+      bottom = max(
+          bottom,
+          _textHeight(
+              decoration.helperText, caption.merge(decoration.helperStyle)));
+
+    if (decoration.counterText != null)
+      bottom = max(
+          bottom,
+          _textHeight(
+              decoration.counterText, caption.merge(decoration.counterStyle)));
+
+    if (bottom > 0) bottom += subTextGap;
 
     final incrementButton = SpinButton(
       step: widget.step,
@@ -282,7 +321,7 @@ class _SpinBoxState extends State<SpinBox> {
     );
 
     final inputDecoration = widget.decoration.copyWith(
-      errorText: widget.validator?.call(_controller.text),
+      errorText: errorText,
       prefixIcon: isHorizontal ? widget.decrementIcon : null,
       suffixIcon: isHorizontal ? widget.incrementIcon : null,
     );
@@ -316,12 +355,14 @@ class _SpinBoxState extends State<SpinBox> {
         children: [
           textField,
           Positioned.fill(
+            bottom: bottom,
             child: Align(
               alignment: Alignment.centerLeft,
               child: decrementButton,
             ),
           ),
           Positioned.fill(
+            bottom: bottom,
             child: Align(
               alignment: Alignment.centerRight,
               child: incrementButton,
