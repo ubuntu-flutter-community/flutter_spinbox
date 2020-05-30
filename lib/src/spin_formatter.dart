@@ -24,7 +24,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
-@visibleForTesting
 class SpinFormatter extends TextInputFormatter {
   SpinFormatter({this.min, this.max, this.decimals});
 

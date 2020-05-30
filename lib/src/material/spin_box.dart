@@ -27,17 +27,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'spin_button.dart';
-import 'spin_formatter.dart';
+import '../base_spin_box.dart';
 
-/// {@template flutter_spinbox.SpinBox}
-/// A numeric input widget with an input field for entering a specific value,
-/// and stepper buttons for quick, convenient, and accurate value adjustments.
-///
-/// SpinBox is best suited for such applications, where users typically know
-/// upfront the exact value they are entering, but may later have the need to
-/// accurately adjust a previously entered value.
-/// {@endtemplate}
-class SpinBox extends StatefulWidget {
+/// {@macro flutter_spinbox.SpinBox}
+class SpinBox extends BaseSpinBox {
   SpinBox({
     Key key,
     this.min = 0,
@@ -203,36 +196,7 @@ class SpinBox extends StatefulWidget {
   _SpinBoxState createState() => _SpinBoxState();
 }
 
-class _SpinBoxState extends State<SpinBox> {
-  double _value;
-  FocusNode _focusNode;
-  TextEditingController _controller;
-
-  double get value => _value;
-  bool get hasFocus => _focusNode?.hasFocus ?? false;
-
-  static double _parseValue(String text) => double.tryParse(text) ?? 0;
-  String _formatText(double value) => value.toStringAsFixed(widget.decimals);
-
-  @override
-  void initState() {
-    super.initState();
-    _value = widget.value;
-    _controller = TextEditingController(text: _formatText(_value));
-    _controller.addListener(_updateValue);
-    _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
-    _focusNode.addListener(() => setState(() => _selectAll()));
-  }
-
-  @override
-  void dispose() {
-    _focusNode?.dispose();
-    _focusNode = null;
-    _controller?.dispose();
-    _controller = null;
-    super.dispose();
-  }
-
+class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
   Color _activeColor(ThemeData theme) {
     if (hasFocus) {
       switch (theme.brightness) {
@@ -276,7 +240,7 @@ class _SpinBoxState extends State<SpinBox> {
         widget.decoration.applyDefaults(theme.inputDecorationTheme);
 
     final errorText =
-        decoration.errorText ?? widget.validator?.call(_controller.text);
+        decoration.errorText ?? widget.validator?.call(controller.text);
     final iconColor = _iconColor(theme, errorText);
 
     var bottom = 0.0;
@@ -306,7 +270,7 @@ class _SpinBoxState extends State<SpinBox> {
       enabled: widget.enabled && value < widget.max,
       interval: widget.interval,
       acceleration: widget.acceleration,
-      onStep: (step) => _setValue(value + step),
+      onStep: (step) => setValue(value + step),
     );
 
     final decrementButton = SpinButton(
@@ -316,7 +280,7 @@ class _SpinBoxState extends State<SpinBox> {
       enabled: widget.enabled && value > widget.min,
       interval: widget.interval,
       acceleration: widget.acceleration,
-      onStep: (step) => _setValue(value - step),
+      onStep: (step) => setValue(value - step),
     );
 
     final inputDecoration = widget.decoration.copyWith(
@@ -328,7 +292,7 @@ class _SpinBoxState extends State<SpinBox> {
     );
 
     final textField = TextField(
-      controller: _controller,
+      controller: controller,
       style: widget.textStyle,
       textAlign: widget.textAlign,
       textDirection: widget.textDirection,
@@ -336,19 +300,13 @@ class _SpinBoxState extends State<SpinBox> {
       textInputAction: widget.textInputAction,
       toolbarOptions: widget.toolbarOptions,
       keyboardAppearance: widget.keyboardAppearance,
-      inputFormatters: [
-        SpinFormatter(
-          min: widget.min,
-          max: widget.max,
-          decimals: widget.decimals,
-        ),
-      ],
+      inputFormatters: [formatter],
       decoration: inputDecoration,
       enableInteractiveSelection: widget.enableInteractiveSelection,
       showCursor: widget.showCursor,
       autofocus: widget.autofocus,
       enabled: widget.enabled,
-      focusNode: _focusNode,
+      focusNode: focusNode,
     );
 
     if (isHorizontal) {
@@ -385,46 +343,5 @@ class _SpinBoxState extends State<SpinBox> {
         ],
       );
     }
-  }
-
-  bool _handleKey(RawKeyEvent event) {
-    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      return event is RawKeyUpEvent || _setValue(value + widget.step);
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      return event is RawKeyUpEvent || _setValue(value - widget.step);
-    }
-    return false;
-  }
-
-  void _updateValue() {
-    double v = _parseValue(_controller.text);
-    if (v == _value) return;
-    setState(() => _value = v);
-    widget.onChanged?.call(v);
-  }
-
-  bool _setValue(double newValue) {
-    newValue = newValue?.clamp(widget.min, widget.max);
-    if (newValue == null || newValue == value) return false;
-    final text = _formatText(newValue);
-    final selection = _controller.selection;
-    final oldOffset = value.isNegative ? 1 : 0;
-    final newOffset = _parseValue(text).isNegative ? 1 : 0;
-    setState(() {
-      _controller.value = _controller.value.copyWith(
-        text: text,
-        selection: selection.copyWith(
-          baseOffset: selection.baseOffset - oldOffset + newOffset,
-          extentOffset: selection.extentOffset - oldOffset + newOffset,
-        ),
-      );
-    });
-    return true;
-  }
-
-  void _selectAll() {
-    if (!_focusNode.hasFocus) return;
-    _controller.selection = _controller.selection
-        .copyWith(baseOffset: 0, extentOffset: _controller.text.length);
   }
 }

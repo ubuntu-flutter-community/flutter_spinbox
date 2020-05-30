@@ -20,15 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
-@visibleForTesting
-typedef SpinCallback = bool Function(double value);
+import '../spin_gesture.dart';
 
-@visibleForTesting
-class SpinButton extends StatefulWidget {
+class SpinButton extends StatelessWidget {
   const SpinButton({
     Key key,
     this.icon,
@@ -53,59 +49,19 @@ class SpinButton extends StatefulWidget {
   final SpinCallback onStep;
 
   @override
-  _SpinButtonState createState() => _SpinButtonState();
-}
-
-class _SpinButtonState extends State<SpinButton> {
-  Timer timer;
-  double step;
-
-  @override
-  void initState() {
-    super.initState();
-    step = widget.step;
-  }
-
-  @override
-  void dispose() {
-    stopTimer();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return SpinGesture(
+      enabled: enabled,
+      step: step,
+      interval: interval,
+      acceleration: acceleration,
       child: IconButton(
-        icon: widget.icon,
-        color: widget.color,
-        iconSize: widget.icon.size ?? 24,
-        onPressed: widget.enabled ? () => widget.onStep(step) : null,
+        icon: icon,
+        color: color,
+        iconSize: icon.size ?? 24,
+        onPressed: enabled ? () => onStep(step) : null,
       ),
-      onLongPressStart: widget.enabled ? (_) => startTimer() : null,
-      onLongPressEnd: widget.enabled ? (_) => stopTimer() : null,
+      onStep: onStep,
     );
-  }
-
-  bool onStep() {
-    if (!widget.enabled) return false;
-    if (widget.acceleration != null) {
-      step += widget.acceleration;
-    }
-    return widget.onStep(step);
-  }
-
-  void startTimer() {
-    if (timer != null) return;
-    timer = Timer.periodic(widget.interval, (timer) {
-      if (!onStep()) {
-        stopTimer();
-      }
-    });
-  }
-
-  void stopTimer() {
-    timer?.cancel();
-    timer = null;
-    step = widget.step;
   }
 }

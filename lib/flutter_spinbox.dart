@@ -20,7 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-/// {@macro flutter_spinbox.SpinBox}
+/// {@template flutter_spinbox.SpinBox}
+/// A numeric input widget with an input field for entering a specific value,
+/// and stepper buttons for quick, convenient, and accurate value adjustments.
+///
+/// SpinBox is best suited for such applications, where users typically know
+/// upfront the exact value they are entering, but may later have the need to
+/// accurately adjust a previously entered value.
+/// {@endtemplate}
 library flutter_spinbox;
 
-export 'src/spin_box.dart';
+export 'src/material/spin_box.dart';
