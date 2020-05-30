@@ -32,6 +32,21 @@ import '../base_spin_box.dart';
 /// A material design spinbox.
 ///
 /// {@macro flutter_spinbox.SpinBox}
+///
+/// ![SpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/master/doc/images/spinbox.gif "SpinBox")
+///
+/// ```dart
+/// import 'package:flutter_spinbox/material.dart'; // or flutter_spinbox.dart for both
+///
+/// SpinBox(
+///   min: 1,
+///   max: 100,
+///   value: 50,
+///   onChanged: (value) => print(value),
+/// )
+/// ```
+///
+/// See also [Material Components widgets](https://flutter.dev/docs/development/ui/widgets/material) package.
 class SpinBox extends BaseSpinBox {
   SpinBox({
     Key key,

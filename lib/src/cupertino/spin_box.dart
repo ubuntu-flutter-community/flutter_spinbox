@@ -32,6 +32,21 @@ part 'third_party/default_rounded_border.dart';
 /// An iOS-style spinbox.
 ///
 /// {@macro flutter_spinbox.SpinBox}
+///
+/// ![CupertinoSpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/master/doc/images/cupertino_spinbox.gif "CupertinoSpinBox")
+///
+/// ```dart
+/// import 'package:flutter_spinbox/cupertino.dart'; // or flutter_spinbox.dart for both
+///
+/// CupertinoSpinBox(
+///   min: 1,
+///   max: 100,
+///   value: 50,
+///   onChanged: (value) => print(value),
+/// )
+/// ```
+///
+/// See also [Cupertino (iOS-style) widgets](https://flutter.dev/docs/development/ui/widgets/cupertino) package.
 class CupertinoSpinBox extends BaseSpinBox {
   CupertinoSpinBox({
     Key key,
