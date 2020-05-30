@@ -30,7 +30,6 @@ void main() => runApp(
 class HorizontalSpinBoxPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final caption = Theme.of(context).textTheme.caption;
     return Scrollbar(
       child: ListView(
         children: [

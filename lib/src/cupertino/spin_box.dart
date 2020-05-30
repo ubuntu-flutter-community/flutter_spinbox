@@ -20,20 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import 'dart:math';
-
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'spin_button.dart';
 import '../base_spin_box.dart';
 
-/// A material design spinbox.
+part 'third_party/default_rounded_border.dart';
+
+/// An iOS-style spinbox.
 ///
 /// {@macro flutter_spinbox.SpinBox}
-class SpinBox extends BaseSpinBox {
-  SpinBox({
+class CupertinoSpinBox extends BaseSpinBox {
+  CupertinoSpinBox({
     Key key,
     this.min = 0,
     this.max = 100,
@@ -46,15 +46,16 @@ class SpinBox extends BaseSpinBox {
     this.autofocus = false,
     TextInputType keyboardType,
     this.textInputAction,
-    InputDecoration decoration,
-    this.validator,
+    this.padding = const EdgeInsets.all(6),
+    this.decoration = _kDefaultRoundedBorderDecoration,
     List<TextInputFormatter> inputFormatters,
     this.keyboardAppearance,
     Icon incrementIcon,
     Icon decrementIcon,
+    this.prefix,
+    this.suffix,
     this.direction = Axis.horizontal,
     this.textAlign = TextAlign.center,
-    this.textDirection = TextDirection.ltr,
     this.textStyle,
     this.toolbarOptions,
     this.showCursor,
@@ -73,15 +74,10 @@ class SpinBox extends BaseSpinBox {
               decimal: decimals > 0,
             ),
         enabled = (enabled ?? true) && min < max,
-        decoration = decoration ?? const InputDecoration(),
-        incrementIcon = incrementIcon ?? Icon(Icons.add),
-        decrementIcon = decrementIcon ?? Icon(Icons.remove),
-        super(key: key) {
-    assert(this.decoration.prefixIcon == null,
-        'InputDecoration.prefixIcon is reserved for SpinBox decrement icon');
-    assert(this.decoration.suffixIcon == null,
-        'InputDecoration.suffixIcon is reserved for SpinBox increment icon');
-  }
+        //decoration = decoration ?? const BoxDecoration(),
+        incrementIcon = incrementIcon ?? Icon(CupertinoIcons.plus_circled),
+        decrementIcon = decrementIcon ?? Icon(CupertinoIcons.minus_circled),
+        super(key: key);
 
   /// The minimum value the user can enter.
   ///
@@ -144,130 +140,70 @@ class SpinBox extends BaseSpinBox {
 
   /// The visual icon for the increment button.
   ///
-  /// Defaults to [Icons.add].
+  /// Defaults to [CupertinoIcons.plus_circled].
   final Icon incrementIcon;
 
   /// The visual icon for the decrement button.
   ///
-  /// Defaults to [Icons.remove].
+  /// Defaults to [CupertinoIcons.minus_circled].
   final Icon decrementIcon;
+
+  /// See [CupertinoTextField.prefix].
+  final Widget prefix;
+
+  /// See [CupertinoTextField.suffix].
+  final Widget suffix;
 
   /// Called when the user has changed the value.
   final ValueChanged<double> onChanged;
 
-  /// See [TextField.enabled].
+  /// See [CupertinoTextField.enabled].
   final bool enabled;
 
-  /// See [TextField.autofocus].
+  /// See [CupertinoTextField.autofocus].
   final bool autofocus;
 
-  /// See [TextField.keyboardType].
+  /// See [CupertinoTextField.keyboardType].
   final TextInputType keyboardType;
 
-  /// See [TextField.textInputAction].
+  /// See [CupertinoTextField.textInputAction].
   final TextInputAction textInputAction;
 
-  /// See [TextField.decoration].
-  final InputDecoration decoration;
+  /// See [CupertinoTextField.padding].
+  final EdgeInsetsGeometry padding;
 
-  /// See [FormField.validator].
-  final FormFieldValidator<String> validator;
+  /// See [CupertinoTextField.decoration].
+  final BoxDecoration decoration;
 
-  /// See [TextField.keyboardAppearance].
+  /// See [CupertinoTextField.keyboardAppearance].
   final Brightness keyboardAppearance;
 
-  /// See [TextField.showCursor].
+  /// See [CupertinoTextField.showCursor].
   final bool showCursor;
 
-  /// See [TextField.enableInteractiveSelection].
+  /// See [CupertinoTextField.enableInteractiveSelection].
   final bool enableInteractiveSelection;
 
-  /// See [TextField.textAlign].
+  /// See [CupertinoTextField.textAlign].
   final TextAlign textAlign;
 
-  /// See [TextField.textDirection].
-  final TextDirection textDirection;
-
-  /// See [TextField.style].
+  /// See [CupertinoTextField.style].
   final TextStyle textStyle;
 
-  /// See [TextField.toolbarOptions].
+  /// See [CupertinoTextField.toolbarOptions].
   final ToolbarOptions toolbarOptions;
 
   @override
-  _SpinBoxState createState() => _SpinBoxState();
+  _CupertinoSpinBoxState createState() => _CupertinoSpinBoxState();
 }
 
-class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
-  Color _activeColor(ThemeData theme) {
-    if (hasFocus) {
-      switch (theme.brightness) {
-        case Brightness.dark:
-          return theme.accentColor;
-        case Brightness.light:
-          return theme.primaryColor;
-      }
-    }
-    return theme.hintColor;
-  }
-
-  Color _iconColor(ThemeData theme, String errorText) {
-    if (!widget.enabled) return theme.disabledColor;
-    if (hasFocus && errorText == null) return _activeColor(theme);
-
-    switch (theme.brightness) {
-      case Brightness.dark:
-        return Colors.white70;
-      case Brightness.light:
-        return Colors.black45;
-      default:
-        return theme.iconTheme.color;
-    }
-  }
-
-  double _textHeight(String text, TextStyle style) {
-    final TextPainter painter = TextPainter(
-      textAlign: widget.textAlign,
-      textDirection: widget.textDirection,
-      text: TextSpan(style: style, text: text),
-    );
-    painter.layout();
-    return painter.height;
-  }
-
+class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final decoration =
-        widget.decoration.applyDefaults(theme.inputDecorationTheme);
-
-    final errorText =
-        decoration.errorText ?? widget.validator?.call(controller.text);
-    final iconColor = _iconColor(theme, errorText);
-
-    var bottom = 0.0;
     final isHorizontal = widget.direction == Axis.horizontal;
 
-    if (isHorizontal) {
-      final caption = theme.textTheme.caption;
-      if (errorText != null)
-        bottom = _textHeight(errorText, caption.merge(decoration.errorStyle));
-      if (decoration.helperText != null)
-        bottom = max(
-            bottom,
-            _textHeight(
-                decoration.helperText, caption.merge(decoration.helperStyle)));
-      if (decoration.counterText != null)
-        bottom = max(
-            bottom,
-            _textHeight(decoration.counterText,
-                caption.merge(decoration.counterStyle)));
-      if (bottom > 0) bottom += 8.0; // subTextGap
-    }
-
-    final incrementButton = SpinButton(
+    final incrementButton = CupertinoSpinButton(
       step: widget.step,
-      color: iconColor,
       icon: widget.incrementIcon,
       enabled: widget.enabled && value < widget.max,
       interval: widget.interval,
@@ -275,9 +211,8 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       onStep: (step) => setValue(value + step),
     );
 
-    final decrementButton = SpinButton(
+    final decrementButton = CupertinoSpinButton(
       step: widget.step,
-      color: iconColor,
       icon: widget.decrementIcon,
       enabled: widget.enabled && value > widget.min,
       interval: widget.interval,
@@ -285,25 +220,39 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       onStep: (step) => setValue(value - step),
     );
 
-    final inputDecoration = widget.decoration.copyWith(
-      errorText: errorText,
-      prefixIcon:
-          isHorizontal ? Icon(null, size: widget.decrementIcon.size) : null,
-      suffixIcon:
-          isHorizontal ? Icon(null, size: widget.incrementIcon.size) : null,
-    );
-
-    final textField = TextField(
+    final textField = CupertinoTextField(
       controller: controller,
       style: widget.textStyle,
       textAlign: widget.textAlign,
-      textDirection: widget.textDirection,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
       toolbarOptions: widget.toolbarOptions,
       keyboardAppearance: widget.keyboardAppearance,
       inputFormatters: [formatter],
-      decoration: inputDecoration,
+      prefix: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isHorizontal)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
+              child: Icon(null, size: widget.decrementIcon.size),
+            ),
+          if (widget.prefix != null) widget.prefix,
+        ],
+      ),
+      suffix: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.suffix != null) widget.suffix,
+          if (isHorizontal)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
+              child: Icon(null, size: widget.incrementIcon.size),
+            ),
+        ],
+      ),
+      padding: widget.padding,
+      decoration: widget.decoration,
       enableInteractiveSelection: widget.enableInteractiveSelection,
       showCursor: widget.showCursor,
       autofocus: widget.autofocus,
@@ -313,21 +262,18 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
 
     if (isHorizontal) {
       return Stack(
+        alignment: Alignment.center,
         children: [
           textField,
-          Positioned.fill(
-            bottom: bottom,
+          Center(
             child: Align(
               alignment: Alignment.centerLeft,
               child: decrementButton,
             ),
           ),
-          Positioned.fill(
-            bottom: bottom,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: incrementButton,
-            ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: incrementButton,
           )
         ],
       );

@@ -20,29 +20,4 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-/// {@template flutter_spinbox.SpinBox}
-/// A numeric input widget with an input field for entering a specific value,
-/// and spin buttons for quick, convenient, and accurate value adjustments.
-/// {@endtemplate}
-///
-/// ## Guidelines
-///
-/// Spin boxes are best suited for such applications
-/// - that deal with large numeric value ranges and high precisions,
-/// - where users typically know upfront the exact value they are entering,
-/// - where users may later have a need to accurately adjust a previously entered value.
-///
-/// As a rule of thumb, spin boxes are great for scenarios where
-/// - sliders and alike UI controls are too inaccurate,
-/// - tumblers and alike UI controls cannot provide enough value range,
-/// - and a plain text field is inconvenient for value adjustments
-///  (open the VKB, move the cursor, erase the previous value, enter a new value... vs. tap-tap-done).
-///
-/// ## Designs
-///
-/// SpinBox for Flutter comes in two variants. It provides implementations for both designs in Flutter,
-/// Material and Cupertino (iOS).
-library flutter_spinbox;
-
-export 'cupertino.dart';
-export 'material.dart';
+export 'src/cupertino/spin_box.dart';
