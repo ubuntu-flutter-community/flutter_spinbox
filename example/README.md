@@ -1,5 +1,6 @@
-# Example
+# Examples
 
-A simple example app that showcases various ways to use SpinBox.
+Simple example apps that showcase various ways to use SpinBox:
 
-[Jump to Source](https://github.com/jpnurmi/flutter_spinbox/tree/master/example/lib/main.dart)
+- [SpinBox](https://github.com/jpnurmi/flutter_spinbox/tree/master/example/lib/main.dart)
+- [CupertinoSpinBox](https://github.com/jpnurmi/flutter_spinbox/tree/master/example/lib/main_cupertino.dart)
