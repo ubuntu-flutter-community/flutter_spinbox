@@ -9,8 +9,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -26,8 +26,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
-import 'spin_button.dart';
 import '../base_spin_box.dart';
+import 'spin_button.dart';
 
 /// A material design spinbox.
 ///
@@ -48,6 +48,7 @@ import '../base_spin_box.dart';
 ///
 /// See also [Material Components widgets](https://flutter.dev/docs/development/ui/widgets/material) package.
 class SpinBox extends BaseSpinBox {
+  /// Creates a spinbpx.
   SpinBox({
     Key key,
     this.min = 0,
@@ -241,7 +242,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
   }
 
   double _textHeight(String text, TextStyle style) {
-    final TextPainter painter = TextPainter(
+    final painter = TextPainter(
       textAlign: widget.textAlign,
       textDirection: widget.textDirection,
       text: TextSpan(style: style, text: text),
@@ -265,18 +266,21 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
 
     if (isHorizontal) {
       final caption = theme.textTheme.caption;
-      if (errorText != null)
+      if (errorText != null) {
         bottom = _textHeight(errorText, caption.merge(decoration.errorStyle));
-      if (decoration.helperText != null)
+      }
+      if (decoration.helperText != null) {
         bottom = max(
             bottom,
             _textHeight(
                 decoration.helperText, caption.merge(decoration.helperStyle)));
-      if (decoration.counterText != null)
+      }
+      if (decoration.counterText != null) {
         bottom = max(
             bottom,
             _textHeight(decoration.counterText,
                 caption.merge(decoration.counterStyle)));
+      }
       if (bottom > 0) bottom += 8.0; // subTextGap
     }
 

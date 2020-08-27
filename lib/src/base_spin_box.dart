@@ -9,8 +9,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,6 +24,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 
 import 'spin_formatter.dart';
+
+// ignore_for_file: public_member_api_docs
 
 abstract class BaseSpinBox extends StatefulWidget {
   BaseSpinBox({Key key}) : super(key: key);
@@ -58,7 +60,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
     _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
-    _focusNode.addListener(() => setState(() => _selectAll()));
+    _focusNode.addListener(() => setState(_selectAll));
   }
 
   @override
@@ -80,7 +82,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   }
 
   void _updateValue() {
-    double v = _parseValue(_controller.text);
+    final v = _parseValue(_controller.text);
     if (v == _value) return;
     setState(() => _value = v);
     widget.onChanged?.call(v);

@@ -9,8 +9,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,6 +24,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
+// ignore_for_file: public_member_api_docs
+
 class SpinFormatter extends TextInputFormatter {
   SpinFormatter({this.min, this.max, this.decimals});
 
@@ -32,7 +34,8 @@ class SpinFormatter extends TextInputFormatter {
   final int decimals;
 
   @override
-  TextEditingValue formatEditUpdate(oldValue, newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     final input = newValue.text;
     if (input.isEmpty || (min < 0 && input == '-')) {
       return newValue;

@@ -19,14 +19,14 @@ extension SpinBoxFinder on Finder {
   SpinBox get spinBox => widget as SpinBox;
 }
 
-final Matcher hasFocus = HasFocusMatcher(true);
-final Matcher hasNoFocus = HasFocusMatcher(false);
+final Matcher hasFocus = HasFocusMatcher(hasFocus: true);
+final Matcher hasNoFocus = HasFocusMatcher(hasFocus: false);
 final Matcher hasNoSelection = HasSelectionMatcher(-1, -1);
 Matcher hasSelection(int start, int end) => HasSelectionMatcher(start, end);
 Matcher hasValue(double value) => HasValueMatcher(value);
 
 class HasFocusMatcher extends CustomMatcher {
-  HasFocusMatcher(bool hasFocus)
+  HasFocusMatcher({bool hasFocus})
       : super('TextField has focus', 'focus', equals(hasFocus));
   @override
   Object featureValueOf(covariant Finder finder) =>
