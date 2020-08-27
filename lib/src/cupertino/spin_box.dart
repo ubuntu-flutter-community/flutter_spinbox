@@ -9,8 +9,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,8 +24,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
-import 'spin_button.dart';
 import '../base_spin_box.dart';
+import 'spin_button.dart';
 
 part 'third_party/default_rounded_border.dart';
 
@@ -48,6 +48,7 @@ part 'third_party/default_rounded_border.dart';
 ///
 /// See also [Cupertino (iOS-style) widgets](https://flutter.dev/docs/development/ui/widgets/cupertino) package.
 class CupertinoSpinBox extends BaseSpinBox {
+  /// Creates a spinbox.
   CupertinoSpinBox({
     Key key,
     this.min = 0,
