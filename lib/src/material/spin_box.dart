@@ -328,6 +328,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       autofocus: widget.autofocus,
       enabled: widget.enabled,
       focusNode: focusNode,
+      onSubmitted: makeTextEditValid,
     );
 
     if (isHorizontal) {

@@ -40,6 +40,7 @@ abstract class BaseSpinBox extends StatefulWidget {
 
 abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   double _value;
+  double _cachedValue;
   FocusNode _focusNode;
   TextEditingController _controller;
 
@@ -57,6 +58,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   void initState() {
     super.initState();
     _value = widget.value;
+    _cachedValue = widget.value;
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
     _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
@@ -91,6 +93,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   bool setValue(double newValue) {
     newValue = newValue?.clamp(widget.min, widget.max);
     if (newValue == null || newValue == value) return false;
+    _cachedValue = newValue;
     final text = _formatText(newValue);
     final selection = _controller.selection;
     final oldOffset = value.isNegative ? 1 : 0;
@@ -105,6 +108,14 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
       );
     });
     return true;
+  }
+
+  void makeTextEditValid(String newValue){
+    if (newValue.isEmpty || widget.min < 0 && newValue == '-') {
+      _controller.text = _formatText(_cachedValue); // will trigger notify to _updateValue()
+    }else{
+      _cachedValue = _value;
+    }
   }
 
   void _selectAll() {
