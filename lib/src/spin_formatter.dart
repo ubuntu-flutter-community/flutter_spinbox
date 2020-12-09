@@ -38,7 +38,7 @@ class SpinFormatter extends TextInputFormatter {
       TextEditingValue oldValue, TextEditingValue newValue) {
     final input = newValue.text;
     if (input.isEmpty || (min < 0 && input == '-')) {
-      return newValue;
+      return oldValue;
     }
     final value = double.tryParse(input);
     if (value == null ||
