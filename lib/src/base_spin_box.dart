@@ -63,6 +63,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     _controller.addListener(_updateValue);
     _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
     _focusNode.addListener(() => setState(_selectAll));
+    _focusNode.addListener(makeTextEditValidOnFocusChanged);
   }
 
   @override
@@ -110,10 +111,19 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     return true;
   }
 
-  void makeTextEditValid(String newValue){
+  void makeTextEditValidOnSubmit(String newValue) {
     if (newValue.isEmpty || widget.min < 0 && newValue == '-') {
       _controller.text = _formatText(_cachedValue); // will trigger notify to _updateValue()
-    }else{
+    } else {
+      _cachedValue = _value;
+    }
+  }
+
+  void makeTextEditValidOnFocusChanged() {
+    if (hasFocus) return;
+    if (_controller.text == "" || widget.min < 0 && _controller.text == '-') {
+      _controller.text = _formatText(_cachedValue); // will trigger notify to _updateValue()
+    } else {
       _cachedValue = _value;
     }
   }
