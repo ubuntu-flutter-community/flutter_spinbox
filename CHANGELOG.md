@@ -1,3 +1,7 @@
+## [0.2.3] - 2020-12-09
+
+* Fixed text to update on focus change (Thanks again @vannevar-morgan!)
+
 ## [0.2.2] - 2020-12-09
 
 * Fixed a bug that allowed entering "" and "-". (Thanks @vannevar-morgan!)

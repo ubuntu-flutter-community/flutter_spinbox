@@ -2,7 +2,7 @@ name: flutter_spinbox
 description: >-
   SpinBox is a numeric input widget with an input field for entering a specific value,
   and spin buttons for quick, convenient, and accurate value adjustments.
-version: 0.2.2
+version: 0.2.3
 homepage: https://github.com/jpnurmi/flutter_spinbox
 repository: https://github.com/jpnurmi/flutter_spinbox
 issue_tracker: https://github.com/jpnurmi/flutter_spinbox/issues
