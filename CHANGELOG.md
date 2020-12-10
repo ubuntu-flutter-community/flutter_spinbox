@@ -1,3 +1,7 @@
+## [0.3.0] - 2020-12-10
+
+* Added (Cupertino)SpinBox.cursorColor property
+
 ## [0.2.3] - 2020-12-09
 
 * Fixed text to update on focus change (Thanks again @vannevar-morgan!)
