@@ -75,6 +75,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.textStyle,
     this.toolbarOptions,
     this.showCursor,
+    this.cursorColor,
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
@@ -197,6 +198,9 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// See [CupertinoTextField.showCursor].
   final bool showCursor;
 
+  /// See [CupertinoTextField.cursorColor].
+  final Color cursorColor;
+
   /// See [CupertinoTextField.enableInteractiveSelection].
   final bool enableInteractiveSelection;
 
@@ -271,6 +275,7 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
       decoration: widget.decoration,
       enableInteractiveSelection: widget.enableInteractiveSelection,
       showCursor: widget.showCursor,
+      cursorColor: widget.cursorColor,
       autofocus: widget.autofocus,
       enabled: widget.enabled,
       focusNode: focusNode,

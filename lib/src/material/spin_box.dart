@@ -74,6 +74,7 @@ class SpinBox extends BaseSpinBox {
     this.textStyle,
     this.toolbarOptions,
     this.showCursor,
+    this.cursorColor,
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
@@ -194,6 +195,9 @@ class SpinBox extends BaseSpinBox {
 
   /// See [TextField.showCursor].
   final bool showCursor;
+
+  /// See [TextField.cursorColor].
+  final Color cursorColor;
 
   /// See [TextField.enableInteractiveSelection].
   final bool enableInteractiveSelection;
@@ -325,6 +329,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       decoration: inputDecoration,
       enableInteractiveSelection: widget.enableInteractiveSelection,
       showCursor: widget.showCursor,
+      cursorColor: widget.cursorColor,
       autofocus: widget.autofocus,
       enabled: widget.enabled,
       focusNode: focusNode,
