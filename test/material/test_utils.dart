@@ -23,6 +23,7 @@ final Matcher hasFocus = HasFocusMatcher(hasFocus: true);
 final Matcher hasNoFocus = HasFocusMatcher(hasFocus: false);
 final Matcher hasNoSelection = HasSelectionMatcher(-1, -1);
 Matcher hasSelection(int start, int end) => HasSelectionMatcher(start, end);
+Matcher hasText(String text) => HasTextMatcher(text);
 Matcher hasValue(double value) => HasValueMatcher(value);
 
 class HasFocusMatcher extends CustomMatcher {
@@ -40,6 +41,14 @@ class HasSelectionMatcher extends CustomMatcher {
   @override
   Object featureValueOf(covariant Finder finder) =>
       finder.textField.controller.selection;
+}
+
+class HasTextMatcher extends CustomMatcher {
+  HasTextMatcher(String text)
+      : super('TextField has text', 'text', equals(text));
+  @override
+  Object featureValueOf(covariant Finder finder) =>
+      finder.textField.controller.text;
 }
 
 class HasValueMatcher extends CustomMatcher {

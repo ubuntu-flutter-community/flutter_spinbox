@@ -25,6 +25,10 @@ void main() {
       expect(tester.state(find.spinBox), hasValue(0));
     });
 
+    testUI('text', (tester) async {
+      expect(find.textField, hasText('0'));
+    });
+
     testUI('no focus', (tester) async {
       expect(find.textField, hasNoFocus);
     });
@@ -72,6 +76,7 @@ void main() {
 
         testUI('was incremented', (tester) async {
           expect(tester.state(find.spinBox), hasValue(2));
+          expect(find.textField, hasText('2'));
         });
       });
 
@@ -91,6 +96,7 @@ void main() {
 
         testUI('was decremented', (tester) async {
           expect(tester.state(find.spinBox), hasValue(0));
+          expect(find.textField, hasText('0'));
         });
       });
     });
@@ -108,42 +114,51 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(0));
+      expect(find.textField, hasText('0'));
 
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(1));
+      expect(find.textField, hasText('1'));
 
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(0));
+      expect(find.textField, hasText('0'));
 
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(0));
+      expect(find.textField, hasText('0'));
     });
 
     testUI('text', (tester) async {
       expect(find.textField, hasSelection(0, 1));
+      expect(find.textField, hasText('1'));
 
       tester.testTextInput.enterText('2');
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(2));
       expect(find.textField, hasNoSelection);
+      expect(find.textField, hasText('2'));
 
       tester.testTextInput.enterText('a');
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(2));
       expect(find.textField, hasNoSelection);
+      expect(find.textField, hasText('2'));
 
       tester.testTextInput.enterText('21');
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(21));
       expect(find.textField, hasNoSelection);
+      expect(find.textField, hasText('21'));
 
       tester.testTextInput.enterText('321');
       await tester.idle();
       expect(tester.state(find.spinBox), hasValue(21));
       expect(find.textField, hasNoSelection);
+      expect(find.textField, hasText('21'));
     });
   });
 
@@ -152,7 +167,7 @@ void main() {
     await tester.pumpWidget(CupertinoTestApp(widget: spinBox));
 
     expect(tester.state(find.spinBox), hasValue(0.5));
-    expect(find.text('0.50'), findsOneWidget);
+    expect(find.textField, hasText('0.50'));
   });
 
   group('callbacks', () {
@@ -184,9 +199,11 @@ void main() {
 
       tester.testTextInput.enterText('2');
       await tester.idle();
+      expect(find.textField, hasText('2'));
 
       tester.testTextInput.enterText('22');
       await tester.idle();
+      expect(find.textField, hasText('22'));
     });
   });
 
