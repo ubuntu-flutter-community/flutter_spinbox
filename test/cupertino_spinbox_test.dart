@@ -23,8 +23,14 @@ void main() {
     return TestApp(CupertinoSpinBox(value: 1, autofocus: true));
   });
 
+  testRange<CupertinoSpinBox>(() {
+    return TestApp(
+        CupertinoSpinBox(min: 10, max: 30, value: 20, autofocus: true));
+  });
+
   testDecimals<CupertinoSpinBox>(() {
-    return TestApp(CupertinoSpinBox(min: -1, max: 1, value: 0.5, decimals: 2));
+    return TestApp(CupertinoSpinBox(
+        min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true));
   });
 
   testCallbacks<CupertinoSpinBox>((onChanged) {

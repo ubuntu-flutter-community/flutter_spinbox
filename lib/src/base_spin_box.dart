@@ -64,7 +64,6 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     _controller.addListener(_updateValue);
     _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
     _focusNode.addListener(() => setState(_selectAll));
-    //_focusNode.addListener(makeTextEditValidOnFocusChanged);
     _focusNode.addListener(() {
       if (hasFocus) return;
       fixupValue(controller.text);
@@ -118,7 +117,8 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
 
   @protected
   void fixupValue(String value) {
-    if (value.isEmpty || (widget.min < 0 && value == '-')) {
+    final v = _parseValue(value);
+    if (value.isEmpty || (v < widget.min || v > widget.max)) {
       // will trigger notify to _updateValue()
       _controller.text = _formatText(_cachedValue);
     } else {

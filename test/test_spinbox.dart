@@ -174,19 +174,19 @@ void testInput<S>(TestBuilder builder) {
     });
 
     testUI('submit', (tester) async {
-      await tester.showKeyboard(find.editableText);
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
       expect(tester.state(find.byType(S)), hasValue(0));
+      expect(find.editableText, hasText(''));
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.idle();
       expect(find.editableText, hasNoFocus);
       expect(tester.state(find.byType(S)), hasValue(1));
+      expect(find.editableText, hasText('1'));
     });
 
     testUI('unfocus', (tester) async {
-      await tester.showKeyboard(find.editableText);
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
       expect(tester.state(find.byType(S)), hasValue(0));
@@ -195,6 +195,59 @@ void testInput<S>(TestBuilder builder) {
       await tester.idle();
       expect(find.editableText, hasNoFocus);
       expect(tester.state(find.byType(S)), hasValue(1));
+      expect(find.editableText, hasText('1'));
+    });
+  });
+}
+
+void testRange<S>(TestBuilder builder) {
+  group('range', () {
+    setUpUI((tester) async {
+      await tester.pumpWidget(builder());
+      expect(find.editableText, hasFocus);
+      await tester.showKeyboard(find.byType(S));
+    });
+
+    testUI('min', (tester) async {
+      await tester.pumpWidget(builder());
+      expect(find.editableText, hasFocus);
+      await tester.showKeyboard(find.byType(S));
+
+      expect(find.editableText, hasSelection(0, 2));
+      expect(find.editableText, hasText('20'));
+
+      tester.testTextInput.enterText('9');
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(9));
+      expect(find.editableText, hasNoSelection);
+      expect(find.editableText, hasText('9'));
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.idle();
+      expect(find.editableText, hasNoFocus);
+      expect(tester.state(find.byType(S)), hasValue(20));
+      expect(find.editableText, hasText('20'));
+    });
+
+    testUI('max', (tester) async {
+      await tester.pumpWidget(builder());
+      expect(find.editableText, hasFocus);
+      await tester.showKeyboard(find.byType(S));
+
+      expect(find.editableText, hasSelection(0, 2));
+      expect(find.editableText, hasText('20'));
+
+      tester.testTextInput.enterText('31');
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(20));
+      expect(find.editableText, hasSelection(0, 2));
+      expect(find.editableText, hasText('20'));
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.idle();
+      expect(find.editableText, hasNoFocus);
+      expect(tester.state(find.byType(S)), hasValue(20));
+      expect(find.editableText, hasText('20'));
     });
   });
 }
@@ -202,7 +255,15 @@ void testInput<S>(TestBuilder builder) {
 void testDecimals<S>(TestBuilder builder) {
   testUI('decimals', (tester) async {
     await tester.pumpWidget(builder());
+    expect(find.editableText, hasFocus);
+    await tester.showKeyboard(find.byType(S));
 
+    expect(tester.state(find.byType(S)), hasValue(0.5));
+    expect(find.editableText, hasSelection(0, 4));
+    expect(find.editableText, hasText('0.50'));
+
+    tester.testTextInput.enterText('0.50123');
+    await tester.idle();
     expect(tester.state(find.byType(S)), hasValue(0.5));
     expect(find.editableText, hasText('0.50'));
   });

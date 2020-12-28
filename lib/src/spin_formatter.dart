@@ -37,26 +37,53 @@ class SpinFormatter extends TextInputFormatter {
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     final input = newValue.text;
-    if (input.isEmpty || (min < 0 && input == '-')) {
+    if (input.isEmpty) {
       return newValue;
     }
-    final value = double.tryParse(input);
-    if (value == null ||
-        value < min ||
-        value > max ||
-        (decimals <= 0 && input.contains('.'))) {
+
+    final minus = input.startsWith('-');
+    if (minus && min >= 0) {
       return oldValue;
     }
-    if (!input.endsWith('.')) {
-      var pattern = NumberFormat.decimalPattern();
-      pattern.minimumFractionDigits = decimals;
-      pattern.maximumFractionDigits = decimals;
-      pattern.turnOffGrouping();
-      final format = pattern.format(value);
-      if (format.length < input.length) {
-        return oldValue;
-      }
+
+    final plus = input.startsWith('+');
+    if (plus && max < 0) {
+      return oldValue;
     }
+
+    if ((minus || plus) && input.length == 1) {
+      return newValue;
+    }
+
+    if (decimals <= 0 && !_validateValue(int.tryParse(input))) {
+      return oldValue;
+    }
+
+    if (decimals > 0 && !_validateValue(double.tryParse(input))) {
+      return oldValue;
+    }
+
+    final dot = input.lastIndexOf('.');
+    if (dot >= 0 && decimals < input.substring(dot + 1).length) {
+      return oldValue;
+    }
+
     return newValue;
+  }
+
+  bool _validateValue(num value) {
+    if (value == null) {
+      return false;
+    }
+
+    if (value >= min && value <= max) {
+      return true;
+    }
+
+    if (value >= 0) {
+      return value <= max;
+    } else {
+      return value >= min;
+    }
   }
 }

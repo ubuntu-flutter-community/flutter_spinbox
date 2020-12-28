@@ -23,8 +23,13 @@ void main() {
     return TestApp(SpinBox(value: 1, autofocus: true));
   });
 
+  testRange<SpinBox>(() {
+    return TestApp(SpinBox(min: 10, max: 30, value: 20, autofocus: true));
+  });
+
   testDecimals<SpinBox>(() {
-    return TestApp(SpinBox(min: -1, max: 1, value: 0.5, decimals: 2));
+    return TestApp(
+        SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true));
   });
 
   testCallbacks<SpinBox>((onChanged) {
