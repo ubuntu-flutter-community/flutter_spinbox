@@ -279,7 +279,7 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
       autofocus: widget.autofocus,
       enabled: widget.enabled,
       focusNode: focusNode,
-      onSubmitted: makeTextEditValidOnSubmit,
+      onSubmitted: fixupValue,
     );
 
     if (isHorizontal) {
