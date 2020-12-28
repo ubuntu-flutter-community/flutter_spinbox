@@ -1,23 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class TestApp extends MaterialApp {
-  TestApp({Widget widget}) : super(home: Scaffold(body: widget));
+extension EditableTextFinders on CommonFinders {
+  Finder get editableText => byType(EditableText);
 }
 
-extension SpinBoxFinders on CommonFinders {
-  Finder get spinBox => byType(SpinBox);
-  Finder get textField => byType(TextField);
-  Finder get increment => byIcon(Icons.add);
-  Finder get decrement => byIcon(Icons.remove);
-}
-
-extension SpinBoxFinder on Finder {
+extension EditableTextFinder on Finder {
   Widget get widget => evaluate().first.widget;
-  TextField get textField => widget as TextField;
-  SpinBox get spinBox => widget as SpinBox;
-  FocusNode get focusNode => textField.focusNode;
+  EditableText get editableText => widget as EditableText;
+  FocusNode get focusNode => editableText.focusNode;
 }
 
 final Matcher hasFocus = HasFocusMatcher(hasFocus: true);
@@ -29,27 +20,27 @@ Matcher hasValue(double value) => HasValueMatcher(value);
 
 class HasFocusMatcher extends CustomMatcher {
   HasFocusMatcher({bool hasFocus})
-      : super('TextField has focus', 'focus', equals(hasFocus));
+      : super('EditableText has focus', 'focus', equals(hasFocus));
   @override
   Object featureValueOf(covariant Finder finder) =>
-      finder.textField.focusNode.hasFocus;
+      finder.editableText.focusNode.hasFocus;
 }
 
 class HasSelectionMatcher extends CustomMatcher {
   HasSelectionMatcher(int start, int end)
-      : super('TextField has selection', 'selection',
+      : super('EditableText has selection', 'selection',
             equals(TextRange(start: start, end: end)));
   @override
   Object featureValueOf(covariant Finder finder) =>
-      finder.textField.controller.selection;
+      finder.editableText.controller.selection;
 }
 
 class HasTextMatcher extends CustomMatcher {
   HasTextMatcher(String text)
-      : super('TextField has text', 'text', equals(text));
+      : super('EditableText has text', 'text', equals(text));
   @override
   Object featureValueOf(covariant Finder finder) =>
-      finder.textField.controller.text;
+      finder.editableText.controller.text;
 }
 
 class HasValueMatcher extends CustomMatcher {
