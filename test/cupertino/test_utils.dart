@@ -18,6 +18,7 @@ extension CupertinoSpinBoxFinder on Finder {
   Widget get widget => evaluate().first.widget;
   CupertinoTextField get textField => widget as CupertinoTextField;
   CupertinoSpinBox get spinBox => widget as CupertinoSpinBox;
+  FocusNode get focusNode => textField.focusNode;
 }
 
 final Matcher hasFocus = HasFocusMatcher(hasFocus: true);
