@@ -17,6 +17,7 @@ extension SpinBoxFinder on Finder {
   Widget get widget => evaluate().first.widget;
   TextField get textField => widget as TextField;
   SpinBox get spinBox => widget as SpinBox;
+  FocusNode get focusNode => textField.focusNode;
 }
 
 final Matcher hasFocus = HasFocusMatcher(hasFocus: true);

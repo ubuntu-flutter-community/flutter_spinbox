@@ -159,6 +159,30 @@ void main() {
       expect(find.textField, hasNoSelection);
       expect(find.textField, hasText('21'));
     });
+
+    testUI('submit', (tester) async {
+      await tester.showKeyboard(find.textField);
+      tester.testTextInput.updateEditingValue(TextEditingValue.empty);
+      await tester.idle();
+      expect(tester.state(find.spinBox), hasValue(0));
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.idle();
+      expect(find.textField, hasNoFocus);
+      expect(tester.state(find.spinBox), hasValue(1));
+    });
+
+    testUI('unfocus', (tester) async {
+      await tester.showKeyboard(find.textField);
+      tester.testTextInput.updateEditingValue(TextEditingValue.empty);
+      await tester.idle();
+      expect(tester.state(find.spinBox), hasValue(0));
+
+      find.textField.focusNode.unfocus();
+      await tester.idle();
+      expect(find.textField, hasNoFocus);
+      expect(tester.state(find.spinBox), hasValue(1));
+    });
   });
 
   testUI('decimals', (tester) async {
