@@ -19,7 +19,7 @@ Matcher hasText(String text) => HasTextMatcher(text);
 Matcher hasValue(double value) => HasValueMatcher(value);
 
 class HasFocusMatcher extends CustomMatcher {
-  HasFocusMatcher({bool hasFocus})
+  HasFocusMatcher({required bool hasFocus})
       : super('EditableText has focus', 'focus', equals(hasFocus));
   @override
   Object featureValueOf(covariant Finder finder) =>
@@ -47,5 +47,5 @@ class HasValueMatcher extends CustomMatcher {
   HasValueMatcher(double value)
       : super('SpinBox has value', 'value', equals(value));
   @override
-  Object featureValueOf(dynamic state) => state.value;
+  Object? featureValueOf(dynamic state) => state.value;
 }

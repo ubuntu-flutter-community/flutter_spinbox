@@ -28,25 +28,21 @@ import '../spin_gesture.dart';
 
 class SpinButton extends StatelessWidget {
   const SpinButton({
-    Key key,
-    this.icon,
+    Key? key,
+    required this.icon,
     this.color,
     this.enabled = true,
-    @required this.step,
+    required this.step,
     this.acceleration,
-    @required this.interval,
-    @required this.onStep,
-  })  : assert(enabled != null),
-        assert(step != null),
-        assert(interval != null),
-        assert(onStep != null),
-        super(key: key);
+    required this.interval,
+    required this.onStep,
+  }) : super(key: key);
 
   final Icon icon;
-  final Color color;
+  final Color? color;
   final bool enabled;
   final double step;
-  final double acceleration;
+  final double? acceleration;
   final Duration interval;
   final SpinCallback onStep;
 

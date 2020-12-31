@@ -73,7 +73,7 @@ class HorizontalSpinBoxPage extends StatelessWidget {
                 suffixText: 'Suffix',
                 counterText: 'Counter',
               ),
-              validator: (text) => text.isEmpty ? 'Invalid' : null,
+              validator: (text) => text!.isEmpty ? 'Invalid' : null,
             ),
             padding: const EdgeInsets.all(16),
           ),

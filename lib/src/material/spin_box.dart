@@ -50,7 +50,7 @@ import 'spin_button.dart';
 class SpinBox extends BaseSpinBox {
   /// Creates a spinbpx.
   SpinBox({
-    Key key,
+    Key? key,
     this.min = 0,
     this.max = 100,
     this.step = 1,
@@ -58,15 +58,15 @@ class SpinBox extends BaseSpinBox {
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
     this.decimals = 0,
-    bool enabled,
+    bool? enabled,
     this.autofocus = false,
-    TextInputType keyboardType,
+    TextInputType? keyboardType,
     this.textInputAction,
-    InputDecoration decoration,
+    InputDecoration? decoration,
     this.validator,
     this.keyboardAppearance,
-    Icon incrementIcon,
-    Icon decrementIcon,
+    Icon? incrementIcon,
+    Icon? decrementIcon,
     this.direction = Axis.horizontal,
     this.textAlign = TextAlign.center,
     this.textDirection = TextDirection.ltr,
@@ -77,12 +77,7 @@ class SpinBox extends BaseSpinBox {
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
-  })  : assert(min != null),
-        assert(max != null),
-        assert(min <= max),
-        assert(value != null),
-        assert(interval != null),
-        assert(direction != null),
+  })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
               signed: min < 0,
@@ -145,7 +140,7 @@ class SpinBox extends BaseSpinBox {
   /// When holding down the increment and decrement buttons, respectively.
   ///
   /// Defaults to `null` (no acceleration).
-  final double acceleration;
+  final double? acceleration;
 
   /// The visual direction of the spinbox layout.
   ///
@@ -175,7 +170,7 @@ class SpinBox extends BaseSpinBox {
 
   /// Called when the user has changed the value.
   @override
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onChanged;
 
   /// See [TextField.enabled].
   final bool enabled;
@@ -187,22 +182,22 @@ class SpinBox extends BaseSpinBox {
   final TextInputType keyboardType;
 
   /// See [TextField.textInputAction].
-  final TextInputAction textInputAction;
+  final TextInputAction? textInputAction;
 
   /// See [TextField.decoration].
   final InputDecoration decoration;
 
   /// See [FormField.validator].
-  final FormFieldValidator<String> validator;
+  final FormFieldValidator<String>? validator;
 
   /// See [TextField.keyboardAppearance].
-  final Brightness keyboardAppearance;
+  final Brightness? keyboardAppearance;
 
   /// See [TextField.showCursor].
-  final bool showCursor;
+  final bool? showCursor;
 
   /// See [TextField.cursorColor].
-  final Color cursorColor;
+  final Color? cursorColor;
 
   /// See [TextField.enableInteractiveSelection].
   final bool enableInteractiveSelection;
@@ -214,10 +209,10 @@ class SpinBox extends BaseSpinBox {
   final TextDirection textDirection;
 
   /// See [TextField.style].
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// See [TextField.toolbarOptions].
-  final ToolbarOptions toolbarOptions;
+  final ToolbarOptions? toolbarOptions;
 
   @override
   _SpinBoxState createState() => _SpinBoxState();
@@ -236,7 +231,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
     return theme.hintColor;
   }
 
-  Color _iconColor(ThemeData theme, String errorText) {
+  Color? _iconColor(ThemeData theme, String? errorText) {
     if (!widget.enabled) return theme.disabledColor;
     if (hasFocus && errorText == null) return _activeColor(theme);
 
@@ -250,7 +245,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
     }
   }
 
-  double _textHeight(String text, TextStyle style) {
+  double _textHeight(String? text, TextStyle style) {
     final painter = TextPainter(
       textAlign: widget.textAlign,
       textDirection: widget.textDirection,
@@ -276,19 +271,19 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
     if (isHorizontal) {
       final caption = theme.textTheme.caption;
       if (errorText != null) {
-        bottom = _textHeight(errorText, caption.merge(decoration.errorStyle));
+        bottom = _textHeight(errorText, caption!.merge(decoration.errorStyle));
       }
       if (decoration.helperText != null) {
         bottom = max(
             bottom,
             _textHeight(
-                decoration.helperText, caption.merge(decoration.helperStyle)));
+                decoration.helperText, caption!.merge(decoration.helperStyle)));
       }
       if (decoration.counterText != null) {
         bottom = max(
             bottom,
             _textHeight(decoration.counterText,
-                caption.merge(decoration.counterStyle)));
+                caption!.merge(decoration.counterStyle)));
       }
       if (bottom > 0) bottom += 8.0; // subTextGap
     }

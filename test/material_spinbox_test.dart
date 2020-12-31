@@ -4,7 +4,7 @@ import 'package:flutter_spinbox/material.dart';
 import 'test_spinbox.dart';
 
 class TestApp extends MaterialApp {
-  TestApp({Key key, Widget widget})
+  TestApp({Key? key, required Widget widget})
       : super(key: key, home: Scaffold(body: widget));
 }
 

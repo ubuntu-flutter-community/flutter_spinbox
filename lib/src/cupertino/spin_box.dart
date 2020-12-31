@@ -50,7 +50,7 @@ part 'third_party/default_rounded_border.dart';
 class CupertinoSpinBox extends BaseSpinBox {
   /// Creates a spinbox.
   CupertinoSpinBox({
-    Key key,
+    Key? key,
     this.min = 0,
     this.max = 100,
     this.step = 1,
@@ -58,15 +58,15 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
     this.decimals = 0,
-    bool enabled,
+    bool? enabled,
     this.autofocus = false,
-    TextInputType keyboardType,
+    TextInputType? keyboardType,
     this.textInputAction,
     this.padding = const EdgeInsets.all(6),
     this.decoration = _kDefaultRoundedBorderDecoration,
     this.keyboardAppearance,
-    Icon incrementIcon,
-    Icon decrementIcon,
+    Icon? incrementIcon,
+    Icon? decrementIcon,
     this.prefix,
     this.suffix,
     this.direction = Axis.horizontal,
@@ -78,12 +78,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
-  })  : assert(min != null),
-        assert(max != null),
-        assert(min <= max),
-        assert(value != null),
-        assert(interval != null),
-        assert(direction != null),
+  })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
               signed: min < 0,
@@ -143,7 +138,7 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// When holding down the increment and decrement buttons, respectively.
   ///
   /// Defaults to `null` (no acceleration).
-  final double acceleration;
+  final double? acceleration;
 
   /// The visual direction of the spinbox layout.
   ///
@@ -172,14 +167,14 @@ class CupertinoSpinBox extends BaseSpinBox {
   final Icon decrementIcon;
 
   /// See [CupertinoTextField.prefix].
-  final Widget prefix;
+  final Widget? prefix;
 
   /// See [CupertinoTextField.suffix].
-  final Widget suffix;
+  final Widget? suffix;
 
   /// Called when the user has changed the value.
   @override
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onChanged;
 
   /// See [CupertinoTextField.enabled].
   final bool enabled;
@@ -191,7 +186,7 @@ class CupertinoSpinBox extends BaseSpinBox {
   final TextInputType keyboardType;
 
   /// See [CupertinoTextField.textInputAction].
-  final TextInputAction textInputAction;
+  final TextInputAction? textInputAction;
 
   /// See [CupertinoTextField.padding].
   final EdgeInsetsGeometry padding;
@@ -200,13 +195,13 @@ class CupertinoSpinBox extends BaseSpinBox {
   final BoxDecoration decoration;
 
   /// See [CupertinoTextField.keyboardAppearance].
-  final Brightness keyboardAppearance;
+  final Brightness? keyboardAppearance;
 
   /// See [CupertinoTextField.showCursor].
-  final bool showCursor;
+  final bool? showCursor;
 
   /// See [CupertinoTextField.cursorColor].
-  final Color cursorColor;
+  final Color? cursorColor;
 
   /// See [CupertinoTextField.enableInteractiveSelection].
   final bool enableInteractiveSelection;
@@ -215,10 +210,10 @@ class CupertinoSpinBox extends BaseSpinBox {
   final TextAlign textAlign;
 
   /// See [CupertinoTextField.style].
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// See [CupertinoTextField.toolbarOptions].
-  final ToolbarOptions toolbarOptions;
+  final ToolbarOptions? toolbarOptions;
 
   @override
   _CupertinoSpinBoxState createState() => _CupertinoSpinBoxState();
@@ -264,13 +259,13 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
               padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
               child: Icon(null, size: widget.decrementIcon.size),
             ),
-          if (widget.prefix != null) widget.prefix,
+          if (widget.prefix != null) widget.prefix!,
         ],
       ),
       suffix: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.suffix != null) widget.suffix,
+          if (widget.suffix != null) widget.suffix!,
           if (isHorizontal)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),

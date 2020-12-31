@@ -29,24 +29,24 @@ import 'spin_formatter.dart';
 // ignore_for_file: public_member_api_docs
 
 abstract class BaseSpinBox extends StatefulWidget {
-  const BaseSpinBox({Key key}) : super(key: key);
+  const BaseSpinBox({Key? key}) : super(key: key);
 
   double get min;
   double get max;
   double get step;
   double get value;
   int get decimals;
-  ValueChanged<double> get onChanged;
+  ValueChanged<double>? get onChanged;
 }
 
 abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
-  double _value;
-  double _cachedValue;
-  FocusNode _focusNode;
-  TextEditingController _controller;
+  late double _value;
+  late double _cachedValue;
+  late final FocusNode _focusNode;
+  late final TextEditingController _controller;
 
   double get value => _value;
-  bool get hasFocus => _focusNode?.hasFocus ?? false;
+  bool get hasFocus => _focusNode.hasFocus;
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
   SpinFormatter get formatter => SpinFormatter(
@@ -72,10 +72,8 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
 
   @override
   void dispose() {
-    _focusNode?.dispose();
-    _focusNode = null;
-    _controller?.dispose();
-    _controller = null;
+    _focusNode.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -96,8 +94,8 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   }
 
   bool setValue(double v) {
-    final newValue = v?.clamp(widget.min, widget.max)?.toDouble();
-    if (newValue == null || newValue == value) return false;
+    final newValue = v.clamp(widget.min, widget.max).toDouble();
+    if (newValue == value) return false;
     _cachedValue = newValue;
     final text = _formatText(newValue);
     final selection = _controller.selection;
