@@ -1,3 +1,7 @@
+## [0.3.1+1] - 2020-12-31
+
+* Fixed package revision/contents.
+
 ## [0.3.1] - 2020-12-31
 
 * Made input validation less strict to avoid situations where a entering
