@@ -20,4 +20,3 @@ dev_dependencies:
   effective_dart: ^1.2.4
   flutter_test:
     sdk: flutter
-  flutter_test_ui: ^1.0.0
