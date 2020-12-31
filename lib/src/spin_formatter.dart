@@ -26,7 +26,7 @@ import 'package:flutter/services.dart';
 // ignore_for_file: public_member_api_docs
 
 class SpinFormatter extends TextInputFormatter {
-  SpinFormatter({this.min, this.max, this.decimals});
+  SpinFormatter({required this.min, required this.max, required this.decimals});
 
   final double min;
   final double max;
@@ -70,7 +70,7 @@ class SpinFormatter extends TextInputFormatter {
     return newValue;
   }
 
-  bool _validateValue(num value) {
+  bool _validateValue(num? value) {
     if (value == null) {
       return false;
     }

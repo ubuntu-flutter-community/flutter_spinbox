@@ -4,7 +4,7 @@ import 'package:flutter_spinbox/cupertino.dart';
 import 'test_spinbox.dart';
 
 class TestApp extends CupertinoApp {
-  TestApp({Key key, Widget widget})
+  TestApp({Key? key, required Widget widget})
       : super(key: key, home: CupertinoPageScaffold(child: widget));
 }
 

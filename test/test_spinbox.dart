@@ -12,8 +12,8 @@ typedef TestChangeBuilder = Widget Function(ValueChanged<double> onChanged);
 
 class TestIcons {
   TestIcons._();
-  static IconData increment;
-  static IconData decrement;
+  static late IconData increment;
+  static late IconData decrement;
 }
 
 void testDefaults<S>(TestBuilder builder) {
@@ -297,7 +297,7 @@ void testDecimals<S>(TestBuilder builder) {
 
 void testCallbacks<S>(TestChangeBuilder builder) {
   group('callbacks', () {
-    StreamController<double> controller;
+    late StreamController<double> controller;
 
     setUp(() async {
       controller = StreamController<double>();
@@ -335,7 +335,7 @@ void testCallbacks<S>(TestChangeBuilder builder) {
 
 void testLongPress<S>(TestChangeBuilder builder) {
   group('long press', () {
-    StreamController<double> controller;
+    late StreamController<double> controller;
 
     setUp(() async {
       controller = StreamController<double>();
