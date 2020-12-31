@@ -64,7 +64,6 @@ class SpinBox extends BaseSpinBox {
     this.textInputAction,
     InputDecoration decoration,
     this.validator,
-    List<TextInputFormatter> inputFormatters,
     this.keyboardAppearance,
     Icon incrementIcon,
     Icon decrementIcon,
@@ -91,8 +90,8 @@ class SpinBox extends BaseSpinBox {
             ),
         enabled = (enabled ?? true) && min < max,
         decoration = decoration ?? const InputDecoration(),
-        incrementIcon = incrementIcon ?? Icon(Icons.add),
-        decrementIcon = decrementIcon ?? Icon(Icons.remove),
+        incrementIcon = incrementIcon ?? const Icon(Icons.add),
+        decrementIcon = decrementIcon ?? const Icon(Icons.remove),
         super(key: key) {
     assert(this.decoration.prefixIcon == null,
         'InputDecoration.prefixIcon is reserved for SpinBox decrement icon');
@@ -105,6 +104,7 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to `0.0`. Must be less than or equal to [max].
   ///
   /// If min is equal to [max], the spinbox is disabled.
+  @override
   final double min;
 
   /// The maximum value the user can enter.
@@ -112,21 +112,25 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to `100.0`. Must be greater than or equal to [min].
   ///
   /// If max is equal to [min], the spinbox is disabled.
+  @override
   final double max;
 
   /// The step size for incrementing and decrementing the value.
   ///
   /// Defaults to `1.0`.
+  @override
   final double step;
 
   /// The current value.
   ///
   /// Defaults to `0.0`.
+  @override
   final double value;
 
   /// The number of decimal places used for formatting the value.
   ///
   /// Defaults to `0`.
+  @override
   final int decimals;
 
   /// The interval used for auto-incrementing and -decrementing.
@@ -170,6 +174,7 @@ class SpinBox extends BaseSpinBox {
   final Icon decrementIcon;
 
   /// Called when the user has changed the value.
+  @override
   final ValueChanged<double> onChanged;
 
   /// See [TextField.enabled].
@@ -360,7 +365,6 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           incrementButton,
           SizedBox(height: widget.spacing),

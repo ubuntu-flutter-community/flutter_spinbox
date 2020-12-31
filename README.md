@@ -4,7 +4,7 @@
 [![score](https://badges.bar/flutter_spinbox/pub%20points)](https://pub.dev/packages/flutter_spinbox/score)
 ![build](https://github.com/jpnurmi/flutter_spinbox/workflows/build/badge.svg)
 [![codecov](https://codecov.io/gh/jpnurmi/flutter_spinbox/branch/master/graph/badge.svg)](https://codecov.io/gh/jpnurmi/flutter_spinbox)
-[![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://pub.dev/packages/effective_dart)
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
 [![license: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 SpinBox for [Flutter](https://flutter.dev) is a numeric input widget with an input field for

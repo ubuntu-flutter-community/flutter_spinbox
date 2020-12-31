@@ -59,13 +59,13 @@ class CupertinoSpinButton extends StatelessWidget {
       step: step,
       interval: interval,
       acceleration: acceleration,
+      onStep: onStep,
       child: CupertinoButton(
-        child: icon,
         color: color,
         padding: const EdgeInsets.all(kSpinPadding),
         onPressed: enabled ? () => onStep(step) : null,
+        child: icon,
       ),
-      onStep: onStep,
     );
   }
 }

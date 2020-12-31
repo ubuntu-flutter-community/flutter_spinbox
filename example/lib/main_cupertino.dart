@@ -14,11 +14,11 @@ void main() => runApp(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.ellipsis),
-                  title: Text('Horizontal'),
+                  label: 'Horizontal',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.ellipsis),
-                  title: Text('Vertical'),
+                  label: 'Vertical',
                 ),
               ],
             ),

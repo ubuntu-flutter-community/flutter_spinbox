@@ -29,7 +29,7 @@ import 'spin_formatter.dart';
 // ignore_for_file: public_member_api_docs
 
 abstract class BaseSpinBox extends StatefulWidget {
-  BaseSpinBox({Key key}) : super(key: key);
+  const BaseSpinBox({Key key}) : super(key: key);
 
   double get min;
   double get max;
@@ -95,8 +95,8 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     widget.onChanged?.call(v);
   }
 
-  bool setValue(double newValue) {
-    newValue = newValue?.clamp(widget.min, widget.max);
+  bool setValue(double v) {
+    final newValue = v?.clamp(widget.min, widget.max)?.toDouble();
     if (newValue == null || newValue == value) return false;
     _cachedValue = newValue;
     final text = _formatText(newValue);
