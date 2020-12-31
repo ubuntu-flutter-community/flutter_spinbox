@@ -64,7 +64,6 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.textInputAction,
     this.padding = const EdgeInsets.all(6),
     this.decoration = _kDefaultRoundedBorderDecoration,
-    List<TextInputFormatter> inputFormatters,
     this.keyboardAppearance,
     Icon incrementIcon,
     Icon decrementIcon,
@@ -92,8 +91,10 @@ class CupertinoSpinBox extends BaseSpinBox {
             ),
         enabled = (enabled ?? true) && min < max,
         //decoration = decoration ?? const BoxDecoration(),
-        incrementIcon = incrementIcon ?? Icon(CupertinoIcons.plus_circled),
-        decrementIcon = decrementIcon ?? Icon(CupertinoIcons.minus_circled),
+        incrementIcon =
+            incrementIcon ?? const Icon(CupertinoIcons.plus_circled),
+        decrementIcon =
+            decrementIcon ?? const Icon(CupertinoIcons.minus_circled),
         super(key: key);
 
   /// The minimum value the user can enter.
@@ -101,6 +102,7 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// Defaults to `0.0`. Must be less than or equal to [max].
   ///
   /// If min is equal to [max], the spinbox is disabled.
+  @override
   final double min;
 
   /// The maximum value the user can enter.
@@ -108,21 +110,25 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// Defaults to `100.0`. Must be greater than or equal to [min].
   ///
   /// If max is equal to [min], the spinbox is disabled.
+  @override
   final double max;
 
   /// The step size for incrementing and decrementing the value.
   ///
   /// Defaults to `1.0`.
+  @override
   final double step;
 
   /// The current value.
   ///
   /// Defaults to `0.0`.
+  @override
   final double value;
 
   /// The number of decimal places used for formatting the value.
   ///
   /// Defaults to `0`.
+  @override
   final int decimals;
 
   /// The interval used for auto-incrementing and -decrementing.
@@ -172,6 +178,7 @@ class CupertinoSpinBox extends BaseSpinBox {
   final Widget suffix;
 
   /// Called when the user has changed the value.
+  @override
   final ValueChanged<double> onChanged;
 
   /// See [CupertinoTextField.enabled].
@@ -303,7 +310,6 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           incrementButton,
           SizedBox(height: widget.spacing),

@@ -57,13 +57,13 @@ class SpinButton extends StatelessWidget {
       step: step,
       interval: interval,
       acceleration: acceleration,
+      onStep: onStep,
       child: IconButton(
         icon: icon,
         color: color,
         iconSize: icon.size ?? 24,
         onPressed: enabled ? () => onStep(step) : null,
       ),
-      onStep: onStep,
     );
   }
 }

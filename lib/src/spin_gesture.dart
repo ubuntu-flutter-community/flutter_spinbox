@@ -73,9 +73,9 @@ class _SpinGestureState extends State<SpinGesture> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: widget.child,
       onLongPressStart: widget.enabled ? (_) => startTimer() : null,
       onLongPressEnd: widget.enabled ? (_) => stopTimer() : null,
+      child: widget.child,
     );
   }
 
