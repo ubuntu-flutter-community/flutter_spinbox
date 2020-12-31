@@ -1,3 +1,10 @@
+## [0.3.1] - 2020-12-31
+
+* Made input validation less strict to avoid situations where a entering
+  an intermediate value that was less than the minimum value would not be
+  allowed. The input is fixed up when the value is submitted or the input
+  focus is lost.
+
 ## [0.3.0] - 2020-12-10
 
 * Added (Cupertino)SpinBox.cursorColor property
