@@ -9,11 +9,14 @@ issue_tracker: https://github.com/jpnurmi/flutter_spinbox/issues
 
 environment:
   sdk: '>=2.7.0 <3.0.0'
+
 dependencies:
   cupertino_icons: ^1.0.0
   flutter:
     sdk: flutter
   intl: ^0.16.1
+  meta: ^1.2.4
+
 dev_dependencies:
   effective_dart: ^1.2.4
   flutter_test:
