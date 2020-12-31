@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_test_ui/flutter_test_ui.dart';
 
 import 'test_utils.dart';
 
@@ -19,31 +18,41 @@ class TestIcons {
 
 void testDefaults<S>(TestBuilder builder) {
   group('defaults', () {
-    setUpUI((tester) async {
+    testWidgets('structure', (tester) async {
       final widget = builder();
       await tester.pumpWidget(widget);
-    });
 
-    testUI('structure', (tester) async {
       expect(find.byType(S), findsOneWidget);
       expect(find.editableText, findsOneWidget);
       expect(find.byIcon(TestIcons.increment), findsOneWidget);
       expect(find.byIcon(TestIcons.decrement), findsOneWidget);
     });
 
-    testUI('value', (tester) async {
+    testWidgets('value', (tester) async {
+      final widget = builder();
+      await tester.pumpWidget(widget);
+
       expect(tester.state(find.byType(S)), hasValue(0));
     });
 
-    testUI('text', (tester) async {
+    testWidgets('text', (tester) async {
+      final widget = builder();
+      await tester.pumpWidget(widget);
+
       expect(find.editableText, hasText('0'));
     });
 
-    testUI('no focus', (tester) async {
+    testWidgets('no focus', (tester) async {
+      final widget = builder();
+      await tester.pumpWidget(widget);
+
       expect(find.editableText, hasNoFocus);
     });
 
-    testUI('no selection', (tester) async {
+    testWidgets('no selection', (tester) async {
+      final widget = builder();
+      await tester.pumpWidget(widget);
+
       expect(find.editableText, hasNoSelection);
     });
   });
@@ -51,61 +60,74 @@ void testDefaults<S>(TestBuilder builder) {
 
 void testTap<S>(TestBuilder builder) {
   group('tap', () {
-    setUpUI((tester) async {
-      await tester.pumpWidget(builder());
-    });
-
     group('text field', () {
-      setUpUI((tester) async {
+      testWidgets('has focus', (tester) async {
+        await tester.pumpWidget(builder());
         await tester.tap(find.editableText);
         await tester.pumpAndSettle();
-      });
 
-      testUI('has focus', (tester) async {
         expect(find.editableText, hasFocus);
       });
 
-      testUI('has selection', (tester) async {
+      testWidgets('has selection', (tester) async {
+        await tester.pumpWidget(builder());
+        await tester.tap(find.editableText);
+        await tester.pumpAndSettle();
+
         expect(find.editableText, hasSelection(0, 1));
       });
     });
 
     group('buttons', () {
       group('increment', () {
-        setUpUI((tester) async {
+        testWidgets('no focus', (tester) async {
+          await tester.pumpWidget(builder());
           await tester.tap(find.byIcon(TestIcons.increment));
           await tester.pumpAndSettle();
-        });
 
-        testUI('no focus', (tester) async {
           expect(find.editableText, hasNoFocus);
         });
 
-        testUI('no selection', (tester) async {
+        testWidgets('no selection', (tester) async {
+          await tester.pumpWidget(builder());
+          await tester.tap(find.byIcon(TestIcons.increment));
+          await tester.pumpAndSettle();
+
           expect(find.editableText, hasNoSelection);
         });
 
-        testUI('was incremented', (tester) async {
+        testWidgets('was incremented', (tester) async {
+          await tester.pumpWidget(builder());
+          await tester.tap(find.byIcon(TestIcons.increment));
+          await tester.pumpAndSettle();
+
           expect(tester.state(find.byType(S)), hasValue(2));
           expect(find.editableText, hasText('2'));
         });
       });
 
       group('decrement', () {
-        setUpUI((tester) async {
+        testWidgets('no focus', (tester) async {
+          await tester.pumpWidget(builder());
           await tester.tap(find.byIcon(TestIcons.decrement));
           await tester.pumpAndSettle();
-        });
 
-        testUI('no focus', (tester) async {
           expect(find.editableText, hasNoFocus);
         });
 
-        testUI('no selection', (tester) async {
+        testWidgets('no selection', (tester) async {
+          await tester.pumpWidget(builder());
+          await tester.tap(find.byIcon(TestIcons.decrement));
+          await tester.pumpAndSettle();
+
           expect(find.editableText, hasNoSelection);
         });
 
-        testUI('was decremented', (tester) async {
+        testWidgets('was decremented', (tester) async {
+          await tester.pumpWidget(builder());
+          await tester.tap(find.byIcon(TestIcons.decrement));
+          await tester.pumpAndSettle();
+
           expect(tester.state(find.byType(S)), hasValue(0));
           expect(find.editableText, hasText('0'));
         });
@@ -116,13 +138,11 @@ void testTap<S>(TestBuilder builder) {
 
 void testInput<S>(TestBuilder builder) {
   group('input', () {
-    setUpUI((tester) async {
+    testWidgets('arrows', (tester) async {
       await tester.pumpWidget(builder());
       expect(find.editableText, hasFocus);
       await tester.showKeyboard(find.byType(S));
-    });
 
-    testUI('arrows', (tester) async {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.idle();
       expect(tester.state(find.byType(S)), hasValue(0));
@@ -144,7 +164,11 @@ void testInput<S>(TestBuilder builder) {
       expect(find.editableText, hasText('0'));
     });
 
-    testUI('text', (tester) async {
+    testWidgets('text', (tester) async {
+      await tester.pumpWidget(builder());
+      expect(find.editableText, hasFocus);
+      await tester.showKeyboard(find.byType(S));
+
       expect(find.editableText, hasSelection(0, 1));
       expect(find.editableText, hasText('1'));
 
@@ -173,7 +197,11 @@ void testInput<S>(TestBuilder builder) {
       expect(find.editableText, hasText('21'));
     });
 
-    testUI('submit', (tester) async {
+    testWidgets('submit', (tester) async {
+      await tester.pumpWidget(builder());
+      expect(find.editableText, hasFocus);
+      await tester.showKeyboard(find.byType(S));
+
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
       expect(tester.state(find.byType(S)), hasValue(0));
@@ -186,7 +214,11 @@ void testInput<S>(TestBuilder builder) {
       expect(find.editableText, hasText('1'));
     });
 
-    testUI('unfocus', (tester) async {
+    testWidgets('unfocus', (tester) async {
+      await tester.pumpWidget(builder());
+      expect(find.editableText, hasFocus);
+      await tester.showKeyboard(find.byType(S));
+
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
       expect(tester.state(find.byType(S)), hasValue(0));
@@ -202,13 +234,7 @@ void testInput<S>(TestBuilder builder) {
 
 void testRange<S>(TestBuilder builder) {
   group('range', () {
-    setUpUI((tester) async {
-      await tester.pumpWidget(builder());
-      expect(find.editableText, hasFocus);
-      await tester.showKeyboard(find.byType(S));
-    });
-
-    testUI('min', (tester) async {
+    testWidgets('min', (tester) async {
       await tester.pumpWidget(builder());
       expect(find.editableText, hasFocus);
       await tester.showKeyboard(find.byType(S));
@@ -229,7 +255,7 @@ void testRange<S>(TestBuilder builder) {
       expect(find.editableText, hasText('20'));
     });
 
-    testUI('max', (tester) async {
+    testWidgets('max', (tester) async {
       await tester.pumpWidget(builder());
       expect(find.editableText, hasFocus);
       await tester.showKeyboard(find.byType(S));
@@ -253,7 +279,7 @@ void testRange<S>(TestBuilder builder) {
 }
 
 void testDecimals<S>(TestBuilder builder) {
-  testUI('decimals', (tester) async {
+  testWidgets('decimals', (tester) async {
     await tester.pumpWidget(builder());
     expect(find.editableText, hasFocus);
     await tester.showKeyboard(find.byType(S));
@@ -273,22 +299,25 @@ void testCallbacks<S>(TestChangeBuilder builder) {
   group('callbacks', () {
     StreamController<double> controller;
 
-    setUpUI((tester) async {
+    setUp(() async {
       controller = StreamController<double>();
-      await tester.pumpWidget(builder(controller.add));
     });
 
-    tearDownUI((tester) async {
+    tearDown(() async {
       controller.close();
     });
 
-    testUI('buttons', (tester) async {
+    testWidgets('buttons', (tester) async {
+      await tester.pumpWidget(builder(controller.add));
+
       expectLater(controller.stream, emitsInOrder([0.0, 1.0]));
       await tester.tap(find.byIcon(TestIcons.decrement));
       await tester.tap(find.byIcon(TestIcons.increment));
     });
 
-    testUI('input', (tester) async {
+    testWidgets('input', (tester) async {
+      await tester.pumpWidget(builder(controller.add));
+
       await tester.showKeyboard(find.byType(S));
       expect(find.editableText, hasFocus);
       expect(find.editableText, hasSelection(0, 1));
@@ -308,16 +337,17 @@ void testLongPress<S>(TestChangeBuilder builder) {
   group('long press', () {
     StreamController<double> controller;
 
-    setUpUI((tester) async {
+    setUp(() async {
       controller = StreamController<double>();
-      await tester.pumpWidget(builder(controller.add));
     });
 
-    tearDownUI((tester) async {
+    tearDown(() async {
       controller.close();
     });
 
-    testUI('increment', (tester) async {
+    testWidgets('increment', (tester) async {
+      await tester.pumpWidget(builder(controller.add));
+
       final center = tester.getCenter(find.byIcon(TestIcons.increment));
       final gesture = await tester.startGesture(center);
       await tester.pumpAndSettle(kLongPressTimeout);
@@ -327,7 +357,9 @@ void testLongPress<S>(TestChangeBuilder builder) {
       gesture.up();
     });
 
-    testUI('decrement', (tester) async {
+    testWidgets('decrement', (tester) async {
+      await tester.pumpWidget(builder(controller.add));
+
       final center = tester.getCenter(find.byIcon(TestIcons.decrement));
       final gesture = await tester.startGesture(center);
       await tester.pumpAndSettle(kLongPressTimeout);
