@@ -1,3 +1,7 @@
+## [0.3.1+2] - 2020-12-31
+
+* Cleaned up an unused intl package dependency and import.
+
 ## [0.3.1+1] - 2020-12-31
 
 * Fixed package revision/contents.
