@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
 // ignore_for_file: public_member_api_docs

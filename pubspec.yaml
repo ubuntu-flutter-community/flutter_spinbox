@@ -14,7 +14,6 @@ dependencies:
   cupertino_icons: ^1.0.0
   flutter:
     sdk: flutter
-  intl: ^0.16.1
   meta: ^1.2.4
 
 dev_dependencies:
