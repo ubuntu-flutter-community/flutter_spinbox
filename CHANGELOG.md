@@ -1,3 +1,8 @@
+## [0.4.0-nullsafety.0] - 2021-01-01
+
+* Migrated to null safety
+* Happy New Year!
+
 ## [0.3.1+2] - 2020-12-31
 
 * Cleaned up an unused intl package dependency and import.
