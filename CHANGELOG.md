@@ -1,3 +1,9 @@
+## [0.4.0] - 2021-03-15
+
+* Stable null-safe version with stable SDK constraints
+* Upgraded depencencies
+* Fixed ripple effects to show above the text field
+
 ## [0.4.0-nullsafety.0] - 2021-01-01
 
 * Migrated to null safety
