@@ -67,6 +67,7 @@ class SpinBox extends BaseSpinBox {
     this.keyboardAppearance,
     Icon? incrementIcon,
     Icon? decrementIcon,
+    this.showButtons = true,
     this.direction = Axis.horizontal,
     this.textAlign = TextAlign.center,
     this.textDirection = TextDirection.ltr,
@@ -167,6 +168,11 @@ class SpinBox extends BaseSpinBox {
   ///
   /// Defaults to [Icons.remove].
   final Icon decrementIcon;
+
+  /// Whether the increment and decrement buttons are shown.
+  ///
+  /// Defaults to `true`.
+  final bool showButtons;
 
   /// Called when the user has changed the value.
   @override
@@ -288,32 +294,14 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       if (bottom > 0) bottom += 8.0; // subTextGap
     }
 
-    final incrementButton = SpinButton(
-      step: widget.step,
-      color: iconColor,
-      icon: widget.incrementIcon,
-      enabled: widget.enabled && value < widget.max,
-      interval: widget.interval,
-      acceleration: widget.acceleration,
-      onStep: (step) => setValue(value + step),
-    );
-
-    final decrementButton = SpinButton(
-      step: widget.step,
-      color: iconColor,
-      icon: widget.decrementIcon,
-      enabled: widget.enabled && value > widget.min,
-      interval: widget.interval,
-      acceleration: widget.acceleration,
-      onStep: (step) => setValue(value - step),
-    );
-
     final inputDecoration = widget.decoration.copyWith(
       errorText: errorText,
-      prefixIcon:
-          isHorizontal ? Icon(null, size: widget.decrementIcon.size) : null,
-      suffixIcon:
-          isHorizontal ? Icon(null, size: widget.incrementIcon.size) : null,
+      prefixIcon: isHorizontal && widget.showButtons
+          ? Icon(null, size: widget.decrementIcon.size)
+          : null,
+      suffixIcon: isHorizontal && widget.showButtons
+          ? Icon(null, size: widget.incrementIcon.size)
+          : null,
     );
 
     final textField = TextField(
@@ -334,6 +322,28 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       enabled: widget.enabled,
       focusNode: focusNode,
       onSubmitted: fixupValue,
+    );
+
+    final incrementButton = SpinButton(
+      step: widget.step,
+      color: iconColor,
+      icon: widget.incrementIcon,
+      enabled: widget.enabled && value < widget.max,
+      interval: widget.interval,
+      acceleration: widget.acceleration,
+      onStep: (step) => setValue(value + step),
+    );
+
+    if (!widget.showButtons) return textField;
+
+    final decrementButton = SpinButton(
+      step: widget.step,
+      color: iconColor,
+      icon: widget.decrementIcon,
+      enabled: widget.enabled && value > widget.min,
+      interval: widget.interval,
+      acceleration: widget.acceleration,
+      onStep: (step) => setValue(value - step),
     );
 
     if (isHorizontal) {
