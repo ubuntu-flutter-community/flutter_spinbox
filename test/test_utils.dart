@@ -13,7 +13,7 @@ extension EditableTextFinder on Finder {
 
 final Matcher hasFocus = HasFocusMatcher(hasFocus: true);
 final Matcher hasNoFocus = HasFocusMatcher(hasFocus: false);
-final Matcher hasNoSelection = HasSelectionMatcher(-1, -1);
+final Matcher hasNoSelection = SelectionLengthMatcher(0);
 Matcher hasSelection(int start, int end) => HasSelectionMatcher(start, end);
 Matcher hasText(String text) => HasTextMatcher(text);
 Matcher hasValue(double value) => HasValueMatcher(value);
@@ -24,6 +24,16 @@ class HasFocusMatcher extends CustomMatcher {
   @override
   Object featureValueOf(covariant Finder finder) =>
       finder.editableText.focusNode.hasFocus;
+}
+
+class SelectionLengthMatcher extends CustomMatcher {
+  SelectionLengthMatcher(int length)
+      : super('EditableText has selection', 'selection', equals(length));
+  @override
+  Object featureValueOf(covariant Finder finder) =>
+      (finder.editableText.controller.selection.end -
+              finder.editableText.controller.selection.start)
+          .abs();
 }
 
 class HasSelectionMatcher extends CustomMatcher {
