@@ -67,6 +67,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.keyboardAppearance,
     Icon? incrementIcon,
     Icon? decrementIcon,
+    this.showButtons = true,
     this.prefix,
     this.suffix,
     this.direction = Axis.horizontal,
@@ -166,6 +167,11 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// Defaults to [CupertinoIcons.minus_circled].
   final Icon decrementIcon;
 
+  /// Whether the increment and decrement buttons are shown.
+  ///
+  /// Defaults to `true`.
+  final bool showButtons;
+
   /// See [CupertinoTextField.prefix].
   final Widget? prefix;
 
@@ -224,6 +230,50 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
   Widget build(BuildContext context) {
     final isHorizontal = widget.direction == Axis.horizontal;
 
+    final textField = CupertinoTextField(
+      controller: controller,
+      style: widget.textStyle,
+      textAlign: widget.textAlign,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
+      toolbarOptions: widget.toolbarOptions,
+      keyboardAppearance: widget.keyboardAppearance,
+      inputFormatters: [formatter],
+      prefix: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isHorizontal && widget.showButtons)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
+              child: Icon(null, size: widget.decrementIcon.size),
+            ),
+          if (widget.prefix != null) widget.prefix!,
+        ],
+      ),
+      suffix: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.suffix != null) widget.suffix!,
+          if (isHorizontal && widget.showButtons)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
+              child: Icon(null, size: widget.incrementIcon.size),
+            ),
+        ],
+      ),
+      padding: widget.padding,
+      decoration: widget.decoration,
+      enableInteractiveSelection: widget.enableInteractiveSelection,
+      showCursor: widget.showCursor,
+      cursorColor: widget.cursorColor,
+      autofocus: widget.autofocus,
+      enabled: widget.enabled,
+      focusNode: focusNode,
+      onSubmitted: fixupValue,
+    );
+
+    if (!widget.showButtons) return textField;
+
     final incrementButton = CupertinoSpinButton(
       step: widget.step,
       icon: widget.incrementIcon,
@@ -240,48 +290,6 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
       interval: widget.interval,
       acceleration: widget.acceleration,
       onStep: (step) => setValue(value - step),
-    );
-
-    final textField = CupertinoTextField(
-      controller: controller,
-      style: widget.textStyle,
-      textAlign: widget.textAlign,
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      toolbarOptions: widget.toolbarOptions,
-      keyboardAppearance: widget.keyboardAppearance,
-      inputFormatters: [formatter],
-      prefix: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isHorizontal)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
-              child: Icon(null, size: widget.decrementIcon.size),
-            ),
-          if (widget.prefix != null) widget.prefix!,
-        ],
-      ),
-      suffix: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.suffix != null) widget.suffix!,
-          if (isHorizontal)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
-              child: Icon(null, size: widget.incrementIcon.size),
-            ),
-        ],
-      ),
-      padding: widget.padding,
-      decoration: widget.decoration,
-      enableInteractiveSelection: widget.enableInteractiveSelection,
-      showCursor: widget.showCursor,
-      cursorColor: widget.cursorColor,
-      autofocus: widget.autofocus,
-      enabled: widget.enabled,
-      focusNode: focusNode,
-      onSubmitted: fixupValue,
     );
 
     if (isHorizontal) {

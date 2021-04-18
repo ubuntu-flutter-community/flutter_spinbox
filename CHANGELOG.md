@@ -1,3 +1,7 @@
+## [0.4.1] - 2021-04-18
+
+* Add `showButtons` property
+
 ## [0.4.0] - 2021-03-15
 
 * Stable null-safe version with stable SDK constraints
