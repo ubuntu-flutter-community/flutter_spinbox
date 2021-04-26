@@ -1,3 +1,7 @@
+## [0.5.0] - 2021-04-26
+
+* Add canChange, beforeChange, and afterChange callbacks (thanks @daybson!)
+
 ## [0.4.1] - 2021-04-18
 
 * Add `showButtons` property
