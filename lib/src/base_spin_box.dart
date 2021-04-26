@@ -37,6 +37,9 @@ abstract class BaseSpinBox extends StatefulWidget {
   double get value;
   int get decimals;
   ValueChanged<double>? get onChanged;
+  ValueGetter<bool>? get canChange;
+  VoidCallback? get beforeChange;
+  VoidCallback? get afterChange;
 }
 
 abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
@@ -89,8 +92,17 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   void _updateValue() {
     final v = _parseValue(_controller.text);
     if (v == _value) return;
+
+    if (widget.canChange?.call() == false) {
+      return;
+    }
+
+    widget.beforeChange?.call();
+
     setState(() => _value = v);
     widget.onChanged?.call(v);
+
+    widget.afterChange?.call();
   }
 
   bool setValue(double v) {

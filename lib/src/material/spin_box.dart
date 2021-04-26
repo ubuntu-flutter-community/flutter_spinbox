@@ -78,6 +78,9 @@ class SpinBox extends BaseSpinBox {
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
+    this.canChange,
+    this.beforeChange,
+    this.afterChange,
   })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
@@ -177,6 +180,15 @@ class SpinBox extends BaseSpinBox {
   /// Called when the user has changed the value.
   @override
   final ValueChanged<double>? onChanged;
+
+  @override
+  final ValueGetter<bool>? canChange;
+
+  @override
+  final VoidCallback? beforeChange;
+
+  @override
+  final VoidCallback? afterChange;
 
   /// See [TextField.enabled].
   final bool enabled;
