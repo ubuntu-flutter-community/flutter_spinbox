@@ -1,3 +1,7 @@
+## [0.5.1] - 2021-04-28
+
+* Fix compatibility with latest Flutter master (thanks @wayneprice!)
+
 ## [0.5.0] - 2021-04-26
 
 * Add canChange, beforeChange, and afterChange callbacks (thanks @daybson!)
