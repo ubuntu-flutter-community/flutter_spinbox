@@ -80,13 +80,18 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     super.dispose();
   }
 
-  bool _handleKey(RawKeyEvent event) {
+  KeyEventResult _handleKey(RawKeyEvent event) {
+    KeyEventResult result = KeyEventResult.ignored;
     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      return event is RawKeyUpEvent || setValue(value + widget.step);
+      if ( event is RawKeyUpEvent || setValue(value + widget.step)) {
+        result = KeyEventResult.handled;
+      }
     } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      return event is RawKeyUpEvent || setValue(value - widget.step);
+      if (event is RawKeyUpEvent || setValue(value - widget.step)) {
+        result = KeyEventResult.handled;
+      }
     }
-    return false;
+    return result;
   }
 
   void _updateValue() {
