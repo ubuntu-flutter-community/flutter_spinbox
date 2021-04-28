@@ -83,7 +83,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   KeyEventResult _handleKey(RawKeyEvent event) {
     KeyEventResult result = KeyEventResult.ignored;
     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      if ( event is RawKeyUpEvent || setValue(value + widget.step)) {
+      if (event is RawKeyUpEvent || setValue(value + widget.step)) {
         result = KeyEventResult.handled;
       }
     } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
