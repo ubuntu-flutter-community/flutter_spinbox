@@ -81,6 +81,7 @@ class SpinBox extends BaseSpinBox {
     this.canChange,
     this.beforeChange,
     this.afterChange,
+    this.paintWhenEnabled = true,
   })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
@@ -232,26 +233,29 @@ class SpinBox extends BaseSpinBox {
   /// See [TextField.toolbarOptions].
   final ToolbarOptions? toolbarOptions;
 
+  /// Paints the underline and buttons with [ThemeData.accentColor] if [Brightness.dark]
+  /// or with [ThemeData.primaryColor] if [Brightness.light]
+  final bool paintWhenEnabled;
+
   @override
   _SpinBoxState createState() => _SpinBoxState();
 }
 
 class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
   Color _activeColor(ThemeData theme) {
-    if (hasFocus) {
-      switch (theme.brightness) {
-        case Brightness.dark:
-          return theme.accentColor;
-        case Brightness.light:
-          return theme.primaryColor;
-      }
+    switch (theme.brightness) {
+      case Brightness.dark:
+        return theme.accentColor;
+      case Brightness.light:
+        return theme.primaryColor;
     }
-    return theme.hintColor;
   }
 
   Color? _iconColor(ThemeData theme, String? errorText) {
     if (!widget.enabled) return theme.disabledColor;
-    if (hasFocus && errorText == null) return _activeColor(theme);
+    if ((hasFocus && errorText == null) || widget.paintWhenEnabled) {
+      return _activeColor(theme);
+    }
 
     switch (theme.brightness) {
       case Brightness.dark:
@@ -271,6 +275,18 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
     );
     painter.layout();
     return painter.height;
+  }
+
+  InputBorder? _enabledBorder(ThemeData theme) {
+    if (widget.enabled && widget.paintWhenEnabled) {
+      return UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: _activeColor(theme),
+          width: 2.0,
+        ),
+      );
+    }
+    return null;
   }
 
   @override
@@ -307,6 +323,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
     }
 
     final inputDecoration = widget.decoration.copyWith(
+      enabledBorder: _enabledBorder(theme),
       errorText: errorText,
       prefixIcon: isHorizontal && widget.showButtons
           ? Icon(null, size: widget.decrementIcon.size)
