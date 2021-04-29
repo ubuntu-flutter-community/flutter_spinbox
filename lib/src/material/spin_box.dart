@@ -182,7 +182,7 @@ class SpinBox extends BaseSpinBox {
   final ValueChanged<double>? onChanged;
 
   @override
-  final ValueGetter<bool>? canChange;
+  final bool Function(double value)? canChange;
 
   @override
   final VoidCallback? beforeChange;

@@ -37,7 +37,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   double get value;
   int get decimals;
   ValueChanged<double>? get onChanged;
-  ValueGetter<bool>? get canChange;
+  bool Function(double value)? get canChange;
   VoidCallback? get beforeChange;
   VoidCallback? get afterChange;
 }
@@ -98,26 +98,32 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     final v = _parseValue(_controller.text);
     if (v == _value) return;
 
-    if (widget.canChange?.call() == false) {
+    if (widget.canChange?.call(v) == false) {
+      controller.text = _cachedValue.toStringAsFixed(widget.decimals);
+      setState(() {
+        _value = _cachedValue;
+      });
       return;
     }
 
-    widget.beforeChange?.call();
-
     setState(() => _value = v);
     widget.onChanged?.call(v);
-
-    widget.afterChange?.call();
   }
 
   bool setValue(double v) {
     final newValue = v.clamp(widget.min, widget.max).toDouble();
     if (newValue == value) return false;
+
+    if (widget.canChange?.call(newValue) == false) return false;
+
     _cachedValue = newValue;
     final text = _formatText(newValue);
     final selection = _controller.selection;
     final oldOffset = value.isNegative ? 1 : 0;
     final newOffset = _parseValue(text).isNegative ? 1 : 0;
+
+    widget.beforeChange?.call();
+
     setState(() {
       _controller.value = _controller.value.copyWith(
         text: text,
@@ -127,6 +133,9 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
         ),
       );
     });
+
+    widget.afterChange?.call();
+
     return true;
   }
 
