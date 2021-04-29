@@ -1,3 +1,7 @@
+## [0.5.2] - 2021-04-29
+
+* Fix canChange callback
+
 ## [0.5.1] - 2021-04-28
 
 * Fix compatibility with latest Flutter master (thanks @wayneprice!)
