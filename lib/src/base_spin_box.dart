@@ -117,18 +117,13 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     if (widget.canChange?.call(newValue) == false) return false;
 
     widget.beforeChange?.call();
-
-    setState(() {
-      _updateController(value, newValue);
-    });
-
+    setState(() => _updateController(value, newValue));
     widget.afterChange?.call();
 
     return true;
   }
 
   void _updateController(double oldValue, double newValue) {
-    _cachedValue = newValue;
     final text = _formatText(newValue);
     final selection = _controller.selection;
     final oldOffset = value.isNegative ? 1 : 0;
@@ -165,6 +160,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
       _controller.removeListener(_updateValue);
+      _value = _cachedValue = widget.value;
       _updateController(oldWidget.value, widget.value);
       _controller.addListener(_updateValue);
     }
