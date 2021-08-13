@@ -1,3 +1,7 @@
+## [0.5.4] - 2021-08-13
+
+* Another value update fix
+
 ## [0.5.3] - 2021-08-13
 
 * Fix value updates on widget rebuild
