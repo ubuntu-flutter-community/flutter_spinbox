@@ -1,3 +1,7 @@
+## [0.5.3] - 2021-08-13
+
+* Fix value updates on widget rebuild
+
 ## [0.5.2] - 2021-04-29
 
 * Fix canChange callback
