@@ -116,27 +116,31 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
 
     if (widget.canChange?.call(newValue) == false) return false;
 
+    widget.beforeChange?.call();
+
+    setState(() {
+      _updateController(value, newValue);
+    });
+
+    widget.afterChange?.call();
+
+    return true;
+  }
+
+  void _updateController(double oldValue, double newValue) {
     _cachedValue = newValue;
     final text = _formatText(newValue);
     final selection = _controller.selection;
     final oldOffset = value.isNegative ? 1 : 0;
     final newOffset = _parseValue(text).isNegative ? 1 : 0;
 
-    widget.beforeChange?.call();
-
-    setState(() {
-      _controller.value = _controller.value.copyWith(
-        text: text,
-        selection: selection.copyWith(
-          baseOffset: selection.baseOffset - oldOffset + newOffset,
-          extentOffset: selection.extentOffset - oldOffset + newOffset,
-        ),
-      );
-    });
-
-    widget.afterChange?.call();
-
-    return true;
+    _controller.value = _controller.value.copyWith(
+      text: text,
+      selection: selection.copyWith(
+        baseOffset: selection.baseOffset - oldOffset + newOffset,
+        extentOffset: selection.extentOffset - oldOffset + newOffset,
+      ),
+    );
   }
 
   @protected
@@ -154,5 +158,15 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     if (!_focusNode.hasFocus) return;
     _controller.selection = _controller.selection
         .copyWith(baseOffset: 0, extentOffset: _controller.text.length);
+  }
+
+  @override
+  void didUpdateWidget(T oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _controller.removeListener(_updateValue);
+      _updateController(oldWidget.value, widget.value);
+      _controller.addListener(_updateValue);
+    }
   }
 }
