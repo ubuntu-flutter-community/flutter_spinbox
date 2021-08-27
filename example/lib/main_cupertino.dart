@@ -22,7 +22,8 @@ void main() => runApp(
                 ),
               ],
             ),
-            tabBuilder: (BuildContext context, int index) => index == 0 ? HorizontalSpinBoxPage() : VerticalSpinBoxPage(),
+            tabBuilder: (BuildContext context, int index) =>
+                index == 0 ? HorizontalSpinBoxPage() : VerticalSpinBoxPage(),
           ),
         ),
       ),
@@ -56,7 +57,8 @@ class HorizontalSpinBoxPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  child: Text('Im readOnly spinbox (change only with buttons)', style: caption),
+                  child: Text('Im readOnly spinbox (change only with buttons)',
+                      style: caption),
                   padding: const EdgeInsets.only(left: 16, top: 12),
                 ),
                 CupertinoSpinBox(

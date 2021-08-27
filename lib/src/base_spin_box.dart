@@ -53,7 +53,8 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   bool get hasFocus => _focusNode.hasFocus;
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
-  SpinFormatter get formatter => SpinFormatter(min: widget.min, max: widget.max, decimals: widget.decimals);
+  SpinFormatter get formatter => SpinFormatter(
+      min: widget.min, max: widget.max, decimals: widget.decimals);
 
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) => value.toStringAsFixed(widget.decimals);
@@ -151,7 +152,8 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
 
   void _selectAll() {
     if (!_focusNode.hasFocus) return;
-    _controller.selection = _controller.selection.copyWith(baseOffset: 0, extentOffset: _controller.text.length);
+    _controller.selection = _controller.selection
+        .copyWith(baseOffset: 0, extentOffset: _controller.text.length);
   }
 
   @override

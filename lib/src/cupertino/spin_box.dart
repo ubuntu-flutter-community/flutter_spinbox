@@ -92,8 +92,10 @@ class CupertinoSpinBox extends BaseSpinBox {
             ),
         enabled = (enabled ?? true) && min < max,
         //decoration = decoration ?? const BoxDecoration(),
-        incrementIcon = incrementIcon ?? const Icon(CupertinoIcons.plus_circled),
-        decrementIcon = decrementIcon ?? const Icon(CupertinoIcons.minus_circled),
+        incrementIcon =
+            incrementIcon ?? const Icon(CupertinoIcons.plus_circled),
+        decrementIcon =
+            decrementIcon ?? const Icon(CupertinoIcons.minus_circled),
         super(key: key);
 
   /// The minimum value the user can enter.
