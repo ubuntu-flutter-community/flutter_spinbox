@@ -42,7 +42,6 @@ import 'spin_button.dart';
 ///   min: 1,
 ///   max: 100,
 ///   value: 50,
-///   readOnly:false, // change to true if you don`t want to use keyboard
 ///   onChanged: (value) => print(value),
 /// )
 /// ```

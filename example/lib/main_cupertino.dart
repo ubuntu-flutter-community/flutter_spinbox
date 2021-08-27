@@ -57,8 +57,7 @@ class HorizontalSpinBoxPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  child: Text('Im readOnly spinbox (change only with buttons)',
-                      style: caption),
+                  child: Text('Read-only', style: caption),
                   padding: const EdgeInsets.only(left: 16, top: 12),
                 ),
                 CupertinoSpinBox(
