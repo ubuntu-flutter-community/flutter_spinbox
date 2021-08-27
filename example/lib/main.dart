@@ -42,6 +42,14 @@ class HorizontalSpinBoxPage extends StatelessWidget {
           ),
           Padding(
             child: SpinBox(
+              value: 10,
+              readOnly: true,
+              decoration: InputDecoration(labelText: 'Im readOnly spinbox (change only with buttons)'),
+            ),
+            padding: const EdgeInsets.all(16),
+          ),
+          Padding(
+            child: SpinBox(
               max: 10.0,
               value: 5.0,
               decimals: 1,

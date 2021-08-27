@@ -42,6 +42,7 @@ import 'spin_button.dart';
 ///   min: 1,
 ///   max: 100,
 ///   value: 50,
+///   readOnly:false // change to true if you don`t want to use keyboard
 ///   onChanged: (value) => print(value),
 /// )
 /// ```
@@ -59,6 +60,7 @@ class SpinBox extends BaseSpinBox {
     this.acceleration,
     this.decimals = 0,
     bool? enabled,
+    this.readOnly = false,
     this.autofocus = false,
     TextInputType? keyboardType,
     this.textInputAction,
@@ -92,10 +94,8 @@ class SpinBox extends BaseSpinBox {
         incrementIcon = incrementIcon ?? const Icon(Icons.add),
         decrementIcon = decrementIcon ?? const Icon(Icons.remove),
         super(key: key) {
-    assert(this.decoration.prefixIcon == null,
-        'InputDecoration.prefixIcon is reserved for SpinBox decrement icon');
-    assert(this.decoration.suffixIcon == null,
-        'InputDecoration.suffixIcon is reserved for SpinBox increment icon');
+    assert(this.decoration.prefixIcon == null, 'InputDecoration.prefixIcon is reserved for SpinBox decrement icon');
+    assert(this.decoration.suffixIcon == null, 'InputDecoration.suffixIcon is reserved for SpinBox increment icon');
   }
 
   /// The minimum value the user can enter.
@@ -193,6 +193,10 @@ class SpinBox extends BaseSpinBox {
   /// See [TextField.enabled].
   final bool enabled;
 
+  /// See [TextField.readOnly].
+  @override
+  final bool readOnly;
+
   /// See [TextField.autofocus].
   final bool autofocus;
 
@@ -276,11 +280,9 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final decoration =
-        widget.decoration.applyDefaults(theme.inputDecorationTheme);
+    final decoration = widget.decoration.applyDefaults(theme.inputDecorationTheme);
 
-    final errorText =
-        decoration.errorText ?? widget.validator?.call(controller.text);
+    final errorText = decoration.errorText ?? widget.validator?.call(controller.text);
     final iconColor = _iconColor(theme, errorText);
 
     var bottom = 0.0;
@@ -292,28 +294,18 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
         bottom = _textHeight(errorText, caption!.merge(decoration.errorStyle));
       }
       if (decoration.helperText != null) {
-        bottom = max(
-            bottom,
-            _textHeight(
-                decoration.helperText, caption!.merge(decoration.helperStyle)));
+        bottom = max(bottom, _textHeight(decoration.helperText, caption!.merge(decoration.helperStyle)));
       }
       if (decoration.counterText != null) {
-        bottom = max(
-            bottom,
-            _textHeight(decoration.counterText,
-                caption!.merge(decoration.counterStyle)));
+        bottom = max(bottom, _textHeight(decoration.counterText, caption!.merge(decoration.counterStyle)));
       }
       if (bottom > 0) bottom += 8.0; // subTextGap
     }
 
     final inputDecoration = widget.decoration.copyWith(
       errorText: errorText,
-      prefixIcon: isHorizontal && widget.showButtons
-          ? Icon(null, size: widget.decrementIcon.size)
-          : null,
-      suffixIcon: isHorizontal && widget.showButtons
-          ? Icon(null, size: widget.incrementIcon.size)
-          : null,
+      prefixIcon: isHorizontal && widget.showButtons ? Icon(null, size: widget.decrementIcon.size) : null,
+      suffixIcon: isHorizontal && widget.showButtons ? Icon(null, size: widget.incrementIcon.size) : null,
     );
 
     final textField = TextField(
@@ -332,6 +324,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       cursorColor: widget.cursorColor,
       autofocus: widget.autofocus,
       enabled: widget.enabled,
+      readOnly: widget.readOnly,
       focusNode: focusNode,
       onSubmitted: fixupValue,
     );
