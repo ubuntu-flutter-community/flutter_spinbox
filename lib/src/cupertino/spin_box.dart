@@ -59,6 +59,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.acceleration,
     this.decimals = 0,
     bool? enabled,
+    this.readOnly = false,
     this.autofocus = false,
     TextInputType? keyboardType,
     this.textInputAction,
@@ -90,10 +91,8 @@ class CupertinoSpinBox extends BaseSpinBox {
             ),
         enabled = (enabled ?? true) && min < max,
         //decoration = decoration ?? const BoxDecoration(),
-        incrementIcon =
-            incrementIcon ?? const Icon(CupertinoIcons.plus_circled),
-        decrementIcon =
-            decrementIcon ?? const Icon(CupertinoIcons.minus_circled),
+        incrementIcon = incrementIcon ?? const Icon(CupertinoIcons.plus_circled),
+        decrementIcon = decrementIcon ?? const Icon(CupertinoIcons.minus_circled),
         super(key: key);
 
   /// The minimum value the user can enter.
@@ -197,6 +196,10 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// See [CupertinoTextField.enabled].
   final bool enabled;
 
+  /// See [TextField.readOnly].
+  @override
+  final bool readOnly;
+
   /// See [CupertinoTextField.autofocus].
   final bool autofocus;
 
@@ -280,6 +283,7 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
       cursorColor: widget.cursorColor,
       autofocus: widget.autofocus,
       enabled: widget.enabled,
+      readOnly: widget.readOnly,
       focusNode: focusNode,
       onSubmitted: fixupValue,
     );
