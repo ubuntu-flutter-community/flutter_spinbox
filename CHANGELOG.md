@@ -1,3 +1,7 @@
+## [0.6.0] - 2021-0827
+
+* Add readOnly property (thanks @brasizza!)
+
 ## [0.5.4] - 2021-08-13
 
 * Another value update fix
