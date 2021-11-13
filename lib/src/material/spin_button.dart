@@ -61,6 +61,7 @@ class SpinButton extends StatelessWidget {
         child: IconButton(
           icon: icon,
           color: color,
+          disabledColor: color,
           iconSize: icon.size ?? 24,
           onPressed: enabled ? () => onStep(step) : null,
         ),

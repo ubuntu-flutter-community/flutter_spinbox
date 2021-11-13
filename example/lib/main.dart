@@ -111,6 +111,18 @@ class VerticalSpinBoxPage extends StatelessWidget {
                   textStyle: TextStyle(fontSize: 48),
                   incrementIcon: Icon(Icons.keyboard_arrow_up, size: 64),
                   decrementIcon: Icon(Icons.keyboard_arrow_down, size: 64),
+                  iconColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return Colors.grey;
+                    }
+                    if (states.contains(MaterialState.error)) {
+                      return Colors.red;
+                    }
+                    if (states.contains(MaterialState.focused)) {
+                      return Colors.blue;
+                    }
+                    return Colors.black;
+                  }),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: const EdgeInsets.all(24),
