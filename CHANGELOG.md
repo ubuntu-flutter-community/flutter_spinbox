@@ -1,4 +1,10 @@
-## [0.6.0] - 2021-0827
+## [0.7.0] - 2021-11-13
+
+* Introduce SpinBoxTheme and SpinBoxThemeData
+* Add SpinBox.iconColor and SpinBoxThemeData.iconColor
+* Add SpinBoxThemeData.decoration (NOTE: SpinBox.decoration is now nullable)
+
+## [0.6.0] - 2021-08-27
 
 * Add readOnly property (thanks @brasizza!)
 
