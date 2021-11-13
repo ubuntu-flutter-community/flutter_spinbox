@@ -85,6 +85,14 @@ class HorizontalSpinBoxPage extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(16),
           ),
+          Padding(
+            child: SpinBox(
+              value: 10,
+              alwaysUseThemeColors: true,
+              decoration: InputDecoration(labelText: 'Using always theme colors'),
+            ),
+            padding: const EdgeInsets.all(16),
+          ),
         ],
       ),
     );

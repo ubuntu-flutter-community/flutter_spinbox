@@ -77,6 +77,7 @@ class SpinBox extends BaseSpinBox {
     this.showCursor,
     this.cursorColor,
     this.enableInteractiveSelection = true,
+    this.alwaysUseThemeColors = false,
     this.spacing = 8,
     this.onChanged,
     this.canChange,
@@ -178,6 +179,12 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to `true`.
   final bool showButtons;
 
+  /// When set to true the buttons will use the theme colours even when
+  /// the widget is not focused
+  ///
+  /// Defaults to `false`.
+  final bool alwaysUseThemeColors;
+
   /// Called when the user has changed the value.
   @override
   final ValueChanged<double>? onChanged;
@@ -243,20 +250,17 @@ class SpinBox extends BaseSpinBox {
 
 class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
   Color _activeColor(ThemeData theme) {
-    if (hasFocus) {
-      switch (theme.brightness) {
-        case Brightness.dark:
-          return theme.accentColor;
-        case Brightness.light:
-          return theme.primaryColor;
-      }
+    switch (theme.brightness) {
+      case Brightness.dark:
+        return theme.accentColor;
+      case Brightness.light:
+        return theme.primaryColor;
     }
-    return theme.hintColor;
   }
 
   Color? _iconColor(ThemeData theme, String? errorText) {
     if (!widget.enabled) return theme.disabledColor;
-    if (hasFocus && errorText == null) return _activeColor(theme);
+    if ((hasFocus && errorText == null) || widget.alwaysUseThemeColors) return _activeColor(theme);
 
     switch (theme.brightness) {
       case Brightness.dark:
