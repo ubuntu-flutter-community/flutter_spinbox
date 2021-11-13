@@ -33,7 +33,7 @@ import 'spin_button.dart';
 ///
 /// {@macro flutter_spinbox.SpinBox}
 ///
-/// ![SpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/master/doc/images/spinbox.gif "SpinBox")
+/// ![SpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/main/doc/images/spinbox.gif "SpinBox")
 ///
 /// ```dart
 /// import 'package:flutter_spinbox/material.dart'; // or flutter_spinbox.dart for both

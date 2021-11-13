@@ -33,7 +33,7 @@ part 'third_party/default_rounded_border.dart';
 ///
 /// {@macro flutter_spinbox.SpinBox}
 ///
-/// ![CupertinoSpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/master/doc/images/cupertino_spinbox.gif "CupertinoSpinBox")
+/// ![CupertinoSpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/main/doc/images/cupertino_spinbox.gif "CupertinoSpinBox")
 ///
 /// ```dart
 /// import 'package:flutter_spinbox/cupertino.dart'; // or flutter_spinbox.dart for both

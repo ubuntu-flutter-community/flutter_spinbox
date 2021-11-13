@@ -30,7 +30,7 @@ Material and Cupertino (iOS).
 
 ### Material Design
 
-![SpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/master/doc/images/spinbox.gif "SpinBox")
+![SpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/main/doc/images/spinbox.gif "SpinBox")
 
 ```dart
 import 'package:flutter_spinbox/material.dart'; // or flutter_spinbox.dart for both
@@ -47,7 +47,7 @@ See also [Material Components widgets](https://flutter.dev/docs/development/ui/w
 
 ### Cupertino (iOS-style) Design
 
-![CupertinoSpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/master/doc/images/cupertino_spinbox.gif "CupertinoSpinBox")
+![CupertinoSpinBox](https://raw.githubusercontent.com/jpnurmi/flutter_spinbox/main/doc/images/cupertino_spinbox.gif "CupertinoSpinBox")
 
 ```dart
 import 'package:flutter_spinbox/cupertino.dart'; // or flutter_spinbox.dart for both
