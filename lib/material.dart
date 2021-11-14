@@ -21,3 +21,4 @@
 // SOFTWARE.
 
 export 'src/material/spin_box.dart';
+export 'src/material/spin_box_theme.dart';

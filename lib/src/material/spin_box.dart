@@ -23,10 +23,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 
 import '../base_spin_box.dart';
+import 'spin_box_theme.dart';
 import 'spin_button.dart';
 
 /// A material design spinbox.
@@ -68,6 +67,7 @@ class SpinBox extends BaseSpinBox {
     this.keyboardAppearance,
     Icon? incrementIcon,
     Icon? decrementIcon,
+    this.iconColor,
     this.showButtons = true,
     this.direction = Axis.horizontal,
     this.textAlign = TextAlign.center,
@@ -173,6 +173,12 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to [Icons.remove].
   final Icon decrementIcon;
 
+  /// The color to use for [incrementIcon] and [decrementIcon].
+  ///
+  /// If `null`, then the value of [SpinBoxThemeData.iconColor] is used. If
+  /// that is also `null`, then pre-defined defaults are used.
+  final MaterialStateProperty<Color?>? iconColor;
+
   /// Whether the increment and decrement buttons are shown.
   ///
   /// Defaults to `true`.
@@ -246,7 +252,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
     if (hasFocus) {
       switch (theme.brightness) {
         case Brightness.dark:
-          return theme.accentColor;
+          return theme.colorScheme.secondary;
         case Brightness.light:
           return theme.primaryColor;
       }
@@ -286,7 +292,24 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
 
     final errorText =
         decoration.errorText ?? widget.validator?.call(controller.text);
-    final iconColor = _iconColor(theme, errorText);
+
+    final spinBoxTheme = SpinBoxTheme.of(context);
+
+    final iconColor = widget.iconColor ??
+        spinBoxTheme?.iconColor ??
+        MaterialStateProperty.all(_iconColor(theme, errorText));
+
+    final states = <MaterialState>{
+      if (!widget.enabled) MaterialState.disabled,
+      if (hasFocus) MaterialState.focused,
+      if (errorText != null) MaterialState.error,
+    };
+
+    final decrementStates = Set<MaterialState>.of(states);
+    if (value <= widget.min) decrementStates.add(MaterialState.disabled);
+
+    final incrementStates = Set<MaterialState>.of(states);
+    if (value >= widget.max) incrementStates.add(MaterialState.disabled);
 
     var bottom = 0.0;
     final isHorizontal = widget.direction == Axis.horizontal;
@@ -344,7 +367,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
 
     final incrementButton = SpinButton(
       step: widget.step,
-      color: iconColor,
+      color: iconColor.resolve(incrementStates),
       icon: widget.incrementIcon,
       enabled: widget.enabled && value < widget.max,
       interval: widget.interval,
@@ -356,7 +379,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
 
     final decrementButton = SpinButton(
       step: widget.step,
-      color: iconColor,
+      color: iconColor.resolve(decrementStates),
       icon: widget.decrementIcon,
       enabled: widget.enabled && value > widget.min,
       interval: widget.interval,
