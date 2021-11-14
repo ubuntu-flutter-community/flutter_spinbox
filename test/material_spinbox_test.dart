@@ -154,4 +154,54 @@ void main() {
       expect(tester.widget<IconButton>(decrement).color, equals(Colors.yellow));
     });
   });
+
+  group('input decoration', () {
+    testWidgets('custom', (tester) async {
+      await tester.pumpWidget(TestApp(
+          widget: SpinBox(
+        decoration: const InputDecoration(labelText: 'custom'),
+      )));
+
+      final input = find.byType(TextField);
+      expect(input, findsOneWidget);
+      final decoration = tester.widget<TextField>(input).decoration;
+      expect(decoration, isNotNull);
+      expect(decoration!.labelText, equals('custom'));
+    });
+
+    testWidgets('theme', (tester) async {
+      await tester.pumpWidget(TestApp(
+          widget: SpinBoxTheme(
+        data: const SpinBoxThemeData(
+          decoration: InputDecoration(labelText: 'theme'),
+        ),
+        child: SpinBox(),
+      )));
+
+      final input = find.byType(TextField);
+      expect(input, findsOneWidget);
+      final decoration = tester.widget<TextField>(input).decoration;
+      expect(decoration, isNotNull);
+      expect(decoration!.labelText, equals('theme'));
+    });
+
+    testWidgets('override', (tester) async {
+      await tester.pumpWidget(TestApp(
+        widget: SpinBoxTheme(
+          data: const SpinBoxThemeData(
+            decoration: InputDecoration(labelText: 'theme'),
+          ),
+          child: SpinBox(
+            decoration: const InputDecoration(labelText: 'custom'),
+          ),
+        ),
+      ));
+
+      final input = find.byType(TextField);
+      expect(input, findsOneWidget);
+      final decoration = tester.widget<TextField>(input).decoration;
+      expect(decoration, isNotNull);
+      expect(decoration!.labelText, equals('custom'));
+    });
+  });
 }

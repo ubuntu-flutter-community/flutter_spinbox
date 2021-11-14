@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 @immutable
 class SpinBoxThemeData with Diagnosticable {
   /// Creates a theme that can be used for [SpinBoxTheme.data].
-  const SpinBoxThemeData({this.iconColor});
+  const SpinBoxThemeData({this.iconColor, this.decoration});
 
   /// The color to use for [SpinBox.incrementIcon] and [SpinBox.decrementIcon].
   ///
@@ -25,20 +25,33 @@ class SpinBoxThemeData with Diagnosticable {
   /// If specified, overrides the default value of [SpinBox.iconColor].
   final MaterialStateProperty<Color?>? iconColor;
 
+  /// See [TextField.decoration].
+  ///
+  /// If specified, overrides the default value of [SpinBox.decoration].
+  final InputDecoration? decoration;
+
   /// Creates a copy of this object but with the given fields replaced with the
   /// new values.
-  SpinBoxThemeData copyWith({MaterialStateProperty<Color?>? iconColor}) {
-    return SpinBoxThemeData(iconColor: iconColor ?? this.iconColor);
+  SpinBoxThemeData copyWith({
+    MaterialStateProperty<Color?>? iconColor,
+    InputDecoration? decoration,
+  }) {
+    return SpinBoxThemeData(
+      iconColor: iconColor ?? this.iconColor,
+      decoration: decoration ?? this.decoration,
+    );
   }
 
   @override
-  int get hashCode => iconColor.hashCode;
+  int get hashCode => Object.hash(iconColor, decoration);
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
-    return other is SpinBoxThemeData && other.iconColor == iconColor;
+    return other is SpinBoxThemeData &&
+        other.iconColor == iconColor &&
+        other.decoration == decoration;
   }
 
   @override
@@ -48,6 +61,13 @@ class SpinBoxThemeData with Diagnosticable {
       DiagnosticsProperty<MaterialStateProperty<Color?>>(
         'iconColor',
         iconColor,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty<InputDecoration?>(
+        'decoration',
+        decoration,
         defaultValue: null,
       ),
     );
