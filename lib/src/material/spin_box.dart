@@ -62,7 +62,7 @@ class SpinBox extends BaseSpinBox {
     this.autofocus = false,
     TextInputType? keyboardType,
     this.textInputAction,
-    InputDecoration? decoration,
+    this.decoration,
     this.validator,
     this.keyboardAppearance,
     Icon? incrementIcon,
@@ -83,21 +83,19 @@ class SpinBox extends BaseSpinBox {
     this.beforeChange,
     this.afterChange,
   })  : assert(min <= max),
+        assert(decoration?.prefixIcon == null,
+            'InputDecoration.prefixIcon is reserved for SpinBox decrement icon'),
+        assert(decoration?.suffixIcon == null,
+            'InputDecoration.suffixIcon is reserved for SpinBox increment icon'),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
               signed: min < 0,
               decimal: decimals > 0,
             ),
         enabled = (enabled ?? true) && min < max,
-        decoration = decoration ?? const InputDecoration(),
         incrementIcon = incrementIcon ?? const Icon(Icons.add),
         decrementIcon = decrementIcon ?? const Icon(Icons.remove),
-        super(key: key) {
-    assert(this.decoration.prefixIcon == null,
-        'InputDecoration.prefixIcon is reserved for SpinBox decrement icon');
-    assert(this.decoration.suffixIcon == null,
-        'InputDecoration.suffixIcon is reserved for SpinBox increment icon');
-  }
+        super(key: key);
 
   /// The minimum value the user can enter.
   ///
@@ -214,7 +212,7 @@ class SpinBox extends BaseSpinBox {
   final TextInputAction? textInputAction;
 
   /// See [TextField.decoration].
-  final InputDecoration decoration;
+  final InputDecoration? decoration;
 
   /// See [FormField.validator].
   final FormFieldValidator<String>? validator;
@@ -287,13 +285,15 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final decoration =
-        widget.decoration.applyDefaults(theme.inputDecorationTheme);
+    final spinBoxTheme = SpinBoxTheme.of(context);
+
+    final decoration = (widget.decoration ??
+            spinBoxTheme?.decoration ??
+            const InputDecoration())
+        .applyDefaults(theme.inputDecorationTheme);
 
     final errorText =
         decoration.errorText ?? widget.validator?.call(controller.text);
-
-    final spinBoxTheme = SpinBoxTheme.of(context);
 
     final iconColor = widget.iconColor ??
         spinBoxTheme?.iconColor ??
@@ -334,7 +334,7 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       if (bottom > 0) bottom += 8.0; // subTextGap
     }
 
-    final inputDecoration = widget.decoration.copyWith(
+    final inputDecoration = decoration.copyWith(
       errorText: errorText,
       prefixIcon: isHorizontal && widget.showButtons
           ? Icon(null, size: widget.decrementIcon.size)
