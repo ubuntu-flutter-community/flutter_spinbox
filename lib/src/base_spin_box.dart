@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import 'spin_formatter.dart';
@@ -112,7 +112,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   }
 
   bool setValue(double v) {
-    final newValue = v.clamp(widget.min, widget.max).toDouble();
+    final newValue = v.clamp(widget.min, widget.max);
     if (newValue == value) return false;
 
     if (widget.canChange?.call(newValue) == false) return false;
