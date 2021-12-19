@@ -25,15 +25,33 @@ void main() {
     return TestApp(widget: SpinBox(value: 1, autofocus: true));
   });
 
+  testInput<SpinBox>(() {
+    return TestApp(widget: SpinBox(value: 1, autofocus: true,
+      focusNode: FocusNode()));
+  });
+
   testRange<SpinBox>(() {
     return TestApp(
         widget: SpinBox(min: 10, max: 30, value: 20, autofocus: true));
+  });
+
+  testRange<SpinBox>(() {
+    return TestApp(
+        widget: SpinBox(min: 10, max: 30, value: 20, autofocus: true,
+        focusNode: FocusNode()));
   });
 
   testDecimals<SpinBox>(() {
     return TestApp(
         widget:
             SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true));
+  });
+
+  testDecimals<SpinBox>(() {
+    return TestApp(
+        widget:
+        SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true,
+        focusNode: FocusNode()));
   });
 
   testCallbacks<SpinBox>((onChanged) {
@@ -91,6 +109,30 @@ void main() {
           widget: SpinBox(
             autofocus: true,
             iconColor: iconColor,
+            value: 50,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final increment = find.widgetWithIcon(IconButton, TestIcons.increment);
+      expect(increment, findsOneWidget);
+      expect(tester.widget<IconButton>(increment).onPressed, isNotNull);
+      expect(tester.widget<IconButton>(increment).color, equals(Colors.blue));
+
+      final decrement = find.widgetWithIcon(IconButton, TestIcons.decrement);
+      expect(decrement, findsOneWidget);
+      expect(tester.widget<IconButton>(decrement).onPressed, isNotNull);
+      expect(tester.widget<IconButton>(decrement).color, equals(Colors.blue));
+    });
+
+    testWidgets('focused custom focus', (tester) async {
+      await tester.pumpWidget(
+        TestApp(
+          widget: SpinBox(
+            autofocus: true,
+            iconColor: iconColor,
+            focusNode: FocusNode(),
             value: 50,
           ),
         ),
