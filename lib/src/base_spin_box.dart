@@ -68,8 +68,8 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
     if (widget.focusNode != null) {
-      _focusNode = widget.focusNode!..onKey =
-          (node, event) => _handleKey(event);
+      _focusNode = widget.focusNode!;
+      _focusNode.onKey = (node, event) => _handleKey(event);
     } else {
       _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
     }
