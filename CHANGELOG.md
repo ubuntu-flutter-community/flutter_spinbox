@@ -1,3 +1,7 @@
+## [0.8.0] - 2021-12-20
+
+* Exposed focusNode (thanks @leonardo2204!)
+
 ## [0.7.0] - 2021-11-13
 
 * Introduce SpinBoxTheme and SpinBoxThemeData
