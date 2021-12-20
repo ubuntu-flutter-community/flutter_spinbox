@@ -82,6 +82,7 @@ class SpinBox extends BaseSpinBox {
     this.canChange,
     this.beforeChange,
     this.afterChange,
+    this.focusNode,
   })  : assert(min <= max),
         assert(decoration?.prefixIcon == null,
             'InputDecoration.prefixIcon is reserved for SpinBox decrement icon'),
@@ -181,6 +182,10 @@ class SpinBox extends BaseSpinBox {
   ///
   /// Defaults to `true`.
   final bool showButtons;
+
+  ///See [TextField.focusNode].
+  @override
+  final FocusNode? focusNode;
 
   /// Called when the user has changed the value.
   @override

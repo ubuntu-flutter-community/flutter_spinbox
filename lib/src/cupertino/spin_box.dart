@@ -83,6 +83,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.canChange,
     this.beforeChange,
     this.afterChange,
+    this.focusNode,
   })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
@@ -181,6 +182,10 @@ class CupertinoSpinBox extends BaseSpinBox {
 
   /// See [CupertinoTextField.suffix].
   final Widget? suffix;
+
+  ///See [TextField.focusNode].
+  @override
+  FocusNode? focusNode;
 
   /// Called when the user has changed the value.
   @override

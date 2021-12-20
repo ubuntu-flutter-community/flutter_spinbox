@@ -41,6 +41,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   VoidCallback? get beforeChange;
   VoidCallback? get afterChange;
   bool get readOnly;
+  FocusNode? get focusNode;
 }
 
 abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
@@ -66,7 +67,12 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     _cachedValue = widget.value;
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
-    _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
+    if (widget.focusNode != null) {
+      _focusNode = widget.focusNode!;
+      _focusNode.onKey = (node, event) => _handleKey(event);
+    } else {
+      _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
+    }
     _focusNode.addListener(() => setState(_selectAll));
     _focusNode.addListener(() {
       if (hasFocus) return;
