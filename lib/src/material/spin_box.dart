@@ -57,6 +57,7 @@ class SpinBox extends BaseSpinBox {
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
     this.decimals = 0,
+    this.digits = 0,
     bool? enabled,
     this.readOnly = false,
     this.autofocus = false,
@@ -131,6 +132,12 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to `0`.
   @override
   final int decimals;
+
+  /// The number of digits used for formatting the value.
+  ///
+  /// Defaults to `0`.
+  @override
+  final int digits;
 
   /// The interval used for auto-incrementing and -decrementing.
   ///

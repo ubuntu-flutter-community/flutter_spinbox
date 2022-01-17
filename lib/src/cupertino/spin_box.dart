@@ -55,6 +55,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.value = 0,
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
+    this.digits = 0,
     this.decimals = 0,
     bool? enabled,
     this.readOnly = false,
@@ -129,6 +130,12 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// Defaults to `0`.
   @override
   final int decimals;
+
+  /// The number of digits used for formatting the value.
+  ///
+  /// Defaults to `0`.
+  @override
+  final int digits;
 
   /// The interval used for auto-incrementing and -decrementing.
   ///

@@ -50,6 +50,14 @@ class HorizontalSpinBoxPage extends StatelessWidget {
           ),
           Padding(
             child: SpinBox(
+              value: 5,
+              digits: 2,
+              decoration: InputDecoration(labelText: '2 digits'),
+            ),
+            padding: const EdgeInsets.all(16),
+          ),
+          Padding(
+            child: SpinBox(
               max: 10.0,
               value: 5.0,
               decimals: 1,

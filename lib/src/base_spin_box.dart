@@ -35,6 +35,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   double get step;
   double get value;
   int get decimals;
+  int get digits;
   ValueChanged<double>? get onChanged;
   bool Function(double value)? get canChange;
   VoidCallback? get beforeChange;
@@ -57,7 +58,9 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
       min: widget.min, max: widget.max, decimals: widget.decimals);
 
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
-  String _formatText(double value) => value.toStringAsFixed(widget.decimals);
+  String _formatText(double value) {
+    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
+  }
 
   Map<ShortcutActivator, VoidCallback> get bindings {
     return {
@@ -100,7 +103,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     if (v == _value) return;
 
     if (widget.canChange?.call(v) == false) {
-      controller.text = _cachedValue.toStringAsFixed(widget.decimals);
+      controller.text = _formatText(_cachedValue);
       setState(() {
         _value = _cachedValue;
       });
