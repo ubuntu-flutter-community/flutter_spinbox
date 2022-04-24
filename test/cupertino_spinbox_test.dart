@@ -25,32 +25,51 @@ void main() {
   });
 
   testInput<CupertinoSpinBox>(() {
-    return TestApp(widget: CupertinoSpinBox(value: 1, autofocus: true,
-      focusNode: FocusNode()));
+    return TestApp(
+      widget: CupertinoSpinBox(
+        value: 1,
+        autofocus: true,
+        focusNode: FocusNode(),
+      ),
+    );
   });
 
   testRange<CupertinoSpinBox>(() {
     return TestApp(
-        widget: CupertinoSpinBox(min: 10, max: 30, value: 20, autofocus: true));
+      widget: CupertinoSpinBox(min: 10, max: 30, value: 20, autofocus: true),
+    );
   });
 
   testRange<CupertinoSpinBox>(() {
     return TestApp(
-        widget: CupertinoSpinBox(min: 10, max: 30, value: 20, autofocus: true,
-        focusNode: FocusNode()));
+      widget: CupertinoSpinBox(
+        min: 10,
+        max: 30,
+        value: 20,
+        autofocus: true,
+        focusNode: FocusNode(),
+      ),
+    );
   });
 
   testDecimals<CupertinoSpinBox>(() {
     return TestApp(
-        widget: CupertinoSpinBox(
-            min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true));
+      widget: CupertinoSpinBox(
+          min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true),
+    );
   });
 
   testDecimals<CupertinoSpinBox>(() {
     return TestApp(
-        widget: CupertinoSpinBox(
-            min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true,
-        focusNode: FocusNode()));
+      widget: CupertinoSpinBox(
+        min: -1,
+        max: 1,
+        value: 0.5,
+        decimals: 2,
+        autofocus: true,
+        focusNode: FocusNode(),
+      ),
+    );
   });
 
   testCallbacks<CupertinoSpinBox>((onChanged) {
@@ -59,6 +78,7 @@ void main() {
 
   testLongPress<CupertinoSpinBox>((onChanged) {
     return TestApp(
-        widget: CupertinoSpinBox(min: -5, max: 5, onChanged: onChanged));
+      widget: CupertinoSpinBox(min: -5, max: 5, onChanged: onChanged),
+    );
   });
 }
