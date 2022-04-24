@@ -341,10 +341,10 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
 
     final inputDecoration = decoration.copyWith(
       errorText: errorText,
-      prefixIcon: isHorizontal && widget.showButtons
+      prefix: isHorizontal && widget.showButtons
           ? Icon(null, size: widget.decrementIcon.size)
           : null,
-      suffixIcon: isHorizontal && widget.showButtons
+      suffix: isHorizontal && widget.showButtons
           ? Icon(null, size: widget.incrementIcon.size)
           : null,
     );
