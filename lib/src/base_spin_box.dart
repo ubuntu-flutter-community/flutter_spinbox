@@ -62,8 +62,10 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
 
   Map<ShortcutActivator, VoidCallback> get bindings {
     return {
-      const SingleActivator(LogicalKeyboardKey.arrowUp): _increaseValue,
-      const SingleActivator(LogicalKeyboardKey.arrowDown): _decreaseValue,
+      // ### TODO: use SingleActivator fixed in Flutter 2.10+
+      // https://github.com/flutter/flutter/issues/92717
+      LogicalKeySet(LogicalKeyboardKey.arrowUp): _increaseValue,
+      LogicalKeySet(LogicalKeyboardKey.arrowDown): _decreaseValue,
     };
   }
 
