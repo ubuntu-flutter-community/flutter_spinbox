@@ -22,6 +22,7 @@
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 import 'spin_formatter.dart';
 
@@ -36,6 +37,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   double get value;
   int get decimals;
   int get digits;
+  NumberFormat get numberFormat;
   ValueChanged<double>? get onChanged;
   bool Function(double value)? get canChange;
   VoidCallback? get beforeChange;
@@ -55,11 +57,18 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
   SpinFormatter get formatter => SpinFormatter(
-      min: widget.min, max: widget.max, decimals: widget.decimals);
+      min: widget.min, max: widget.max, format: widget.numberFormat);
 
-  static double _parseValue(String text) => double.tryParse(text) ?? 0;
+  double _parseValue(String text) {
+    try {
+      return widget.numberFormat.parse(text).toDouble();
+    } on FormatException catch (_) {
+      return 0;
+    }
+  }
+
   String _formatText(double value) {
-    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
+    return widget.numberFormat.format(value);
   }
 
   Map<ShortcutActivator, VoidCallback> get bindings {

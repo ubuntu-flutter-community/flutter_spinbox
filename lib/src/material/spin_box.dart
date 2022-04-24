@@ -23,6 +23,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 import '../base_spin_box.dart';
 import 'spin_box_theme.dart';
@@ -58,6 +59,7 @@ class SpinBox extends BaseSpinBox {
     this.acceleration,
     this.decimals = 0,
     this.digits = 0,
+    NumberFormat? format,
     bool? enabled,
     this.readOnly = false,
     this.autofocus = false,
@@ -134,6 +136,12 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to `0`.
   @override
   final int digits;
+
+  /// The number format used for formatting and parsing the value.
+  ///
+  /// Defaults to `NumberFormat.decimalPattern()`.
+  @override
+  final NumberFormat numberFormat;
 
   /// The interval used for auto-incrementing and -decrementing.
   ///

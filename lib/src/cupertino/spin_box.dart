@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 import '../base_spin_box.dart';
 import 'spin_button.dart';
@@ -125,7 +126,7 @@ class CupertinoSpinBox extends BaseSpinBox {
   @override
   final double value;
 
-  /// The number of decimal places used for formatting the value.
+  /// The number of decimals used for formatting the value.
   ///
   /// Defaults to `0`.
   @override
@@ -136,6 +137,12 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// Defaults to `0`.
   @override
   final int digits;
+
+  /// The number format used for formatting and parsing the value.
+  ///
+  /// Defaults to `NumberFormat.decimalPattern()`.
+  @override
+  final NumberFormat numberFormat;
 
   /// The interval used for auto-incrementing and -decrementing.
   ///

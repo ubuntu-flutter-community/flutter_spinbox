@@ -21,15 +21,16 @@
 // SOFTWARE.
 
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 // ignore_for_file: public_member_api_docs
 
 class SpinFormatter extends TextInputFormatter {
-  SpinFormatter({required this.min, required this.max, required this.decimals});
+  SpinFormatter({required this.min, required this.max, required this.format});
 
   final double min;
   final double max;
-  final int decimals;
+  final NumberFormat format;
 
   @override
   TextEditingValue formatEditUpdate(
@@ -53,35 +54,33 @@ class SpinFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    if (decimals <= 0 && !_validateValue(int.tryParse(input))) {
+    final decimals = format.decimalDigits ?? 0;
+    if (decimals <= 0 && !_validateValue(input)) {
       return oldValue;
     }
 
-    if (decimals > 0 && !_validateValue(double.tryParse(input))) {
-      return oldValue;
-    }
-
-    final dot = input.lastIndexOf('.');
-    if (dot >= 0 && decimals < input.substring(dot + 1).length) {
+    final sep = input.lastIndexOf(format.symbols.DECIMAL_SEP);
+    if (sep >= 0 && decimals < input.substring(sep + 1).length) {
       return oldValue;
     }
 
     return newValue;
   }
 
-  bool _validateValue(num? value) {
-    if (value == null) {
+  bool _validateValue(String input) {
+    try {
+      final value = format.parse(input);
+      if (value >= min && value <= max) {
+        return true;
+      }
+
+      if (value >= 0) {
+        return value <= max;
+      } else {
+        return value >= min;
+      }
+    } on FormatException catch (_) {
       return false;
-    }
-
-    if (value >= min && value <= max) {
-      return true;
-    }
-
-    if (value >= 0) {
-      return value <= max;
-    } else {
-      return value >= min;
     }
   }
 }
