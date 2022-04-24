@@ -2,4 +2,6 @@ include: package:lint/analysis_options_package.yaml
 
 linter:
   rules:
+    always_use_package_imports: false
     require_trailing_commas: false
+    prefer_relative_imports: true

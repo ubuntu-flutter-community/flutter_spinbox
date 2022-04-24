@@ -57,5 +57,7 @@ class HasValueMatcher extends CustomMatcher {
   HasValueMatcher(double value)
       : super('SpinBox has value', 'value', equals(value));
   @override
+  // ### TODO: make BaseSpinBoxState a mixin?
+  // ignore: avoid_dynamic_calls
   Object? featureValueOf(dynamic state) => state.value;
 }

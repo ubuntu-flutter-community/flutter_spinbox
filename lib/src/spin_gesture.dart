@@ -47,7 +47,7 @@ class SpinGesture extends StatefulWidget {
   final SpinCallback onStep;
 
   @override
-  _SpinGestureState createState() => _SpinGestureState();
+  State<SpinGesture> createState() => _SpinGestureState();
 }
 
 class _SpinGestureState extends State<SpinGesture> {

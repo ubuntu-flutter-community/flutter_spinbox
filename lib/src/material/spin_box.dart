@@ -183,7 +183,7 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to `true`.
   final bool showButtons;
 
-  ///See [TextField.focusNode].
+  /// See [TextField.focusNode].
   @override
   final FocusNode? focusNode;
 
@@ -247,7 +247,7 @@ class SpinBox extends BaseSpinBox {
   final ToolbarOptions? toolbarOptions;
 
   @override
-  _SpinBoxState createState() => _SpinBoxState();
+  State<SpinBox> createState() => _SpinBoxState();
 }
 
 class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
