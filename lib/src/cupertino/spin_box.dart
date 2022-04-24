@@ -21,8 +21,6 @@
 // SOFTWARE.
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 
 import '../base_spin_box.dart';
 import 'spin_button.dart';
@@ -183,9 +181,9 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// See [CupertinoTextField.suffix].
   final Widget? suffix;
 
-  ///See [TextField.focusNode].
+  /// See [TextField.focusNode].
   @override
-  FocusNode? focusNode;
+  final FocusNode? focusNode;
 
   /// Called when the user has changed the value.
   @override
@@ -244,7 +242,7 @@ class CupertinoSpinBox extends BaseSpinBox {
   final ToolbarOptions? toolbarOptions;
 
   @override
-  _CupertinoSpinBoxState createState() => _CupertinoSpinBoxState();
+  State<CupertinoSpinBox> createState() => _CupertinoSpinBoxState();
 }
 
 class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
