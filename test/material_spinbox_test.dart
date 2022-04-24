@@ -26,32 +26,47 @@ void main() {
   });
 
   testInput<SpinBox>(() {
-    return TestApp(widget: SpinBox(value: 1, autofocus: true,
-      focusNode: FocusNode()));
+    return TestApp(
+      widget: SpinBox(value: 1, autofocus: true, focusNode: FocusNode()),
+    );
   });
 
   testRange<SpinBox>(() {
     return TestApp(
-        widget: SpinBox(min: 10, max: 30, value: 20, autofocus: true));
+      widget: SpinBox(min: 10, max: 30, value: 20, autofocus: true),
+    );
   });
 
   testRange<SpinBox>(() {
     return TestApp(
-        widget: SpinBox(min: 10, max: 30, value: 20, autofocus: true,
-        focusNode: FocusNode()));
+      widget: SpinBox(
+        min: 10,
+        max: 30,
+        value: 20,
+        autofocus: true,
+        focusNode: FocusNode(),
+      ),
+    );
   });
 
   testDecimals<SpinBox>(() {
     return TestApp(
-        widget:
-            SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true));
+      widget:
+          SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true),
+    );
   });
 
   testDecimals<SpinBox>(() {
     return TestApp(
-        widget:
-        SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true,
-        focusNode: FocusNode()));
+      widget: SpinBox(
+        min: -1,
+        max: 1,
+        value: 0.5,
+        decimals: 2,
+        autofocus: true,
+        focusNode: FocusNode(),
+      ),
+    );
   });
 
   testCallbacks<SpinBox>((onChanged) {
