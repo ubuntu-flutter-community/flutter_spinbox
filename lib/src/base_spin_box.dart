@@ -79,15 +79,12 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
     _focusNode = widget.focusNode ?? FocusNode();
-    _focusNode.addListener(() => setState(_selectAll));
-    _focusNode.addListener(() {
-      if (hasFocus) return;
-      fixupValue(controller.text);
-    });
+    _focusNode.addListener(_handleFocusChanged);
   }
 
   @override
   void dispose() {
+    _focusNode.removeListener(_handleFocusChanged);
     if (widget.focusNode == null) {
       _focusNode.dispose();
     }
@@ -153,8 +150,15 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     }
   }
 
+  void _handleFocusChanged() {
+    if (hasFocus) {
+      setState(_selectAll);
+    } else {
+      fixupValue(_controller.text);
+    }
+  }
+
   void _selectAll() {
-    if (!_focusNode.hasFocus) return;
     _controller.selection = _controller.selection
         .copyWith(baseOffset: 0, extentOffset: _controller.text.length);
   }
