@@ -164,6 +164,42 @@ void testInput<S>(TestBuilder builder) {
       expect(find.editableText, hasText('0'));
     });
 
+    testWidgets('page step', (tester) async {
+      await tester.pumpWidget(builder());
+      expect(find.editableText, hasFocus);
+      await tester.showKeyboard(find.byType(S));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.pageDown);
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(0));
+      expect(find.editableText, hasText('0'));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.pageUp);
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(10));
+      expect(find.editableText, hasText('10'));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.pageUp);
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(20));
+      expect(find.editableText, hasText('20'));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(19));
+      expect(find.editableText, hasText('19'));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.pageDown);
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(9));
+      expect(find.editableText, hasText('9'));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.pageDown);
+      await tester.idle();
+      expect(tester.state(find.byType(S)), hasValue(0));
+      expect(find.editableText, hasText('0'));
+    });
+
     testWidgets('text', (tester) async {
       await tester.pumpWidget(builder());
       expect(find.editableText, hasFocus);
