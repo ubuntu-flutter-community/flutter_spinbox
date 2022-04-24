@@ -252,47 +252,50 @@ class _CupertinoSpinBoxState extends BaseSpinBoxState<CupertinoSpinBox> {
   Widget build(BuildContext context) {
     final isHorizontal = widget.direction == Axis.horizontal;
 
-    final textField = CupertinoTextField(
-      controller: controller,
-      style: widget.textStyle,
-      textAlign: widget.textAlign,
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      toolbarOptions: widget.toolbarOptions,
-      keyboardAppearance: widget.keyboardAppearance,
-      inputFormatters: [formatter],
-      prefix: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isHorizontal && widget.showButtons)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
-              child: Icon(null, size: widget.decrementIcon.size),
-            ),
-          if (widget.prefix != null) widget.prefix!,
-        ],
+    final textField = CallbackShortcuts(
+      bindings: bindings,
+      child: CupertinoTextField(
+        controller: controller,
+        style: widget.textStyle,
+        textAlign: widget.textAlign,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        toolbarOptions: widget.toolbarOptions,
+        keyboardAppearance: widget.keyboardAppearance,
+        inputFormatters: [formatter],
+        prefix: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isHorizontal && widget.showButtons)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
+                child: Icon(null, size: widget.decrementIcon.size),
+              ),
+            if (widget.prefix != null) widget.prefix!,
+          ],
+        ),
+        suffix: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.suffix != null) widget.suffix!,
+            if (isHorizontal && widget.showButtons)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
+                child: Icon(null, size: widget.incrementIcon.size),
+              ),
+          ],
+        ),
+        padding: widget.padding,
+        decoration: widget.decoration,
+        enableInteractiveSelection: widget.enableInteractiveSelection,
+        showCursor: widget.showCursor,
+        cursorColor: widget.cursorColor,
+        autofocus: widget.autofocus,
+        enabled: widget.enabled,
+        readOnly: widget.readOnly,
+        focusNode: focusNode,
+        onSubmitted: fixupValue,
       ),
-      suffix: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.suffix != null) widget.suffix!,
-          if (isHorizontal && widget.showButtons)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
-              child: Icon(null, size: widget.incrementIcon.size),
-            ),
-        ],
-      ),
-      padding: widget.padding,
-      decoration: widget.decoration,
-      enableInteractiveSelection: widget.enableInteractiveSelection,
-      showCursor: widget.showCursor,
-      cursorColor: widget.cursorColor,
-      autofocus: widget.autofocus,
-      enabled: widget.enabled,
-      readOnly: widget.readOnly,
-      focusNode: focusNode,
-      onSubmitted: fixupValue,
     );
 
     if (!widget.showButtons) return textField;

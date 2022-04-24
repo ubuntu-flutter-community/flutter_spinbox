@@ -60,6 +60,13 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) => value.toStringAsFixed(widget.decimals);
 
+  Map<ShortcutActivator, VoidCallback> get bindings {
+    return {
+      const SingleActivator(LogicalKeyboardKey.arrowUp): _increaseValue,
+      const SingleActivator(LogicalKeyboardKey.arrowDown): _decreaseValue,
+    };
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,12 +74,7 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
     _cachedValue = widget.value;
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
-    if (widget.focusNode != null) {
-      _focusNode = widget.focusNode!;
-      _focusNode.onKey = (node, event) => _handleKey(event);
-    } else {
-      _focusNode = FocusNode(onKey: (node, event) => _handleKey(event));
-    }
+    _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(() => setState(_selectAll));
     _focusNode.addListener(() {
       if (hasFocus) return;
@@ -82,24 +84,15 @@ abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     _controller.dispose();
     super.dispose();
   }
 
-  KeyEventResult _handleKey(RawKeyEvent event) {
-    KeyEventResult result = KeyEventResult.ignored;
-    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      if (event is RawKeyUpEvent || setValue(value + widget.step)) {
-        result = KeyEventResult.handled;
-      }
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      if (event is RawKeyUpEvent || setValue(value - widget.step)) {
-        result = KeyEventResult.handled;
-      }
-    }
-    return result;
-  }
+  void _increaseValue() => setValue(value + widget.step);
+  void _decreaseValue() => setValue(value - widget.step);
 
   void _updateValue() {
     final v = _parseValue(_controller.text);
