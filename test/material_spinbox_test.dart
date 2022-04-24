@@ -260,5 +260,49 @@ void main() {
       expect(decoration, isNotNull);
       expect(decoration!.labelText, equals('custom'));
     });
+
+    testWidgets('prefix', (tester) async {
+      await tester.pumpWidget(
+        TestApp(
+          widget: SpinBox(
+            spacing: 25,
+            decoration: const InputDecoration(prefix: Text('prefix')),
+          ),
+        ),
+      );
+
+      final decrement = find.byIcon(TestIcons.decrement);
+      expect(decrement, findsOneWidget);
+
+      final prefix = find.text('prefix');
+      expect(prefix, findsOneWidget);
+
+      expect(
+        tester.getRect(prefix).left,
+        greaterThanOrEqualTo(tester.getRect(decrement).right + 25),
+      );
+    });
+
+    testWidgets('suffix', (tester) async {
+      await tester.pumpWidget(
+        TestApp(
+          widget: SpinBox(
+            spacing: 25,
+            decoration: const InputDecoration(suffix: Text('suffix')),
+          ),
+        ),
+      );
+
+      final increment = find.byIcon(TestIcons.increment);
+      expect(increment, findsOneWidget);
+
+      final suffix = find.text('suffix');
+      expect(suffix, findsOneWidget);
+
+      expect(
+        tester.getRect(suffix).right,
+        lessThanOrEqualTo(tester.getRect(increment).left - 25),
+      );
+    });
   });
 }

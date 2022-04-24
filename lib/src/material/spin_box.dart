@@ -84,10 +84,6 @@ class SpinBox extends BaseSpinBox {
     this.afterChange,
     this.focusNode,
   })  : assert(min <= max),
-        assert(decoration?.prefixIcon == null,
-            'InputDecoration.prefixIcon is reserved for SpinBox decrement icon'),
-        assert(decoration?.suffixIcon == null,
-            'InputDecoration.suffixIcon is reserved for SpinBox increment icon'),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
               signed: min < 0,
@@ -346,15 +342,30 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
         decoration.disabledBorder != null ||
         decoration.focusedErrorBorder != null;
 
+    Widget buildIcon(
+      Icon icon, {
+      Widget? prefix,
+      Widget? suffix,
+    }) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (suffix != null) suffix,
+          if (isHorizontal && widget.showButtons)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: widget.spacing),
+              child: Icon(null, size: icon.size),
+            ),
+          if (prefix != null) prefix,
+        ],
+      );
+    }
+
     final inputDecoration = decoration.copyWith(
       border: !hasAnyBorder ? const OutlineInputBorder() : decoration.border,
       errorText: errorText,
-      prefix: isHorizontal && widget.showButtons
-          ? Icon(null, size: widget.decrementIcon.size)
-          : null,
-      suffix: isHorizontal && widget.showButtons
-          ? Icon(null, size: widget.incrementIcon.size)
-          : null,
+      prefix: buildIcon(widget.decrementIcon, prefix: decoration.prefix),
+      suffix: buildIcon(widget.incrementIcon, suffix: decoration.suffix),
     );
 
     final textField = CallbackShortcuts(
@@ -411,14 +422,20 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
             bottom: bottom,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: decrementButton,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: widget.spacing),
+                child: decrementButton,
+              ),
             ),
           ),
           Positioned.fill(
             bottom: bottom,
             child: Align(
               alignment: Alignment.centerRight,
-              child: incrementButton,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: widget.spacing),
+                child: incrementButton,
+              ),
             ),
           )
         ],
