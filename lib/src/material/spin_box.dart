@@ -339,7 +339,15 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
       if (bottom > 0) bottom += 8.0; // subTextGap
     }
 
+    final hasAnyBorder = decoration.border != null ||
+        decoration.errorBorder != null ||
+        decoration.enabledBorder != null ||
+        decoration.focusedBorder != null ||
+        decoration.disabledBorder != null ||
+        decoration.focusedErrorBorder != null;
+
     final inputDecoration = decoration.copyWith(
+      border: !hasAnyBorder ? const OutlineInputBorder() : decoration.border,
       errorText: errorText,
       prefix: isHorizontal && widget.showButtons
           ? Icon(null, size: widget.decrementIcon.size)
