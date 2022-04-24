@@ -44,7 +44,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   FocusNode? get focusNode;
 }
 
-abstract class BaseSpinBoxState<T extends BaseSpinBox> extends State<T> {
+mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late double _value;
   late double _cachedValue;
   late final FocusNode _focusNode;

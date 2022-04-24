@@ -253,7 +253,7 @@ class SpinBox extends BaseSpinBox {
   State<SpinBox> createState() => _SpinBoxState();
 }
 
-class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
+class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
   Color _activeColor(ThemeData theme) {
     if (hasFocus) {
       switch (theme.brightness) {
