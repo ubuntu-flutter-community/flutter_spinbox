@@ -25,6 +25,18 @@ import 'package:intl/intl.dart';
 
 // ignore_for_file: public_member_api_docs
 
+NumberFormat buildNumberFormat(int? decimals, int? digits) {
+  final numberFormat = decimals != null && decimals > 0
+      ? NumberFormat.decimalPattern()
+      : NumberFormat();
+  numberFormat.minimumFractionDigits = decimals ?? 0;
+  numberFormat.maximumFractionDigits = decimals ?? 0;
+  if (digits != null) {
+    numberFormat.minimumIntegerDigits = digits;
+  }
+  return numberFormat;
+}
+
 class SpinFormatter extends TextInputFormatter {
   SpinFormatter({required this.min, required this.max, required this.format});
 
@@ -40,27 +52,7 @@ class SpinFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    final minus = input.startsWith('-');
-    if (minus && min >= 0) {
-      return oldValue;
-    }
-
-    final plus = input.startsWith('+');
-    if (plus && max < 0) {
-      return oldValue;
-    }
-
-    if ((minus || plus) && input.length == 1) {
-      return newValue;
-    }
-
-    final decimals = format.decimalDigits ?? 0;
-    if (decimals <= 0 && !_validateValue(input)) {
-      return oldValue;
-    }
-
-    final sep = input.lastIndexOf(format.symbols.DECIMAL_SEP);
-    if (sep >= 0 && decimals < input.substring(sep + 1).length) {
+    if (!_validateValue(input)) {
       return oldValue;
     }
 
@@ -79,7 +71,8 @@ class SpinFormatter extends TextInputFormatter {
       } else {
         return value >= min;
       }
-    } on FormatException catch (_) {
+    } on FormatException catch (e) {
+      print(e);
       return false;
     }
   }

@@ -35,8 +35,8 @@ abstract class BaseSpinBox extends StatefulWidget {
   double get max;
   double get step;
   double get value;
-  int get decimals;
-  int get digits;
+  int get decimals => numberFormat.decimalDigits ?? 0;
+  int get digits => numberFormat.minimumIntegerDigits;
   NumberFormat get numberFormat;
   ValueChanged<double>? get onChanged;
   bool Function(double value)? get canChange;
@@ -67,9 +67,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     }
   }
 
-  String _formatText(double value) {
-    return widget.numberFormat.format(value);
-  }
+  String _formatText(double value) => widget.numberFormat.format(value);
 
   Map<ShortcutActivator, VoidCallback> get bindings {
     return {

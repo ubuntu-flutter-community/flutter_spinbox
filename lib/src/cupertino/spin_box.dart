@@ -24,6 +24,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../base_spin_box.dart';
+import '../spin_formatter.dart';
 import 'spin_button.dart';
 
 part 'third_party/default_rounded_border.dart';
@@ -56,8 +57,9 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.value = 0,
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
-    this.digits = 0,
-    this.decimals = 0,
+    int? digits,
+    int? decimals,
+    NumberFormat? numberFormat,
     bool? enabled,
     this.readOnly = false,
     this.autofocus = false,
@@ -85,10 +87,13 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.afterChange,
     this.focusNode,
   })  : assert(min <= max),
+        numberFormat = numberFormat ?? buildNumberFormat(decimals, digits),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
               signed: min < 0,
-              decimal: decimals > 0,
+              decimal: (decimals != null && decimals > 0) ||
+                  (numberFormat != null &&
+                      numberFormat.minimumFractionDigits > 0),
             ),
         enabled = (enabled ?? true) && min < max,
         //decoration = decoration ?? const BoxDecoration(),
@@ -125,18 +130,6 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// Defaults to `0.0`.
   @override
   final double value;
-
-  /// The number of decimals used for formatting the value.
-  ///
-  /// Defaults to `0`.
-  @override
-  final int decimals;
-
-  /// The number of digits used for formatting the value.
-  ///
-  /// Defaults to `0`.
-  @override
-  final int digits;
 
   /// The number format used for formatting and parsing the value.
   ///

@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import '../base_spin_box.dart';
+import '../spin_formatter.dart';
 import 'spin_box_theme.dart';
 import 'spin_button.dart';
 
@@ -57,9 +58,9 @@ class SpinBox extends BaseSpinBox {
     this.value = 0,
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
-    this.decimals = 0,
-    this.digits = 0,
-    NumberFormat? format,
+    int? decimals,
+    int? digits,
+    NumberFormat? numberFormat,
     bool? enabled,
     this.readOnly = false,
     this.autofocus = false,
@@ -87,10 +88,13 @@ class SpinBox extends BaseSpinBox {
     this.afterChange,
     this.focusNode,
   })  : assert(min <= max),
+        numberFormat = numberFormat ?? buildNumberFormat(decimals, digits),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
               signed: min < 0,
-              decimal: decimals > 0,
+              decimal: (decimals != null && decimals > 0) ||
+                  (numberFormat != null &&
+                      numberFormat.minimumFractionDigits > 0),
             ),
         enabled = (enabled ?? true) && min < max,
         incrementIcon = incrementIcon ?? const Icon(Icons.add),
@@ -124,18 +128,6 @@ class SpinBox extends BaseSpinBox {
   /// Defaults to `0.0`.
   @override
   final double value;
-
-  /// The number of decimal places used for formatting the value.
-  ///
-  /// Defaults to `0`.
-  @override
-  final int decimals;
-
-  /// The number of digits used for formatting the value.
-  ///
-  /// Defaults to `0`.
-  @override
-  final int digits;
 
   /// The number format used for formatting and parsing the value.
   ///

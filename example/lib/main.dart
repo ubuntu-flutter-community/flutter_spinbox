@@ -36,6 +36,7 @@ class HorizontalSpinBoxPage extends StatelessWidget {
           Padding(
             child: SpinBox(
               value: 10,
+              max: 100000000000000,
               decoration: InputDecoration(labelText: 'Basic'),
             ),
             padding: const EdgeInsets.all(16),
