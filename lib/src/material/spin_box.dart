@@ -349,25 +349,28 @@ class _SpinBoxState extends BaseSpinBoxState<SpinBox> {
           : null,
     );
 
-    final textField = TextField(
-      controller: controller,
-      style: widget.textStyle,
-      textAlign: widget.textAlign,
-      textDirection: widget.textDirection,
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      toolbarOptions: widget.toolbarOptions,
-      keyboardAppearance: widget.keyboardAppearance,
-      inputFormatters: [formatter],
-      decoration: inputDecoration,
-      enableInteractiveSelection: widget.enableInteractiveSelection,
-      showCursor: widget.showCursor,
-      cursorColor: widget.cursorColor,
-      autofocus: widget.autofocus,
-      enabled: widget.enabled,
-      readOnly: widget.readOnly,
-      focusNode: focusNode,
-      onSubmitted: fixupValue,
+    final textField = CallbackShortcuts(
+      bindings: bindings,
+      child: TextField(
+        controller: controller,
+        style: widget.textStyle,
+        textAlign: widget.textAlign,
+        textDirection: widget.textDirection,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        toolbarOptions: widget.toolbarOptions,
+        keyboardAppearance: widget.keyboardAppearance,
+        inputFormatters: [formatter],
+        decoration: inputDecoration,
+        enableInteractiveSelection: widget.enableInteractiveSelection,
+        showCursor: widget.showCursor,
+        cursorColor: widget.cursorColor,
+        autofocus: widget.autofocus,
+        enabled: widget.enabled,
+        readOnly: widget.readOnly,
+        focusNode: focusNode,
+        onSubmitted: fixupValue,
+      ),
     );
 
     final incrementButton = SpinButton(
