@@ -1,3 +1,19 @@
+## [0.9.0] - 2022-04-24
+
+* BREAKING CHANGES:
+  - It is no longer possible to set `prefixText` or `suffixText`. Use `prefix`
+    and `suffix` widgets, instead.
+  - The decoration defaults to an outline border. Use `border` to change the
+    decoration.
+
+* Fix arrow key handling in Flutter 2.10+
+* Fix decoration label alignment by setting `prefix` and `suffix` instead of
+  `prefixIcon` and `suffixIcon`. (thanks @doppio)
+* Default to outline border decoration to gain more sensible looks out of the
+  box, unless _any_ border is already specified.
+* Add `digits` property. (thanks @akhokhlushin)
+* Clean up focus change listeners.
+
 ## [0.8.0] - 2021-12-20
 
 * Exposed focusNode (thanks @leonardo2204!)
