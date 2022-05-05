@@ -33,6 +33,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   double get min;
   double get max;
   double get step;
+  double get pageStep;
   double get value;
   int get decimals;
   int get digits;
@@ -66,8 +67,10 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     return {
       // ### TODO: use SingleActivator fixed in Flutter 2.10+
       // https://github.com/flutter/flutter/issues/92717
-      LogicalKeySet(LogicalKeyboardKey.arrowUp): _increaseValue,
-      LogicalKeySet(LogicalKeyboardKey.arrowDown): _decreaseValue,
+      LogicalKeySet(LogicalKeyboardKey.arrowUp): _stepUp,
+      LogicalKeySet(LogicalKeyboardKey.arrowDown): _stepDown,
+      LogicalKeySet(LogicalKeyboardKey.pageUp): _pageStepUp,
+      LogicalKeySet(LogicalKeyboardKey.pageDown): _pageStepDown,
     };
   }
 
@@ -92,8 +95,11 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     super.dispose();
   }
 
-  void _increaseValue() => setValue(value + widget.step);
-  void _decreaseValue() => setValue(value - widget.step);
+  void _stepUp() => setValue(value + widget.step);
+  void _stepDown() => setValue(value - widget.step);
+
+  void _pageStepUp() => setValue(value + widget.pageStep);
+  void _pageStepDown() => setValue(value - widget.pageStep);
 
   void _updateValue() {
     final v = _parseValue(_controller.text);
