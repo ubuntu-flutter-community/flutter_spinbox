@@ -47,7 +47,7 @@ import 'spin_button.dart';
 ///
 /// See also [Material Components widgets](https://flutter.dev/docs/development/ui/widgets/material) package.
 class SpinBox extends BaseSpinBox {
-  /// Creates a spinbpx.
+  /// Creates a spinbox.
   SpinBox({
     Key? key,
     this.min = 0,
