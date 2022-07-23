@@ -26,8 +26,6 @@ import 'package:flutter/material.dart';
 
 // ignore_for_file: public_member_api_docs
 
-typedef SpinCallback = bool Function(double value);
-
 class SpinGesture extends StatefulWidget {
   const SpinGesture({
     Key? key,
@@ -44,7 +42,7 @@ class SpinGesture extends StatefulWidget {
   final double step;
   final double? acceleration;
   final Duration interval;
-  final SpinCallback onStep;
+  final ValueChanged<double> onStep;
 
   @override
   State<SpinGesture> createState() => _SpinGestureState();
@@ -58,6 +56,14 @@ class _SpinGestureState extends State<SpinGesture> {
   void initState() {
     super.initState();
     step = widget.step;
+  }
+
+  @override
+  void didUpdateWidget(covariant SpinGesture oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.enabled && !widget.enabled) {
+      stopTimer();
+    }
   }
 
   @override
@@ -75,18 +81,19 @@ class _SpinGestureState extends State<SpinGesture> {
     );
   }
 
-  bool onStep() {
-    if (!widget.enabled) return false;
+  void onStep() {
+    if (!widget.enabled) return;
     if (widget.acceleration != null) {
       step += widget.acceleration!;
     }
-    return widget.onStep(step);
+    widget.onStep(step);
   }
 
   void startTimer() {
     if (timer != null) return;
     timer = Timer.periodic(widget.interval, (timer) {
-      if (!onStep()) {
+      onStep();
+      if (!widget.enabled) {
         stopTimer();
       }
     });

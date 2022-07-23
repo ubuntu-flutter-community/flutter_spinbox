@@ -46,7 +46,7 @@ class CupertinoSpinButton extends StatelessWidget {
   final double step;
   final double? acceleration;
   final Duration interval;
-  final SpinCallback onStep;
+  final ValueChanged<double> onStep;
 
   @override
   Widget build(BuildContext context) {

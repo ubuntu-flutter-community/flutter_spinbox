@@ -117,17 +117,15 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     widget.onChanged?.call(v);
   }
 
-  bool setValue(double v) {
+  void setValue(double v) {
     final newValue = v.clamp(widget.min, widget.max);
-    if (newValue == value) return false;
+    if (newValue == value) return;
 
-    if (widget.canChange?.call(newValue) == false) return false;
+    if (widget.canChange?.call(newValue) == false) return;
 
     widget.beforeChange?.call();
     setState(() => _updateController(value, newValue));
     widget.afterChange?.call();
-
-    return true;
   }
 
   void _updateController(double oldValue, double newValue) {
