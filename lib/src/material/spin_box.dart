@@ -25,6 +25,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../base_spin_box.dart';
+import '../spin_controller.dart';
 import 'spin_box_theme.dart';
 import 'spin_button.dart';
 
@@ -81,10 +82,8 @@ class SpinBox extends BaseSpinBox {
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
-    this.canChange,
-    this.beforeChange,
-    this.afterChange,
     this.focusNode,
+    this.controller,
   })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
@@ -197,18 +196,13 @@ class SpinBox extends BaseSpinBox {
   @override
   final FocusNode? focusNode;
 
+  /// Controls the spinbox.
+  @override
+  final SpinController? controller;
+
   /// Called when the user has changed the value.
   @override
   final ValueChanged<double>? onChanged;
-
-  @override
-  final bool Function(double value)? canChange;
-
-  @override
-  final VoidCallback? beforeChange;
-
-  @override
-  final VoidCallback? afterChange;
 
   /// See [TextField.enabled].
   final bool enabled;
@@ -262,7 +256,7 @@ class SpinBox extends BaseSpinBox {
 
 class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
   Color _activeColor(ThemeData theme) {
-    if (hasFocus) {
+    if (focusNode.hasFocus) {
       switch (theme.brightness) {
         case Brightness.dark:
           return theme.colorScheme.secondary;
@@ -275,7 +269,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
 
   Color? _iconColor(ThemeData theme, String? errorText) {
     if (!widget.enabled) return theme.disabledColor;
-    if (hasFocus && errorText == null) return _activeColor(theme);
+    if (focusNode.hasFocus && errorText == null) return _activeColor(theme);
 
     switch (theme.brightness) {
       case Brightness.dark:
@@ -308,7 +302,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
         .applyDefaults(theme.inputDecorationTheme);
 
     final errorText =
-        decoration.errorText ?? widget.validator?.call(controller.text);
+        decoration.errorText ?? widget.validator?.call(editor.text);
 
     final iconColor = widget.iconColor ??
         spinBoxTheme?.iconColor ??
@@ -316,15 +310,19 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
 
     final states = <MaterialState>{
       if (!widget.enabled) MaterialState.disabled,
-      if (hasFocus) MaterialState.focused,
+      if (focusNode.hasFocus) MaterialState.focused,
       if (errorText != null) MaterialState.error,
     };
 
     final decrementStates = Set<MaterialState>.of(states);
-    if (value <= widget.min) decrementStates.add(MaterialState.disabled);
+    if (controller.value <= controller.min) {
+      decrementStates.add(MaterialState.disabled);
+    }
 
     final incrementStates = Set<MaterialState>.of(states);
-    if (value >= widget.max) incrementStates.add(MaterialState.disabled);
+    if (controller.value >= controller.max) {
+      incrementStates.add(MaterialState.disabled);
+    }
 
     var bottom = 0.0;
     final isHorizontal = widget.direction == Axis.horizontal;
@@ -385,7 +383,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
     final textField = CallbackShortcuts(
       bindings: bindings,
       child: TextField(
-        controller: controller,
+        controller: editor,
         style: widget.textStyle,
         textAlign: widget.textAlign,
         textDirection: widget.textDirection,
@@ -410,10 +408,10 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       step: widget.step,
       color: iconColor.resolve(incrementStates),
       icon: widget.incrementIcon,
-      enabled: widget.enabled && value < widget.max,
+      enabled: widget.enabled && controller.value < controller.max,
       interval: widget.interval,
       acceleration: widget.acceleration,
-      onStep: (step) => setValue(value + step),
+      onStep: (step) => controller.value += step,
     );
 
     if (!widget.showButtons) return textField;
@@ -422,10 +420,10 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       step: widget.step,
       color: iconColor.resolve(decrementStates),
       icon: widget.decrementIcon,
-      enabled: widget.enabled && value > widget.min,
+      enabled: widget.enabled && controller.value > controller.min,
       interval: widget.interval,
       acceleration: widget.acceleration,
-      onStep: (step) => setValue(value - step),
+      onStep: (step) => controller.value -= step,
     );
 
     if (isHorizontal) {

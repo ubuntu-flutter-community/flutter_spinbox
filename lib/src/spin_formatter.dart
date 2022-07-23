@@ -22,66 +22,28 @@
 
 import 'package:flutter/services.dart';
 
+import 'spin_controller.dart';
+
 // ignore_for_file: public_member_api_docs
 
 class SpinFormatter extends TextInputFormatter {
-  SpinFormatter({required this.min, required this.max, required this.decimals});
+  SpinFormatter(this._controller);
 
-  final double min;
-  final double max;
-  final int decimals;
+  final SpinController _controller;
+
+  String formatValue(
+    double value, {
+    required int decimals,
+    required int digits,
+  }) {
+    return value.toStringAsFixed(decimals).padLeft(digits, '0');
+  }
 
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    final input = newValue.text;
-    if (input.isEmpty) {
-      return newValue;
-    }
-
-    final minus = input.startsWith('-');
-    if (minus && min >= 0) {
-      return oldValue;
-    }
-
-    final plus = input.startsWith('+');
-    if (plus && max < 0) {
-      return oldValue;
-    }
-
-    if ((minus || plus) && input.length == 1) {
-      return newValue;
-    }
-
-    if (decimals <= 0 && !_validateValue(int.tryParse(input))) {
-      return oldValue;
-    }
-
-    if (decimals > 0 && !_validateValue(double.tryParse(input))) {
-      return oldValue;
-    }
-
-    final dot = input.lastIndexOf('.');
-    if (dot >= 0 && decimals < input.substring(dot + 1).length) {
-      return oldValue;
-    }
-
-    return newValue;
-  }
-
-  bool _validateValue(num? value) {
-    if (value == null) {
-      return false;
-    }
-
-    if (value >= min && value <= max) {
-      return true;
-    }
-
-    if (value >= 0) {
-      return value <= max;
-    } else {
-      return value >= min;
-    }
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return _controller.validate(newValue.text) ? newValue : oldValue;
   }
 }

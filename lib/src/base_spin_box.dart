@@ -23,6 +23,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import 'spin_controller.dart';
 import 'spin_formatter.dart';
 
 // ignore_for_file: public_member_api_docs
@@ -38,30 +39,20 @@ abstract class BaseSpinBox extends StatefulWidget {
   int get decimals;
   int get digits;
   ValueChanged<double>? get onChanged;
-  bool Function(double value)? get canChange;
-  VoidCallback? get beforeChange;
-  VoidCallback? get afterChange;
   bool get readOnly;
   FocusNode? get focusNode;
+  SpinController? get controller;
 }
 
 mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
-  late double _value;
-  late double _cachedValue;
+  late final SpinController _controller;
+  late final TextEditingController _editor;
   late final FocusNode _focusNode;
-  late final TextEditingController _controller;
 
-  double get value => _value;
-  bool get hasFocus => _focusNode.hasFocus;
+  SpinController get controller => _controller;
+  TextEditingController get editor => _editor;
   FocusNode get focusNode => _focusNode;
-  TextEditingController get controller => _controller;
-  SpinFormatter get formatter => SpinFormatter(
-      min: widget.min, max: widget.max, decimals: widget.decimals);
-
-  static double _parseValue(String text) => double.tryParse(text) ?? 0;
-  String _formatText(double value) {
-    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
-  }
+  SpinFormatter get formatter => SpinFormatter(_controller);
 
   Map<ShortcutActivator, VoidCallback> get bindings {
     return {
@@ -76,67 +67,67 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     };
   }
 
+  String _formatValue(double value) {
+    return formatter.formatValue(value,
+        decimals: widget.decimals, digits: widget.digits);
+  }
+
   @override
   void initState() {
     super.initState();
-    _value = widget.value;
-    _cachedValue = widget.value;
-    _controller = TextEditingController(text: _formatText(_value));
-    _controller.addListener(_updateValue);
+    _controller = widget.controller ??
+        SpinController(
+          min: widget.min,
+          max: widget.max,
+          value: widget.value,
+          decimals: widget.decimals,
+        );
+    _controller.addListener(_handleValueChange);
+    _editor = TextEditingController(text: _formatValue(widget.value));
+    _editor.addListener(_handleTextChange);
     _focusNode = widget.focusNode ?? FocusNode();
-    _focusNode.addListener(_handleFocusChanged);
+    _focusNode.addListener(_handleFocusChange);
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_handleFocusChanged);
+    _focusNode.removeListener(_handleFocusChange);
     if (widget.focusNode == null) {
       _focusNode.dispose();
     }
-    _controller.dispose();
+    _controller.removeListener(_handleValueChange);
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    _editor.dispose();
     super.dispose();
   }
 
-  void _stepUp() => setValue(value + widget.step);
-  void _stepDown() => setValue(value - widget.step);
+  void _stepUp() => controller.value += widget.step;
+  void _stepDown() => controller.value -= widget.step;
 
-  void _pageStepUp() => setValue(value + widget.pageStep!);
-  void _pageStepDown() => setValue(value - widget.pageStep!);
+  void _pageStepUp() => controller.value += widget.pageStep!;
+  void _pageStepDown() => controller.value -= widget.pageStep!;
 
-  void _updateValue() {
-    final v = _parseValue(_controller.text);
-    if (v == _value) return;
+  void _handleValueChange() {
+    widget.onChanged?.call(_controller.value);
+    setState(() => _updateText(_controller.value));
+  }
 
-    if (widget.canChange?.call(v) == false) {
-      controller.text = _formatText(_cachedValue);
-      setState(() {
-        _value = _cachedValue;
-      });
-      return;
+  void _handleTextChange() {
+    final value = _controller.parse(_editor.text);
+    if (value != null && value >= controller.min && value <= controller.max) {
+      _controller.value = value;
     }
-
-    setState(() => _value = v);
-    widget.onChanged?.call(v);
   }
 
-  void setValue(double v) {
-    final newValue = v.clamp(widget.min, widget.max);
-    if (newValue == value) return;
+  void _updateText(double value) {
+    final text = _formatValue(value);
+    final selection = _editor.selection;
+    final oldOffset = _controller.value.isNegative ? 1 : 0;
+    final newOffset = _controller.parse(text)?.isNegative == true ? 1 : 0;
 
-    if (widget.canChange?.call(newValue) == false) return;
-
-    widget.beforeChange?.call();
-    setState(() => _updateController(value, newValue));
-    widget.afterChange?.call();
-  }
-
-  void _updateController(double oldValue, double newValue) {
-    final text = _formatText(newValue);
-    final selection = _controller.selection;
-    final oldOffset = value.isNegative ? 1 : 0;
-    final newOffset = _parseValue(text).isNegative ? 1 : 0;
-
-    _controller.value = _controller.value.copyWith(
+    _editor.value = _editor.value.copyWith(
       text: text,
       selection: selection.copyWith(
         baseOffset: selection.baseOffset - oldOffset + newOffset,
@@ -146,37 +137,36 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   }
 
   @protected
-  void fixupValue(String value) {
-    final v = _parseValue(value);
-    if (value.isEmpty || (v < widget.min || v > widget.max)) {
-      // will trigger notify to _updateValue()
-      _controller.text = _formatText(_cachedValue);
-    } else {
-      _cachedValue = _value;
+  void fixupValue(String text) {
+    final value = _controller.parse(text);
+    if (value == null) {
+      _editor.text = _formatValue(_controller.value);
+    } else if (value < _controller.min || value > _controller.max) {
+      _controller.value = value.clamp(_controller.min, _controller.max);
     }
   }
 
-  void _handleFocusChanged() {
-    if (hasFocus) {
+  void _handleFocusChange() {
+    if (focusNode.hasFocus) {
       setState(_selectAll);
     } else {
-      fixupValue(_controller.text);
+      fixupValue(_editor.text);
     }
   }
 
   void _selectAll() {
-    _controller.selection = _controller.selection
-        .copyWith(baseOffset: 0, extentOffset: _controller.text.length);
+    _editor.selection = _editor.selection
+        .copyWith(baseOffset: 0, extentOffset: _editor.text.length);
   }
 
   @override
   void didUpdateWidget(T oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
-      _controller.removeListener(_updateValue);
-      _value = _cachedValue = widget.value;
-      _updateController(oldWidget.value, widget.value);
-      _controller.addListener(_updateValue);
+      _editor.removeListener(_handleTextChange);
+      _controller.value = widget.value;
+      _updateText(widget.value);
+      _editor.addListener(_handleTextChange);
     }
   }
 }
