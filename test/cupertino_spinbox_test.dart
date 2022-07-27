@@ -21,7 +21,13 @@ void main() {
   });
 
   testInput<CupertinoSpinBox>(() {
-    return TestApp(widget: CupertinoSpinBox(value: 1, autofocus: true));
+    return TestApp(
+      widget: CupertinoSpinBox(
+        value: 1,
+        autofocus: true,
+        pageStep: 10,
+      ),
+    );
   });
 
   testInput<CupertinoSpinBox>(() {
@@ -30,6 +36,7 @@ void main() {
         value: 1,
         autofocus: true,
         focusNode: FocusNode(),
+        pageStep: 10,
       ),
     );
   });

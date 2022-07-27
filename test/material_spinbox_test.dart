@@ -22,12 +22,17 @@ void main() {
   });
 
   testInput<SpinBox>(() {
-    return TestApp(widget: SpinBox(value: 1, autofocus: true));
+    return TestApp(widget: SpinBox(value: 1, autofocus: true, pageStep: 10));
   });
 
   testInput<SpinBox>(() {
     return TestApp(
-      widget: SpinBox(value: 1, autofocus: true, focusNode: FocusNode()),
+      widget: SpinBox(
+        value: 1,
+        autofocus: true,
+        focusNode: FocusNode(),
+        pageStep: 10,
+      ),
     );
   });
 
