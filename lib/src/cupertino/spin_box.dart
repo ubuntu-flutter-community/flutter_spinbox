@@ -52,7 +52,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.min = 0,
     this.max = 100,
     this.step = 1,
-    this.pageStep = 10,
+    this.pageStep,
     this.value = 0,
     this.interval = const Duration(milliseconds: 100),
     this.acceleration,
@@ -120,11 +120,11 @@ class CupertinoSpinBox extends BaseSpinBox {
   @override
   final double step;
 
-  /// The page step size for incrementing and decrementing the value.
+  /// An optional page step size for incrementing and decrementing the value.
   ///
-  /// Defaults to `10.0`.
+  /// Defaults to `null`.
   @override
-  final double pageStep;
+  final double? pageStep;
 
   /// The current value.
   ///
