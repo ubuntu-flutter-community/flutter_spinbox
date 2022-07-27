@@ -23,6 +23,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../base_spin_box.dart';
+import '../spin_controller.dart';
 import 'spin_button.dart';
 
 part 'third_party/default_rounded_border.dart';
@@ -80,10 +81,8 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
-    this.canChange,
-    this.beforeChange,
-    this.afterChange,
     this.focusNode,
+    this.controller,
   })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
@@ -199,18 +198,13 @@ class CupertinoSpinBox extends BaseSpinBox {
   @override
   final FocusNode? focusNode;
 
+  /// Controls the spinbox.
+  @override
+  final SpinController? controller;
+
   /// Called when the user has changed the value.
   @override
   final ValueChanged<double>? onChanged;
-
-  @override
-  final bool Function(double value)? canChange;
-
-  @override
-  final VoidCallback? beforeChange;
-
-  @override
-  final VoidCallback? afterChange;
 
   /// See [CupertinoTextField.enabled].
   final bool enabled;
@@ -267,7 +261,7 @@ class _CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
     final textField = CallbackShortcuts(
       bindings: bindings,
       child: CupertinoTextField(
-        controller: controller,
+        controller: editor,
         style: widget.textStyle,
         textAlign: widget.textAlign,
         keyboardType: widget.keyboardType,
@@ -315,19 +309,19 @@ class _CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
     final incrementButton = CupertinoSpinButton(
       step: widget.step,
       icon: widget.incrementIcon,
-      enabled: widget.enabled && value < widget.max,
+      enabled: widget.enabled && controller.value < controller.max,
       interval: widget.interval,
       acceleration: widget.acceleration,
-      onStep: (step) => setValue(value + step),
+      onStep: (step) => controller.value += step,
     );
 
     final decrementButton = CupertinoSpinButton(
       step: widget.step,
       icon: widget.decrementIcon,
-      enabled: widget.enabled && value > widget.min,
+      enabled: widget.enabled && controller.value > controller.min,
       interval: widget.interval,
       acceleration: widget.acceleration,
-      onStep: (step) => setValue(value - step),
+      onStep: (step) => controller.value -= step,
     );
 
     if (isHorizontal) {

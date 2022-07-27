@@ -59,5 +59,5 @@ class HasValueMatcher extends CustomMatcher {
   @override
   // ### TODO: make BaseSpinBoxState a mixin?
   // ignore: avoid_dynamic_calls
-  Object? featureValueOf(dynamic state) => state.value;
+  Object? featureValueOf(dynamic state) => state.controller.value;
 }

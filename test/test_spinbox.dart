@@ -240,7 +240,7 @@ void testInput<S>(TestBuilder builder) {
 
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
-      expect(tester.state(find.byType(S)), hasValue(0));
+      expect(tester.state(find.byType(S)), hasValue(1));
       expect(find.editableText, hasText(''));
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -257,7 +257,8 @@ void testInput<S>(TestBuilder builder) {
 
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
-      expect(tester.state(find.byType(S)), hasValue(0));
+      expect(tester.state(find.byType(S)), hasValue(1));
+      expect(find.editableText, hasText(''));
 
       find.editableText.focusNode.unfocus();
       await tester.idle();
@@ -280,15 +281,15 @@ void testRange<S>(TestBuilder builder) {
 
       tester.testTextInput.enterText('9');
       await tester.idle();
-      expect(tester.state(find.byType(S)), hasValue(9));
+      expect(tester.state(find.byType(S)), hasValue(20));
       expect(find.editableText, hasNoSelection);
       expect(find.editableText, hasText('9'));
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.idle();
       expect(find.editableText, hasNoFocus);
-      expect(tester.state(find.byType(S)), hasValue(20));
-      expect(find.editableText, hasText('20'));
+      expect(tester.state(find.byType(S)), hasValue(10));
+      expect(find.editableText, hasText('10'));
     });
 
     testWidgets('max', (tester) async {
