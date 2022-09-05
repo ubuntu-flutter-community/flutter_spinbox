@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -50,8 +50,8 @@ class SpinBox extends BaseSpinBox {
   /// Creates a spinbox.
   SpinBox({
     Key? key,
-    this.min = 0,
-    this.max = 100,
+    this.min,
+    this.max,
     this.step = 1,
     this.pageStep,
     this.value = 0,
@@ -85,32 +85,33 @@ class SpinBox extends BaseSpinBox {
     this.beforeChange,
     this.afterChange,
     this.focusNode,
-  })  : assert(min <= max),
+  })  : assert(min == null || max == null || min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
-              signed: min < 0,
+              signed: min == null || min < 0,
               decimal: decimals > 0,
             ),
-        enabled = (enabled ?? true) && min < max,
+        enabled =
+            (enabled ?? true) && (min == null || max == null || min < max),
         incrementIcon = incrementIcon ?? const Icon(Icons.add),
         decrementIcon = decrementIcon ?? const Icon(Icons.remove),
         super(key: key);
 
   /// The minimum value the user can enter.
   ///
-  /// Defaults to `0.0`. Must be less than or equal to [max].
+  /// Defaults to `null`. Must be less than or equal to [max].
   ///
   /// If min is equal to [max], the spinbox is disabled.
   @override
-  final double min;
+  final double? min;
 
   /// The maximum value the user can enter.
   ///
-  /// Defaults to `100.0`. Must be greater than or equal to [min].
+  /// Defaults to `null`. Must be greater than or equal to [min].
   ///
   /// If max is equal to [min], the spinbox is disabled.
   @override
-  final double max;
+  final double? max;
 
   /// The step size for incrementing and decrementing the value.
   ///
@@ -321,10 +322,10 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
     };
 
     final decrementStates = Set<MaterialState>.of(states);
-    if (value <= widget.min) decrementStates.add(MaterialState.disabled);
+    if (value <= min) decrementStates.add(MaterialState.disabled);
 
     final incrementStates = Set<MaterialState>.of(states);
-    if (value >= widget.max) incrementStates.add(MaterialState.disabled);
+    if (value >= max) incrementStates.add(MaterialState.disabled);
 
     var bottom = 0.0;
     final isHorizontal = widget.direction == Axis.horizontal;
@@ -335,13 +336,13 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
         bottom = _textHeight(errorText, caption!.merge(decoration.errorStyle));
       }
       if (decoration.helperText != null) {
-        bottom = max(
+        bottom = math.max(
             bottom,
             _textHeight(
                 decoration.helperText, caption!.merge(decoration.helperStyle)));
       }
       if (decoration.counterText != null) {
-        bottom = max(
+        bottom = math.max(
             bottom,
             _textHeight(decoration.counterText,
                 caption!.merge(decoration.counterStyle)));
@@ -410,7 +411,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       step: widget.step,
       color: iconColor.resolve(incrementStates),
       icon: widget.incrementIcon,
-      enabled: widget.enabled && value < widget.max,
+      enabled: widget.enabled && value < max,
       interval: widget.interval,
       acceleration: widget.acceleration,
       onStep: (step) => setValue(value + step),
@@ -422,7 +423,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       step: widget.step,
       color: iconColor.resolve(decrementStates),
       icon: widget.decrementIcon,
-      enabled: widget.enabled && value > widget.min,
+      enabled: widget.enabled && value > min,
       interval: widget.interval,
       acceleration: widget.acceleration,
       onStep: (step) => setValue(value - step),

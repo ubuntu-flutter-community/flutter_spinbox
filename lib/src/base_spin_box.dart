@@ -30,8 +30,8 @@ import 'spin_formatter.dart';
 abstract class BaseSpinBox extends StatefulWidget {
   const BaseSpinBox({Key? key}) : super(key: key);
 
-  double get min;
-  double get max;
+  double? get min;
+  double? get max;
   double get step;
   double? get pageStep;
   double get value;
@@ -51,12 +51,14 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
 
+  double get min => widget.min ?? -double.infinity;
+  double get max => widget.max ?? double.infinity;
   double get value => _value;
   bool get hasFocus => _focusNode.hasFocus;
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
-  SpinFormatter get formatter => SpinFormatter(
-      min: widget.min, max: widget.max, decimals: widget.decimals);
+  SpinFormatter get formatter =>
+      SpinFormatter(min: min, max: max, decimals: widget.decimals);
 
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) {
@@ -120,7 +122,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   }
 
   void setValue(double v) {
-    final newValue = v.clamp(widget.min, widget.max);
+    final newValue = v.clamp(min, max);
     if (newValue == value) return;
 
     if (widget.canChange?.call(newValue) == false) return;
@@ -148,7 +150,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   @protected
   void fixupValue(String value) {
     final v = _parseValue(value);
-    if (value.isEmpty || (v < widget.min || v > widget.max)) {
+    if (value.isEmpty || (v < min || v > max)) {
       // will trigger notify to _updateValue()
       _controller.text = _formatText(_cachedValue);
     } else {

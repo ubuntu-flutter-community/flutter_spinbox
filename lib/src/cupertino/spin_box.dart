@@ -49,8 +49,8 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// Creates a spinbox.
   CupertinoSpinBox({
     Key? key,
-    this.min = 0,
-    this.max = 100,
+    this.min,
+    this.max,
     this.step = 1,
     this.pageStep,
     this.value = 0,
@@ -84,13 +84,14 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.beforeChange,
     this.afterChange,
     this.focusNode,
-  })  : assert(min <= max),
+  })  : assert(min == null || max == null || min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
-              signed: min < 0,
+              signed: min == null || min < 0,
               decimal: decimals > 0,
             ),
-        enabled = (enabled ?? true) && min < max,
+        enabled =
+            (enabled ?? true) && (min == null || max == null || min < max),
         //decoration = decoration ?? const BoxDecoration(),
         incrementIcon =
             incrementIcon ?? const Icon(CupertinoIcons.plus_circled),
@@ -100,19 +101,19 @@ class CupertinoSpinBox extends BaseSpinBox {
 
   /// The minimum value the user can enter.
   ///
-  /// Defaults to `0.0`. Must be less than or equal to [max].
+  /// Defaults to `null`. Must be less than or equal to [max].
   ///
   /// If min is equal to [max], the spinbox is disabled.
   @override
-  final double min;
+  final double? min;
 
   /// The maximum value the user can enter.
   ///
-  /// Defaults to `100.0`. Must be greater than or equal to [min].
+  /// Defaults to `null`. Must be greater than or equal to [min].
   ///
   /// If max is equal to [min], the spinbox is disabled.
   @override
-  final double max;
+  final double? max;
 
   /// The step size for incrementing and decrementing the value.
   ///
@@ -315,7 +316,7 @@ class _CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
     final incrementButton = CupertinoSpinButton(
       step: widget.step,
       icon: widget.incrementIcon,
-      enabled: widget.enabled && value < widget.max,
+      enabled: widget.enabled && value < max,
       interval: widget.interval,
       acceleration: widget.acceleration,
       onStep: (step) => setValue(value + step),
@@ -324,7 +325,7 @@ class _CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
     final decrementButton = CupertinoSpinButton(
       step: widget.step,
       icon: widget.decrementIcon,
-      enabled: widget.enabled && value > widget.min,
+      enabled: widget.enabled && value > min,
       interval: widget.interval,
       acceleration: widget.acceleration,
       onStep: (step) => setValue(value - step),
