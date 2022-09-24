@@ -157,11 +157,13 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   }
 
   void _handleFocusChanged() {
-    if (hasFocus) {
-      setState(_selectAll);
-    } else {
-      fixupValue(_controller.text);
-    }
+    setState(() {
+      if (hasFocus) {
+        _selectAll();
+      } else {
+        fixupValue(_controller.text);
+      }
+    });
   }
 
   void _selectAll() {
