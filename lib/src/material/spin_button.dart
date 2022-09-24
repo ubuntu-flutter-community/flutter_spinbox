@@ -30,6 +30,7 @@ class SpinButton extends StatelessWidget {
   const SpinButton({
     Key? key,
     required this.icon,
+    this.iconSize,
     this.color,
     this.enabled = true,
     required this.step,
@@ -39,6 +40,7 @@ class SpinButton extends StatelessWidget {
   }) : super(key: key);
 
   final Icon icon;
+  final double? iconSize;
   final Color? color;
   final bool enabled;
   final double step;
@@ -62,7 +64,7 @@ class SpinButton extends StatelessWidget {
           icon: icon,
           color: color,
           disabledColor: color,
-          iconSize: icon.size ?? 24,
+          iconSize: iconSize,
           onPressed: enabled ? () => onStep(step) : null,
         ),
       ),

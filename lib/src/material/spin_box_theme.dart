@@ -13,7 +13,12 @@ import 'package:flutter/material.dart';
 @immutable
 class SpinBoxThemeData with Diagnosticable {
   /// Creates a theme that can be used for [SpinBoxTheme.data].
-  const SpinBoxThemeData({this.iconColor, this.decoration});
+  const SpinBoxThemeData({this.iconSize, this.iconColor, this.decoration});
+
+  /// The size to use for [SpinBox.incrementIcon] and [SpinBox.decrementIcon].
+  ///
+  /// If specified, overrides the default value of [SpinBox.iconSize].
+  final double? iconSize;
 
   /// The color to use for [SpinBox.incrementIcon] and [SpinBox.decrementIcon].
   ///
@@ -33,10 +38,12 @@ class SpinBoxThemeData with Diagnosticable {
   /// Creates a copy of this object but with the given fields replaced with the
   /// new values.
   SpinBoxThemeData copyWith({
+    double? iconSize,
     MaterialStateProperty<Color?>? iconColor,
     InputDecoration? decoration,
   }) {
     return SpinBoxThemeData(
+      iconSize: iconSize ?? this.iconSize,
       iconColor: iconColor ?? this.iconColor,
       decoration: decoration ?? this.decoration,
     );
@@ -50,6 +57,7 @@ class SpinBoxThemeData with Diagnosticable {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
     return other is SpinBoxThemeData &&
+        other.iconSize == iconSize &&
         other.iconColor == iconColor &&
         other.decoration == decoration;
   }
@@ -57,6 +65,13 @@ class SpinBoxThemeData with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<double?>(
+        'iconSize',
+        iconSize,
+        defaultValue: null,
+      ),
+    );
     properties.add(
       DiagnosticsProperty<MaterialStateProperty<Color?>>(
         'iconColor',
