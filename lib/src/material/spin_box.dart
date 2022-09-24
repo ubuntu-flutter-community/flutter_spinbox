@@ -69,6 +69,7 @@ class SpinBox extends BaseSpinBox {
     this.keyboardAppearance,
     Icon? incrementIcon,
     Icon? decrementIcon,
+    this.iconSize,
     this.iconColor,
     this.showButtons = true,
     this.direction = Axis.horizontal,
@@ -181,6 +182,12 @@ class SpinBox extends BaseSpinBox {
   ///
   /// Defaults to [Icons.remove].
   final Icon decrementIcon;
+
+  /// The size to use for [incrementIcon] and [decrementIcon].
+  ///
+  /// If `null`, then the value of [SpinBoxThemeData.iconSize] is used. If
+  /// that is also `null`, then a pre-defined default is used.
+  final double? iconSize;
 
   /// The color to use for [incrementIcon] and [decrementIcon].
   ///
@@ -310,6 +317,8 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
     final errorText =
         decoration.errorText ?? widget.validator?.call(controller.text);
 
+    final iconSize = widget.iconSize ?? spinBoxTheme?.iconSize ?? 24;
+
     final iconColor = widget.iconColor ??
         spinBoxTheme?.iconColor ??
         MaterialStateProperty.all(_iconColor(theme, errorText));
@@ -368,7 +377,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
           if (isHorizontal && widget.showButtons)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: widget.spacing),
-              child: Icon(null, size: icon.size),
+              child: SizedBox(width: icon.size ?? iconSize, height: 0),
             ),
           if (prefix != null) prefix,
         ],
@@ -410,6 +419,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       step: widget.step,
       color: iconColor.resolve(incrementStates),
       icon: widget.incrementIcon,
+      iconSize: widget.incrementIcon.size ?? iconSize,
       enabled: widget.enabled && value < widget.max,
       interval: widget.interval,
       acceleration: widget.acceleration,
@@ -422,6 +432,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       step: widget.step,
       color: iconColor.resolve(decrementStates),
       icon: widget.decrementIcon,
+      iconSize: widget.decrementIcon.size ?? iconSize,
       enabled: widget.enabled && value > widget.min,
       interval: widget.interval,
       acceleration: widget.acceleration,
