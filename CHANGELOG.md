@@ -1,3 +1,9 @@
+## [0.10.0] - 2022-09-24
+
+* Add `pageStep`
+* Add `iconSize`
+* Fix icon color after losing focus
+
 ## [0.9.0] - 2022-04-24
 
 * BREAKING CHANGES:
