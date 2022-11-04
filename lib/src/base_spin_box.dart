@@ -38,6 +38,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   int get decimals;
   int get digits;
   ValueChanged<double>? get onChanged;
+  void Function(double value)? get onSubmitted;
   bool Function(double value)? get canChange;
   VoidCallback? get beforeChange;
   VoidCallback? get afterChange;
@@ -154,6 +155,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     } else {
       _cachedValue = _value;
     }
+    widget.onSubmitted?.call(_cachedValue);
   }
 
   void _handleFocusChanged() {
