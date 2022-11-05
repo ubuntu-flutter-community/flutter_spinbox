@@ -80,6 +80,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
+    this.onSubmitted,
     this.canChange,
     this.beforeChange,
     this.afterChange,
@@ -254,6 +255,10 @@ class CupertinoSpinBox extends BaseSpinBox {
 
   /// See [CupertinoTextField.toolbarOptions].
   final ToolbarOptions? toolbarOptions;
+
+  /// See [CupertinoTextField.onSubmitted]. Is called with a formatted value.
+  @override
+  final void Function(double)? onSubmitted;
 
   @override
   State<CupertinoSpinBox> createState() => _CupertinoSpinBoxState();

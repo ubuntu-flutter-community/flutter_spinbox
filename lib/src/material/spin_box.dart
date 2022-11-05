@@ -82,6 +82,7 @@ class SpinBox extends BaseSpinBox {
     this.enableInteractiveSelection = true,
     this.spacing = 8,
     this.onChanged,
+    this.onSubmitted,
     this.canChange,
     this.beforeChange,
     this.afterChange,
@@ -262,6 +263,10 @@ class SpinBox extends BaseSpinBox {
 
   /// See [TextField.toolbarOptions].
   final ToolbarOptions? toolbarOptions;
+
+  /// See [TextField.onSubmitted]. Is called with a formatted value.
+  @override
+  final void Function(double)? onSubmitted;
 
   @override
   State<SpinBox> createState() => _SpinBoxState();
