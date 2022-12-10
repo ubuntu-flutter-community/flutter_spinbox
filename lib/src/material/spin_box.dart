@@ -265,7 +265,6 @@ class SpinBox extends BaseSpinBox {
   final ToolbarOptions? toolbarOptions;
 
   /// See [TextField.onSubmitted]. Is called with a formatted value.
-  @override
   final void Function(double)? onSubmitted;
 
   @override
@@ -416,7 +415,10 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
         enabled: widget.enabled,
         readOnly: widget.readOnly,
         focusNode: focusNode,
-        onSubmitted: fixupValue,
+        onSubmitted: (v) {
+          final value = fixupValue(v);
+          widget.onSubmitted?.call(value);
+        },
       ),
     );
 
