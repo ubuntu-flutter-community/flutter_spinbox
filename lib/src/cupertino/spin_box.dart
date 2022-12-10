@@ -257,7 +257,6 @@ class CupertinoSpinBox extends BaseSpinBox {
   final ToolbarOptions? toolbarOptions;
 
   /// See [CupertinoTextField.onSubmitted]. Is called with a formatted value.
-  @override
   final void Function(double)? onSubmitted;
 
   @override
@@ -311,7 +310,10 @@ class _CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
         enabled: widget.enabled,
         readOnly: widget.readOnly,
         focusNode: focusNode,
-        onSubmitted: fixupValue,
+        onSubmitted: (v) {
+          final value = fixupValue(v);
+          widget.onSubmitted?.call(value);
+        },
       ),
     );
 
