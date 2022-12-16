@@ -256,7 +256,11 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// See [CupertinoTextField.toolbarOptions].
   final ToolbarOptions? toolbarOptions;
 
-  /// See [CupertinoTextField.onSubmitted]. Is called with a formatted value.
+  /// See [TextField.onSubmitted].
+  ///
+  /// Is also called when an increment or decrement button is pressed.
+  ///
+  /// Value is formatted.
   @override
   final void Function(double)? onSubmitted;
 

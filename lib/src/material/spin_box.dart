@@ -264,7 +264,11 @@ class SpinBox extends BaseSpinBox {
   /// See [TextField.toolbarOptions].
   final ToolbarOptions? toolbarOptions;
 
-  /// See [TextField.onSubmitted]. Is called with a formatted value.
+  /// See [TextField.onSubmitted].
+  ///
+  /// Is also called when an increment or decrement button is pressed.
+  ///
+  /// Value is formatted.
   @override
   final void Function(double)? onSubmitted;
 

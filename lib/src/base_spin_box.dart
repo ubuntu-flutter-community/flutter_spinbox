@@ -128,7 +128,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
 
     widget.beforeChange?.call();
     setState(() => _updateController(value, newValue));
-    widget.onSubmitted?.call(newValue);
+    widget.onSubmitted?.call(double.parse(_formatText(newValue)));
     widget.afterChange?.call();
   }
 
