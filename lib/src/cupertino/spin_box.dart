@@ -257,6 +257,7 @@ class CupertinoSpinBox extends BaseSpinBox {
   final ToolbarOptions? toolbarOptions;
 
   /// See [CupertinoTextField.onSubmitted]. Is called with a formatted value.
+  @override
   final void Function(double)? onSubmitted;
 
   @override

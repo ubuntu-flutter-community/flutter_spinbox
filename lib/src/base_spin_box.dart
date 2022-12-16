@@ -37,6 +37,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   double get value;
   int get decimals;
   int get digits;
+  void Function(double)? get onSubmitted;
   ValueChanged<double>? get onChanged;
   bool Function(double value)? get canChange;
   VoidCallback? get beforeChange;
@@ -127,6 +128,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
 
     widget.beforeChange?.call();
     setState(() => _updateController(value, newValue));
+    widget.onSubmitted?.call(newValue);
     widget.afterChange?.call();
   }
 
