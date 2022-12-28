@@ -1,3 +1,7 @@
+## [0.12.0] - 2022-12-28
+
+* Call `onSubmitted` when step buttons are pressed
+
 ## [0.11.0] - 2022-11-05
 
 * Add `onSubmitted`
