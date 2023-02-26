@@ -277,21 +277,9 @@ class SpinBox extends BaseSpinBox {
 }
 
 class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
-  Color _activeColor(ThemeData theme) {
-    if (hasFocus) {
-      switch (theme.brightness) {
-        case Brightness.dark:
-          return theme.colorScheme.secondary;
-        case Brightness.light:
-          return theme.primaryColor;
-      }
-    }
-    return theme.hintColor;
-  }
-
   Color? _iconColor(ThemeData theme, String? errorText) {
     if (!widget.enabled) return theme.disabledColor;
-    if (hasFocus && errorText == null) return _activeColor(theme);
+    if (hasFocus && errorText == null) return theme.colorScheme.primary;
 
     switch (theme.brightness) {
       case Brightness.dark:
