@@ -1,3 +1,9 @@
+## [0.13.0] - 2023-02-26
+
+* Upgrade to Flutter 3.7
+* Fix `deprecated_member_use`
+* Fix active icon color
+
 ## [0.12.0] - 2022-12-28
 
 * Call `onSubmitted` when step buttons are pressed
