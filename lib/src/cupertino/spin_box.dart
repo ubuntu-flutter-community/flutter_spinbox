@@ -74,7 +74,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.direction = Axis.horizontal,
     this.textAlign = TextAlign.center,
     this.textStyle,
-    this.toolbarOptions,
+    this.contextMenuBuilder,
     this.showCursor,
     this.cursorColor,
     this.enableInteractiveSelection = true,
@@ -253,8 +253,8 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// See [CupertinoTextField.style].
   final TextStyle? textStyle;
 
-  /// See [CupertinoTextField.toolbarOptions].
-  final ToolbarOptions? toolbarOptions;
+  /// See [CupertinoTextField.contextMenuBuilder].
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
 
   /// See [TextField.onSubmitted].
   ///
@@ -281,7 +281,7 @@ class _CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
         textAlign: widget.textAlign,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
-        toolbarOptions: widget.toolbarOptions,
+        contextMenuBuilder: widget.contextMenuBuilder,
         keyboardAppearance: widget.keyboardAppearance,
         inputFormatters: [formatter],
         prefix: Row(
