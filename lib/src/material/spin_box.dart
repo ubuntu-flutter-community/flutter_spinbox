@@ -76,7 +76,7 @@ class SpinBox extends BaseSpinBox {
     this.textAlign = TextAlign.center,
     this.textDirection = TextDirection.ltr,
     this.textStyle,
-    this.toolbarOptions,
+    this.contextMenuBuilder,
     this.showCursor,
     this.cursorColor,
     this.enableInteractiveSelection = true,
@@ -261,8 +261,8 @@ class SpinBox extends BaseSpinBox {
   /// See [TextField.style].
   final TextStyle? textStyle;
 
-  /// See [TextField.toolbarOptions].
-  final ToolbarOptions? toolbarOptions;
+  /// See [TextField.contextMenuBuilder].
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
 
   /// See [TextField.onSubmitted].
   ///
@@ -336,7 +336,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
     final isHorizontal = widget.direction == Axis.horizontal;
 
     if (isHorizontal) {
-      final caption = theme.textTheme.caption;
+      final caption = theme.textTheme.bodySmall;
       if (errorText != null) {
         bottom = _textHeight(errorText, caption!.merge(decoration.errorStyle));
       }
@@ -397,7 +397,7 @@ class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
         textDirection: widget.textDirection,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
-        toolbarOptions: widget.toolbarOptions,
+        contextMenuBuilder: widget.contextMenuBuilder,
         keyboardAppearance: widget.keyboardAppearance,
         inputFormatters: [formatter],
         decoration: inputDecoration,
