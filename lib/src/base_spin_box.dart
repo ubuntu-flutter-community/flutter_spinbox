@@ -164,7 +164,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
       if (hasFocus) {
         _selectAll();
       } else {
-        fixupValue(_controller.text);
+        widget.onSubmitted?.call(fixupValue(_controller.text));
       }
     });
   }
