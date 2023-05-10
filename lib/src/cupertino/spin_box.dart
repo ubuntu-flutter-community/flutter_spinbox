@@ -265,10 +265,10 @@ class CupertinoSpinBox extends BaseSpinBox {
   final void Function(double)? onSubmitted;
 
   @override
-  State<CupertinoSpinBox> createState() => _CupertinoSpinBoxState();
+  State<CupertinoSpinBox> createState() => CupertinoSpinBoxState();
 }
 
-class _CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
+class CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
   @override
   Widget build(BuildContext context) {
     final isHorizontal = widget.direction == Axis.horizontal;

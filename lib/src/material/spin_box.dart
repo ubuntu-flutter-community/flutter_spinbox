@@ -273,10 +273,10 @@ class SpinBox extends BaseSpinBox {
   final void Function(double)? onSubmitted;
 
   @override
-  State<SpinBox> createState() => _SpinBoxState();
+  State<SpinBox> createState() => SpinBoxState();
 }
 
-class _SpinBoxState extends State<SpinBox> with SpinBoxMixin {
+class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
   Color? _iconColor(ThemeData theme, String? errorText) {
     if (!widget.enabled) return theme.disabledColor;
     if (hasFocus && errorText == null) return theme.colorScheme.primary;
