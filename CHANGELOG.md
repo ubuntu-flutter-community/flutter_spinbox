@@ -1,3 +1,7 @@
+## [0.13.1] - 2023-05-11
+
+* Fixed `onSubmitted` behavior and public State classes (#86)
+
 ## [0.13.0] - 2023-02-26
 
 * Upgrade to Flutter 3.7
