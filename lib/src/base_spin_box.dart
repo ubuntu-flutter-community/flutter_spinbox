@@ -52,6 +52,9 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
 
+  // record previous focus state
+  late bool _hasFocusPrev;
+
   double get value => _value;
   bool get hasFocus => _focusNode.hasFocus;
   FocusNode get focusNode => _focusNode;
@@ -86,6 +89,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     _controller.addListener(_updateValue);
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(_handleFocusChanged);
+    _hasFocusPrev = hasFocus;
   }
 
   @override
@@ -165,8 +169,13 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
         _selectAll();
       } else {
         final value = fixupValue(_controller.text);
-        widget.onSubmitted?.call(value);
+        // Checking for valid state transitions is necessary
+        // because `_handleFocusChanged` is called when Spinbox are enabled
+        // or disabled.
+        if (_hasFocusPrev) widget.onSubmitted?.call(value);
       }
+
+      _hasFocusPrev = hasFocus;
     });
   }
 
