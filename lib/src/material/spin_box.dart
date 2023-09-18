@@ -87,6 +87,7 @@ class SpinBox extends BaseSpinBox {
     this.beforeChange,
     this.afterChange,
     this.focusNode,
+    this.decimalSeparator = ".",
   })  : assert(min <= max),
         keyboardType = keyboardType ??
             TextInputType.numberWithOptions(
@@ -217,6 +218,12 @@ class SpinBox extends BaseSpinBox {
 
   @override
   final VoidCallback? afterChange;
+
+  /// The decimal separator used for formatting the value.
+  ///
+  /// Defaults to `.`.
+  @override
+  final String decimalSeparator;
 
   /// See [TextField.enabled].
   final bool enabled;
