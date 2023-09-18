@@ -44,6 +44,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   VoidCallback? get afterChange;
   bool get readOnly;
   FocusNode? get focusNode;
+  String get decimalSeparator;
 }
 
 mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
@@ -57,11 +58,11 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
   SpinFormatter get formatter => SpinFormatter(
-      min: widget.min, max: widget.max, decimals: widget.decimals);
+      min: widget.min, max: widget.max, decimals: widget.decimals, decimalSeparator: widget.decimalSeparator);
 
-  static double _parseValue(String text) => double.tryParse(text) ?? 0;
+  double _parseValue(String text) => double.tryParse(text.replaceAll(widget.decimalSeparator, '.')) ?? 0;
   String _formatText(double value) {
-    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
+    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0').replaceAll('.', widget.decimalSeparator);
   }
 
   Map<ShortcutActivator, VoidCallback> get bindings {
