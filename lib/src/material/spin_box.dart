@@ -404,7 +404,7 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
         textInputAction: widget.textInputAction,
         contextMenuBuilder: widget.contextMenuBuilder,
         keyboardAppearance: widget.keyboardAppearance,
-        inputFormatters: [formatter]+widget.inputFormatters,
+        inputFormatters: [formatter,...widget.inputFormatters],
         decoration: inputDecoration,
         enableInteractiveSelection: widget.enableInteractiveSelection,
         showCursor: widget.showCursor,

@@ -288,7 +288,7 @@ class CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
         textInputAction: widget.textInputAction,
         contextMenuBuilder: widget.contextMenuBuilder,
         keyboardAppearance: widget.keyboardAppearance,
-        inputFormatters: [formatter]+widget.inputFormatters,
+        inputFormatters: [formatter,...widget.inputFormatters],
         prefix: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
