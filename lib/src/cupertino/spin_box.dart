@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 import '../base_spin_box.dart';
 import 'spin_button.dart';
@@ -78,6 +79,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.showCursor,
     this.cursorColor,
     this.enableInteractiveSelection = true,
+    this.inputFormatters = const [],
     this.spacing = 8,
     this.onChanged,
     this.onSubmitted,
@@ -256,6 +258,9 @@ class CupertinoSpinBox extends BaseSpinBox {
   /// See [CupertinoTextField.contextMenuBuilder].
   final EditableTextContextMenuBuilder? contextMenuBuilder;
 
+  /// See [TextField.inputFormatters]
+  final List<TextInputFormatter> inputFormatters;
+
   /// See [TextField.onSubmitted].
   ///
   /// Is also called when an increment or decrement button is pressed.
@@ -283,7 +288,7 @@ class CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
         textInputAction: widget.textInputAction,
         contextMenuBuilder: widget.contextMenuBuilder,
         keyboardAppearance: widget.keyboardAppearance,
-        inputFormatters: [formatter],
+        inputFormatters: [formatter]+widget.inputFormatters,
         prefix: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
