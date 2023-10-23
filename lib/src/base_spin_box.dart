@@ -40,6 +40,7 @@ abstract class BaseSpinBox extends StatefulWidget {
   void Function(double)? get onSubmitted;
   ValueChanged<double>? get onChanged;
   bool Function(double value)? get canChange;
+  String Function(double)? get customFormatText;
   VoidCallback? get beforeChange;
   VoidCallback? get afterChange;
   bool get readOnly;
@@ -61,7 +62,9 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
 
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) {
-    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
+    return (widget.customFormatText==null)?
+        value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0'):
+        widget.customFormatText!(value);
   }
 
   Map<ShortcutActivator, VoidCallback> get bindings {

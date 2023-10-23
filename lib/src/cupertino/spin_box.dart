@@ -86,6 +86,7 @@ class CupertinoSpinBox extends BaseSpinBox {
     this.canChange,
     this.beforeChange,
     this.afterChange,
+    this.customFormatText,
     this.focusNode,
   })  : assert(min <= max),
         keyboardType = keyboardType ??
@@ -214,6 +215,9 @@ class CupertinoSpinBox extends BaseSpinBox {
 
   @override
   final VoidCallback? afterChange;
+
+  @override
+  final String Function(double value)? customFormatText;
 
   /// See [CupertinoTextField.enabled].
   final bool enabled;
