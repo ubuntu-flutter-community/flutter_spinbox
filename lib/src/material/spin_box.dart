@@ -23,7 +23,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../base_spin_box.dart';
 import 'spin_box_theme.dart';
@@ -81,7 +80,6 @@ class SpinBox extends BaseSpinBox {
     this.showCursor,
     this.cursorColor,
     this.enableInteractiveSelection = true,
-    this.inputFormatters = const [],
     this.spacing = 8,
     this.onChanged,
     this.onSubmitted,
@@ -270,9 +268,6 @@ class SpinBox extends BaseSpinBox {
   /// See [TextField.contextMenuBuilder].
   final EditableTextContextMenuBuilder? contextMenuBuilder;
 
-  /// See [TextField.inputFormatters]
-  final List<TextInputFormatter> inputFormatters;
-
   /// See [TextField.onSubmitted].
   ///
   /// Is also called when an increment or decrement button is pressed.
@@ -408,7 +403,7 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
         textInputAction: widget.textInputAction,
         contextMenuBuilder: widget.contextMenuBuilder,
         keyboardAppearance: widget.keyboardAppearance,
-        inputFormatters: widget.inputFormatters,
+        inputFormatters: [formatter],
         decoration: inputDecoration,
         enableInteractiveSelection: widget.enableInteractiveSelection,
         showCursor: widget.showCursor,
