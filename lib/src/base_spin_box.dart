@@ -181,7 +181,11 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     final v = _parseValue(value);
     if (value.isEmpty || (v < widget.min || v > widget.max)) {
       // will trigger notify to _updateValue()
-      _controller.text = _formatText(_cachedValue);
+      final newText = _formatText(_cachedValue);
+      _controller.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length),
+      );
     } else {
       _cachedValue = _value;
     }
@@ -210,7 +214,18 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     if (oldWidget.value != widget.value) {
       _controller.removeListener(_updateValue);
       _value = _cachedValue = widget.value;
-      _updateController(oldWidget.value, widget.value);
+
+      // When value is reset to 0 (default), ensure cursor is at the end
+      if (widget.value == 0 && oldWidget.value != 0) {
+        final text = _formatText(widget.value);
+        _controller.value = TextEditingValue(
+          text: text,
+          selection: TextSelection.collapsed(offset: text.length),
+        );
+      } else {
+        _updateController(oldWidget.value, widget.value);
+      }
+
       _controller.addListener(_updateValue);
     }
   }
