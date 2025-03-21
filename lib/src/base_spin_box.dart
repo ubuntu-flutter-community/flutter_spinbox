@@ -74,7 +74,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
       while (formatted.endsWith('0')) {
         formatted = formatted.substring(0, formatted.length - 1);
       }
-      // Eliminar el punto decimal si es el último carácter
+      // Remove the decimal point if it's the last character
       if (formatted.endsWith('.')) {
         formatted = formatted.substring(0, formatted.length - 1);
       }
@@ -84,13 +84,12 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
 
   Map<ShortcutActivator, VoidCallback> get bindings {
     return {
-      // ### TODO: use SingleActivator fixed in Flutter 2.10+
-      // https://github.com/flutter/flutter/issues/92717
-      LogicalKeySet(LogicalKeyboardKey.arrowUp): _stepUp,
-      LogicalKeySet(LogicalKeyboardKey.arrowDown): _stepDown,
+      // Using SingleActivator as fixed in Flutter 2.10+
+      const SingleActivator(LogicalKeyboardKey.arrowUp): _stepUp,
+      const SingleActivator(LogicalKeyboardKey.arrowDown): _stepDown,
       if (widget.pageStep != null) ...{
-        LogicalKeySet(LogicalKeyboardKey.pageUp): _pageStepUp,
-        LogicalKeySet(LogicalKeyboardKey.pageDown): _pageStepDown,
+        const SingleActivator(LogicalKeyboardKey.pageUp): _pageStepUp,
+        const SingleActivator(LogicalKeyboardKey.pageDown): _pageStepDown,
       }
     };
   }
