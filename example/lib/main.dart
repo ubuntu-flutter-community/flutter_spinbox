@@ -119,14 +119,14 @@ class VerticalSpinBoxPage extends StatelessWidget {
                   textStyle: TextStyle(fontSize: 48),
                   incrementIcon: Icon(Icons.keyboard_arrow_up, size: 64),
                   decrementIcon: Icon(Icons.keyboard_arrow_down, size: 64),
-                  iconColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.disabled)) {
+                  iconColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.disabled)) {
                       return Colors.grey;
                     }
-                    if (states.contains(MaterialState.error)) {
+                    if (states.contains(WidgetState.error)) {
                       return Colors.red;
                     }
-                    if (states.contains(MaterialState.focused)) {
+                    if (states.contains(WidgetState.focused)) {
                       return Colors.blue;
                     }
                     return Colors.black;

@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -56,12 +58,28 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   bool get hasFocus => _focusNode.hasFocus;
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
-  SpinFormatter get formatter => SpinFormatter(
-      min: widget.min, max: widget.max, decimals: widget.decimals);
+  SpinFormatter get formatter => SpinFormatter(min: widget.min, max: widget.max, decimals: widget.decimals);
 
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) {
-    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
+    // If decimals are 0 or the value has no decimal part, show as integer
+    if (widget.decimals <= 0 || value == value.truncateToDouble()) {
+      return value.toInt().toString().padLeft(widget.digits, '0');
+    }
+
+    // Format with decimals but remove trailing zeros
+    String formatted = value.toStringAsFixed(widget.decimals);
+    if (formatted.contains('.')) {
+      // Remove trailing zeros
+      while (formatted.endsWith('0')) {
+        formatted = formatted.substring(0, formatted.length - 1);
+      }
+      // Eliminar el punto decimal si es el último carácter
+      if (formatted.endsWith('.')) {
+        formatted = formatted.substring(0, formatted.length - 1);
+      }
+    }
+    return formatted.padLeft(widget.digits, '0');
   }
 
   Map<ShortcutActivator, VoidCallback> get bindings {
@@ -138,13 +156,24 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     final oldOffset = value.isNegative ? 1 : 0;
     final newOffset = _parseValue(text).isNegative ? 1 : 0;
 
-    _controller.value = _controller.value.copyWith(
-      text: text,
-      selection: selection.copyWith(
-        baseOffset: selection.baseOffset - oldOffset + newOffset,
-        extentOffset: selection.extentOffset - oldOffset + newOffset,
-      ),
-    );
+    // Preserve cursor position when possible
+    final cursorPos = selection.baseOffset;
+    if (cursorPos >= 0 && cursorPos <= _controller.text.length) {
+      _controller.value = _controller.value.copyWith(
+        text: text,
+        selection: TextSelection.collapsed(
+          offset: min(cursorPos, text.length),
+        ),
+      );
+    } else {
+      _controller.value = _controller.value.copyWith(
+        text: text,
+        selection: selection.copyWith(
+          baseOffset: selection.baseOffset - oldOffset + newOffset,
+          extentOffset: selection.extentOffset - oldOffset + newOffset,
+        ),
+      );
+    }
   }
 
   @protected
@@ -171,8 +200,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   }
 
   void _selectAll() {
-    _controller.selection = _controller.selection
-        .copyWith(baseOffset: 0, extentOffset: _controller.text.length);
+    _controller.selection = _controller.selection.copyWith(baseOffset: 0, extentOffset: _controller.text.length);
   }
 
   @override

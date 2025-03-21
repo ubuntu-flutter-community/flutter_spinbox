@@ -32,38 +32,71 @@ class SpinFormatter extends TextInputFormatter {
   final int decimals;
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     final input = newValue.text;
     if (input.isEmpty) {
       return newValue;
     }
 
+    // Allow only negative sign at the start
     final minus = input.startsWith('-');
     if (minus && min >= 0) {
       return oldValue;
     }
 
+    // Allow only positive sign at the start
     final plus = input.startsWith('+');
     if (plus && max < 0) {
       return oldValue;
     }
 
+    // Allow only the sign
     if ((minus || plus) && input.length == 1) {
       return newValue;
     }
 
-    if (decimals <= 0 && !_validateValue(int.tryParse(input))) {
+    // Allow only a decimal point
+    if (input == '.' || input == '-.' || input == '+.') {
+      return TextEditingValue(
+        text: input == '.' ? '0.' : (input == '-.' ? '-0.' : '+0.'),
+        selection: TextSelection.collapsed(offset: input.length + 1),
+      );
+    }
+
+    // Verificar si es un número válido
+    bool isValidNumber = false;
+    num? parsedValue;
+
+    if (decimals <= 0) {
+      parsedValue = int.tryParse(input);
+      isValidNumber = _validateValue(parsedValue);
+    } else {
+      // Allow partial decimal entry
+      if (input.endsWith('.')) {
+        // Allow ending with decimal point
+        String valueToCheck = input.substring(0, input.length - 1);
+        if (valueToCheck.isEmpty || valueToCheck == '-' || valueToCheck == '+') {
+          valueToCheck = '${valueToCheck}0';
+        }
+        parsedValue = double.tryParse(valueToCheck);
+        isValidNumber = _validateValue(parsedValue);
+      } else {
+        parsedValue = double.tryParse(input);
+        isValidNumber = _validateValue(parsedValue);
+      }
+    }
+
+    if (!isValidNumber) {
       return oldValue;
     }
 
-    if (decimals > 0 && !_validateValue(double.tryParse(input))) {
-      return oldValue;
-    }
-
+    // Verify number of decimals
     final dot = input.lastIndexOf('.');
-    if (dot >= 0 && decimals < input.substring(dot + 1).length) {
-      return oldValue;
+    if (dot >= 0) {
+      final decimalPart = input.substring(dot + 1);
+      if (decimals < decimalPart.length) {
+        return oldValue;
+      }
     }
 
     return newValue;
@@ -74,10 +107,12 @@ class SpinFormatter extends TextInputFormatter {
       return false;
     }
 
+    // If the value is within the range, it is valid
     if (value >= min && value <= max) {
       return true;
     }
 
+    // Allow partial values during editing
     if (value >= 0) {
       return value <= max;
     } else {

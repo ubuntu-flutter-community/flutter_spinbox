@@ -5,8 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_spinbox.dart';
 
 class TestApp extends MaterialApp {
-  TestApp({Key? key, required Widget widget})
-      : super(key: key, home: Scaffold(body: widget));
+  TestApp({Key? key, required Widget widget}) : super(key: key, home: Scaffold(body: widget));
 }
 
 void main() {
@@ -56,8 +55,7 @@ void main() {
 
   testDecimals<SpinBox>(() {
     return TestApp(
-      widget:
-          SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true),
+      widget: SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true),
     );
   });
 
@@ -83,10 +81,10 @@ void main() {
   });
 
   group('icon color', () {
-    final iconColor = MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.disabled)) return Colors.yellow;
-      if (states.contains(MaterialState.error)) return Colors.red;
-      if (states.contains(MaterialState.focused)) return Colors.blue;
+    final iconColor = WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.disabled)) return Colors.yellow;
+      if (states.contains(WidgetState.error)) return Colors.red;
+      if (states.contains(WidgetState.focused)) return Colors.blue;
       return Colors.green;
     });
 
@@ -107,8 +105,7 @@ void main() {
     testWidgets('error', (tester) async {
       await tester.pumpWidget(
         TestApp(
-          widget: SpinBox(
-              iconColor: iconColor, validator: (_) => 'error', value: 100),
+          widget: SpinBox(iconColor: iconColor, validator: (_) => 'error', value: 100),
         ),
       );
 
@@ -198,7 +195,7 @@ void main() {
         TestApp(
           widget: SpinBoxTheme(
             data: SpinBoxThemeData(
-              iconColor: MaterialStateProperty.all(Colors.black),
+              iconColor: WidgetStateProperty.all(Colors.black),
             ),
             child: SpinBox(iconColor: iconColor),
           ),

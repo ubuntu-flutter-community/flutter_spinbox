@@ -194,7 +194,7 @@ class SpinBox extends BaseSpinBox {
   ///
   /// If `null`, then the value of [SpinBoxThemeData.iconColor] is used. If
   /// that is also `null`, then pre-defined defaults are used.
-  final MaterialStateProperty<Color?>? iconColor;
+  final WidgetStateProperty<Color?>? iconColor;
 
   /// Whether the increment and decrement buttons are shown.
   ///
@@ -318,19 +318,19 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
 
     final iconColor = widget.iconColor ??
         spinBoxTheme?.iconColor ??
-        MaterialStateProperty.all(_iconColor(theme, errorText));
+        WidgetStateProperty.all(_iconColor(theme, errorText));
 
-    final states = <MaterialState>{
-      if (!widget.enabled) MaterialState.disabled,
-      if (hasFocus) MaterialState.focused,
-      if (errorText != null) MaterialState.error,
+    final states = <WidgetState>{
+      if (!widget.enabled) WidgetState.disabled,
+      if (hasFocus) WidgetState.focused,
+      if (errorText != null) WidgetState.error,
     };
 
-    final decrementStates = Set<MaterialState>.of(states);
-    if (value <= widget.min) decrementStates.add(MaterialState.disabled);
+    final decrementStates = Set<WidgetState>.of(states);
+    if (value <= widget.min) decrementStates.add(WidgetState.disabled);
 
-    final incrementStates = Set<MaterialState>.of(states);
-    if (value >= widget.max) incrementStates.add(MaterialState.disabled);
+    final incrementStates = Set<WidgetState>.of(states);
+    if (value >= widget.max) incrementStates.add(WidgetState.disabled);
 
     var bottom = 0.0;
     final isHorizontal = widget.direction == Axis.horizontal;
