@@ -338,11 +338,11 @@ void testCallbacks<S>(TestChangeBuilder builder) {
   group('callbacks', () {
     late StreamController<double> controller;
 
-    setUp(() async {
+    setUp(() {
       controller = StreamController<double>();
     });
 
-    tearDown(() async {
+    tearDown(() {
       controller.close();
     });
 
@@ -376,11 +376,11 @@ void testLongPress<S>(TestChangeBuilder builder) {
   group('long press', () {
     late StreamController<double> controller;
 
-    setUp(() async {
+    setUp(() {
       controller = StreamController<double>();
     });
 
-    tearDown(() async {
+    tearDown(() {
       controller.close();
     });
 
@@ -391,7 +391,8 @@ void testLongPress<S>(TestChangeBuilder builder) {
       final gesture = await tester.startGesture(center);
       await tester.pumpAndSettle(kLongPressTimeout);
 
-      await expectLater(controller.stream, emitsInOrder([for (double i = 1; i <= 5; ++i) i]));
+      await expectLater(
+          controller.stream, emitsInOrder([for (double i = 1; i <= 5; ++i) i]));
       gesture.up();
     });
 
@@ -402,7 +403,8 @@ void testLongPress<S>(TestChangeBuilder builder) {
       final gesture = await tester.startGesture(center);
       await tester.pumpAndSettle(kLongPressTimeout);
 
-      await expectLater(controller.stream, emitsInOrder([for (double i = -1; i <= -5; --i) i]));
+      await expectLater(controller.stream,
+          emitsInOrder([for (double i = -1; i <= -5; --i) i]));
       gesture.up();
     });
   });

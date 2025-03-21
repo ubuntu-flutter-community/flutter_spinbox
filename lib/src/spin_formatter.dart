@@ -32,7 +32,8 @@ class SpinFormatter extends TextInputFormatter {
   final int decimals;
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     final input = newValue.text;
     if (input.isEmpty) {
       return newValue;
@@ -75,7 +76,9 @@ class SpinFormatter extends TextInputFormatter {
       if (input.endsWith('.')) {
         // Allow ending with decimal point
         String valueToCheck = input.substring(0, input.length - 1);
-        if (valueToCheck.isEmpty || valueToCheck == '-' || valueToCheck == '+') {
+        if (valueToCheck.isEmpty ||
+            valueToCheck == '-' ||
+            valueToCheck == '+') {
           valueToCheck = '${valueToCheck}0';
         }
         parsedValue = double.tryParse(valueToCheck);

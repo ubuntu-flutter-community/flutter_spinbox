@@ -5,7 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_spinbox.dart';
 
 class TestApp extends MaterialApp {
-  TestApp({Key? key, required Widget widget}) : super(key: key, home: Scaffold(body: widget));
+  TestApp({Key? key, required Widget widget})
+      : super(key: key, home: Scaffold(body: widget));
 }
 
 void main() {
@@ -55,7 +56,8 @@ void main() {
 
   testDecimals<SpinBox>(() {
     return TestApp(
-      widget: SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true),
+      widget:
+          SpinBox(min: -1, max: 1, value: 0.5, decimals: 2, autofocus: true),
     );
   });
 
@@ -105,7 +107,8 @@ void main() {
     testWidgets('error', (tester) async {
       await tester.pumpWidget(
         TestApp(
-          widget: SpinBox(iconColor: iconColor, validator: (_) => 'error', value: 100),
+          widget: SpinBox(
+              iconColor: iconColor, validator: (_) => 'error', value: 100),
         ),
       );
 
