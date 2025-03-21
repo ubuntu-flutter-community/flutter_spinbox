@@ -63,7 +63,7 @@ class SpinFormatter extends TextInputFormatter {
       );
     }
 
-    // Verificar si es un número válido
+    // Verify if it's a valid number
     bool isValidNumber = false;
     num? parsedValue;
 
