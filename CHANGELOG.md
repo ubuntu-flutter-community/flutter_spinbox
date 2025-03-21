@@ -1,3 +1,8 @@
+## [0.13.2] - 2025-03-21
+
+* Fix decimal value handling
+* Fix dart analyzer warnings
+
 ## [0.13.1] - 2023-05-11
 
 * Fixed `onSubmitted` behavior and public State classes (#86)
