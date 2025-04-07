@@ -1,7 +1,7 @@
 # SpinBox for Flutter
 
 [![pub](https://img.shields.io/pub/v/flutter_spinbox.svg)](https://pub.dev/packages/flutter_spinbox)
-[![score](https://badges.bar/flutter_spinbox/pub%20points)](https://pub.dev/packages/flutter_spinbox/score)
+[![score](https://img.shields.io/pub/points/flutter_spinbox)](https://pub.dev/packages/flutter_spinbox/score)
 ![build](https://github.com/jpnurmi/flutter_spinbox/workflows/build/badge.svg)
 [![codecov](https://codecov.io/gh/jpnurmi/flutter_spinbox/branch/main/graph/badge.svg)](https://codecov.io/gh/jpnurmi/flutter_spinbox)
 [![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
