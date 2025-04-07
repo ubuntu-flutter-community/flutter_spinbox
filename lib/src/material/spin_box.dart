@@ -49,7 +49,7 @@ import 'spin_button.dart';
 class SpinBox extends BaseSpinBox {
   /// Creates a spinbox.
   SpinBox({
-    Key? key,
+    super.key,
     this.min = 0,
     this.max = 100,
     this.step = 1,
@@ -95,8 +95,7 @@ class SpinBox extends BaseSpinBox {
             ),
         enabled = (enabled ?? true) && min < max,
         incrementIcon = incrementIcon ?? const Icon(Icons.add),
-        decrementIcon = decrementIcon ?? const Icon(Icons.remove),
-        super(key: key);
+        decrementIcon = decrementIcon ?? const Icon(Icons.remove);
 
   /// The minimum value the user can enter.
   ///
@@ -194,7 +193,7 @@ class SpinBox extends BaseSpinBox {
   ///
   /// If `null`, then the value of [SpinBoxThemeData.iconColor] is used. If
   /// that is also `null`, then pre-defined defaults are used.
-  final MaterialStateProperty<Color?>? iconColor;
+  final WidgetStateProperty<Color?>? iconColor;
 
   /// Whether the increment and decrement buttons are shown.
   ///
@@ -281,14 +280,10 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
     if (!widget.enabled) return theme.disabledColor;
     if (hasFocus && errorText == null) return theme.colorScheme.primary;
 
-    switch (theme.brightness) {
-      case Brightness.dark:
-        return Colors.white70;
-      case Brightness.light:
-        return Colors.black45;
-      default:
-        return theme.iconTheme.color;
-    }
+    return switch (theme.brightness) {
+      Brightness.dark => Colors.white70,
+      Brightness.light => Colors.black45,
+    };
   }
 
   double _textHeight(String? text, TextStyle style) {
@@ -318,19 +313,19 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
 
     final iconColor = widget.iconColor ??
         spinBoxTheme?.iconColor ??
-        MaterialStateProperty.all(_iconColor(theme, errorText));
+        WidgetStateProperty.all(_iconColor(theme, errorText));
 
-    final states = <MaterialState>{
-      if (!widget.enabled) MaterialState.disabled,
-      if (hasFocus) MaterialState.focused,
-      if (errorText != null) MaterialState.error,
+    final states = <WidgetState>{
+      if (!widget.enabled) WidgetState.disabled,
+      if (hasFocus) WidgetState.focused,
+      if (errorText != null) WidgetState.error,
     };
 
-    final decrementStates = Set<MaterialState>.of(states);
-    if (value <= widget.min) decrementStates.add(MaterialState.disabled);
+    final decrementStates = Set<WidgetState>.of(states);
+    if (value <= widget.min) decrementStates.add(WidgetState.disabled);
 
-    final incrementStates = Set<MaterialState>.of(states);
-    if (value >= widget.max) incrementStates.add(MaterialState.disabled);
+    final incrementStates = Set<WidgetState>.of(states);
+    if (value >= widget.max) incrementStates.add(WidgetState.disabled);
 
     var bottom = 0.0;
     final isHorizontal = widget.direction == Axis.horizontal;

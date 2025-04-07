@@ -335,11 +335,11 @@ void testCallbacks<S>(TestChangeBuilder builder) {
   group('callbacks', () {
     late StreamController<double> controller;
 
-    setUp(() async {
+    setUp(() {
       controller = StreamController<double>();
     });
 
-    tearDown(() async {
+    tearDown(() {
       controller.close();
     });
 
@@ -373,11 +373,11 @@ void testLongPress<S>(TestChangeBuilder builder) {
   group('long press', () {
     late StreamController<double> controller;
 
-    setUp(() async {
+    setUp(() {
       controller = StreamController<double>();
     });
 
-    tearDown(() async {
+    tearDown(() {
       controller.close();
     });
 
