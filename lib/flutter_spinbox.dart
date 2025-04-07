@@ -44,7 +44,7 @@
 ///
 /// SpinBox for Flutter comes in two variants. It provides implementations for
 /// both designs in Flutter, Material and Cupertino (iOS).
-library flutter_spinbox;
+library;
 
 export 'cupertino.dart';
 export 'material.dart';

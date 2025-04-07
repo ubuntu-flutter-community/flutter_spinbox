@@ -28,7 +28,7 @@ import 'spin_formatter.dart';
 // ignore_for_file: public_member_api_docs
 
 abstract class BaseSpinBox extends StatefulWidget {
-  const BaseSpinBox({Key? key}) : super(key: key);
+  const BaseSpinBox({super.key});
 
   double get min;
   double get max;

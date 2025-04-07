@@ -23,12 +23,12 @@ class SpinBoxThemeData with Diagnosticable {
   /// The color to use for [SpinBox.incrementIcon] and [SpinBox.decrementIcon].
   ///
   /// Resolves in the following states:
-  ///  * [MaterialState.focused].
-  ///  * [MaterialState.disabled].
-  ///  * [MaterialState.error].
+  ///  * [WidgetState.focused].
+  ///  * [WidgetState.disabled].
+  ///  * [WidgetState.error].
   ///
   /// If specified, overrides the default value of [SpinBox.iconColor].
-  final MaterialStateProperty<Color?>? iconColor;
+  final WidgetStateProperty<Color?>? iconColor;
 
   /// See [TextField.decoration].
   ///
@@ -39,7 +39,7 @@ class SpinBoxThemeData with Diagnosticable {
   /// new values.
   SpinBoxThemeData copyWith({
     double? iconSize,
-    MaterialStateProperty<Color?>? iconColor,
+    WidgetStateProperty<Color?>? iconColor,
     InputDecoration? decoration,
   }) {
     return SpinBoxThemeData(
@@ -73,7 +73,7 @@ class SpinBoxThemeData with Diagnosticable {
       ),
     );
     properties.add(
-      DiagnosticsProperty<MaterialStateProperty<Color?>>(
+      DiagnosticsProperty<WidgetStateProperty<Color?>>(
         'iconColor',
         iconColor,
         defaultValue: null,
@@ -103,10 +103,10 @@ class SpinBoxTheme extends InheritedWidget {
   /// Constructs a checkbox theme that configures all descendant [SpinBox]
   /// widgets.
   const SpinBoxTheme({
-    Key? key,
+    super.key,
     required this.data,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   /// The properties used for all descendant [SpinBox] widgets.
   final SpinBoxThemeData data;

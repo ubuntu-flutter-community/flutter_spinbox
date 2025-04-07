@@ -28,7 +28,7 @@ import '../spin_gesture.dart';
 
 class SpinButton extends StatelessWidget {
   const SpinButton({
-    Key? key,
+    super.key,
     required this.icon,
     this.iconSize,
     this.color,
@@ -37,7 +37,7 @@ class SpinButton extends StatelessWidget {
     this.acceleration,
     required this.interval,
     required this.onStep,
-  }) : super(key: key);
+  });
 
   final Icon icon;
   final double? iconSize;

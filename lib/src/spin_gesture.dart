@@ -28,14 +28,14 @@ import 'package:flutter/material.dart';
 
 class SpinGesture extends StatefulWidget {
   const SpinGesture({
-    Key? key,
+    super.key,
     this.enabled = true,
     required this.child,
     required this.step,
     this.acceleration,
     required this.interval,
     required this.onStep,
-  }) : super(key: key);
+  });
 
   final bool enabled;
   final Widget child;

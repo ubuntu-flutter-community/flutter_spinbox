@@ -48,7 +48,7 @@ part 'third_party/default_rounded_border.dart';
 class CupertinoSpinBox extends BaseSpinBox {
   /// Creates a spinbox.
   CupertinoSpinBox({
-    Key? key,
+    super.key,
     this.min = 0,
     this.max = 100,
     this.step = 1,
@@ -96,8 +96,7 @@ class CupertinoSpinBox extends BaseSpinBox {
         incrementIcon =
             incrementIcon ?? const Icon(CupertinoIcons.plus_circled),
         decrementIcon =
-            decrementIcon ?? const Icon(CupertinoIcons.minus_circled),
-        super(key: key);
+            decrementIcon ?? const Icon(CupertinoIcons.minus_circled);
 
   /// The minimum value the user can enter.
   ///
