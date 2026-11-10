@@ -60,7 +60,6 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   SpinFormatter get formatter => SpinFormatter(
       min: widget.min, max: widget.max, decimals: widget.decimals);
 
-  static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) {
     return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
   }
@@ -107,19 +106,26 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
 
   void _updateValue() {
     if (_updatingController) return;
-    final v = _parseValue(_controller.text);
-    if (v == _value) return;
+    // Empty input, a lone sign, or a decimal separator is incomplete text.
+    // Keep the last numeric value rather than broadcasting a spurious zero.
+    final parsed = double.tryParse(_controller.text);
+    if (parsed == null || !parsed.isFinite || parsed == _value) return;
 
-    if (widget.canChange?.call(v) == false) {
-      controller.text = _formatText(_cachedValue);
-      setState(() {
-        _value = _cachedValue;
-      });
+    if (widget.canChange?.call(parsed) == false) {
+      final previous =
+          _value >= widget.min && _value <= widget.max ? _value : _cachedValue;
+      _updateController(_value, previous);
+      if (previous != _value) setState(() => _value = previous);
       return;
     }
 
-    setState(() => _value = v);
-    widget.onChanged?.call(v);
+    setState(() => _value = parsed);
+    // A temporarily out-of-range number is allowed while typing, but must
+    // not trigger expensive client-side work until it is a valid value.
+    if (parsed >= widget.min && parsed <= widget.max) {
+      _cachedValue = parsed;
+      widget.onChanged?.call(parsed);
+    }
   }
 
   void setValue(double v) {
@@ -139,7 +145,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     widget.beforeChange?.call();
     setState(() {
       _updateController(_value, newValue);
-      _value = newValue;
+      _value = _cachedValue = newValue;
     });
     widget.onChanged?.call(newValue);
     widget.onSubmitted?.call(newValue);
@@ -176,13 +182,16 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   }
 
   @protected
-  double fixupValue(String value) {
-    final v = _parseValue(value);
-    if (value.isEmpty || (v < widget.min || v > widget.max)) {
-      // will trigger notify to _updateValue()
-      _controller.text = _formatText(_cachedValue);
+  double fixupValue(String text) {
+    final parsed = double.tryParse(text);
+    if (parsed == null ||
+        !parsed.isFinite ||
+        parsed < widget.min ||
+        parsed > widget.max) {
+      _updateController(_value, _cachedValue);
+      _value = _cachedValue;
     } else {
-      _cachedValue = _value;
+      _value = _cachedValue = parsed;
     }
     return _cachedValue;
   }
