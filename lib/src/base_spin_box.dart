@@ -49,7 +49,7 @@ abstract class BaseSpinBox extends StatefulWidget {
 mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late double _value;
   late double _cachedValue;
-  late final FocusNode _focusNode;
+  late FocusNode _focusNode;
   late final TextEditingController _controller;
   late SpinFormatter _formatter;
   late Map<ShortcutActivator, VoidCallback> _bindings;
@@ -88,8 +88,8 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   @override
   void initState() {
     super.initState();
-    _value = widget.value;
-    _cachedValue = widget.value;
+    _value = widget.value.clamp(widget.min, widget.max);
+    _cachedValue = _value;
     _formatter = _createFormatter();
     _bindings = _createBindings();
     _controller = TextEditingController(text: _formatText(_value));
@@ -226,9 +226,19 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   void didUpdateWidget(T oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // A parent can replace an externally owned FocusNode without replacing
+    // this widget's State. Rebind to the new node and release owned nodes.
+    if (oldWidget.focusNode != widget.focusNode) {
+      _focusNode.removeListener(_handleFocusChanged);
+      if (oldWidget.focusNode == null) _focusNode.dispose();
+      _focusNode = widget.focusNode ?? FocusNode();
+      _focusNode.addListener(_handleFocusChanged);
+    }
+
     final boundsChanged =
         oldWidget.min != widget.min || oldWidget.max != widget.max;
     final precisionChanged = oldWidget.decimals != widget.decimals;
+    final digitsChanged = oldWidget.digits != widget.digits;
     if (boundsChanged || precisionChanged) {
       _formatter = _createFormatter();
     }
@@ -237,10 +247,23 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     }
 
     if (oldWidget.value != widget.value) {
-      _controller.removeListener(_updateValue);
-      _value = _cachedValue = widget.value;
-      _updateController(oldWidget.value, widget.value);
-      _controller.addListener(_updateValue);
+      final nextValue = widget.value.clamp(widget.min, widget.max);
+      // Preserve a user's partially formatted text and cursor when a
+      // controlled parent echoes the same numeric value on each keystroke.
+      final sameEditingValue = hasFocus &&
+          !precisionChanged &&
+          !digitsChanged &&
+          double.tryParse(_controller.text) == nextValue;
+      if (!sameEditingValue) _updateController(_value, nextValue);
+      _value = _cachedValue = nextValue;
+    } else if (boundsChanged || precisionChanged || digitsChanged) {
+      final nextValue = _value.clamp(widget.min, widget.max);
+      if (nextValue != _value || precisionChanged || digitsChanged) {
+        _updateController(_value, nextValue);
+        _value = _cachedValue = nextValue;
+      } else {
+        _cachedValue = _cachedValue.clamp(widget.min, widget.max);
+      }
     }
   }
 }

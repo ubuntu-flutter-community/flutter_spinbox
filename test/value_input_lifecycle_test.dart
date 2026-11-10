@@ -64,6 +64,56 @@ void main() {
     expect(state.controller.text, '7');
   });
 
+  testWidgets('focus node replacement updates state', (tester) async {
+    final first = FocusNode();
+    final second = FocusNode();
+    addTearDown(first.dispose);
+    addTearDown(second.dispose);
+
+    await tester.pumpWidget(_app(SpinBox(value: 5, focusNode: first)));
+    await tester.pumpWidget(_app(SpinBox(value: 5, focusNode: second)));
+
+    final state = tester.state<SpinBoxState>(find.byType(SpinBox));
+    expect(state.focusNode, same(second));
+    second.requestFocus();
+    await tester.pump();
+    expect(state.hasFocus, isTrue);
+  });
+
+  testWidgets('shrinking bounds constrains the value', (tester) async {
+    await tester.pumpWidget(_app(SpinBox(max: 30, value: 10)));
+    await tester.pumpWidget(_app(SpinBox(min: 11, max: 30, value: 10)));
+
+    final state = tester.state<SpinBoxState>(find.byType(SpinBox));
+    expect(state.value, 11);
+    expect(state.controller.text, '11');
+  });
+
+  testWidgets('controlled parent preserves typed text', (tester) async {
+    double value = 1;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (context, setState) => SpinBox(
+              value: value,
+              decimals: 2,
+              autofocus: true,
+              onChanged: (v) => setState(() => value = v),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.enterText(find.byType(TextField), '3.4');
+    await tester.pump();
+    final state = tester.state<SpinBoxState>(find.byType(SpinBox));
+    expect(state.controller.text, '3.4');
+    expect(state.value, 3.4);
+  });
+
   testWidgets('input helpers are reused on rebuild', (tester) async {
     await tester.pumpWidget(_app(SpinBox(value: 5, pageStep: 10)));
     final state = tester.state<SpinBoxState>(find.byType(SpinBox));
