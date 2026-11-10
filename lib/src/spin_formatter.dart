@@ -57,7 +57,11 @@ class SpinFormatter extends TextInputFormatter {
       return oldValue;
     }
 
-    if (decimals > 0 && !_validateValue(double.tryParse(input))) {
+    if (decimals > 0 &&
+        input != '.' &&
+        input != '-.' &&
+        input != '+.' &&
+        !_validateValue(double.tryParse(input))) {
       return oldValue;
     }
 
