@@ -40,5 +40,9 @@ jobs:
         uses: subosito/flutter-action@v2
       - name: Install dependencies
         run: flutter pub get
+      # Flutter may automatically rewrite analysis_options.yaml during pub get.
+      # Keep the publication check focused on tracked package changes.
+      - name: Restore generated analysis options changes
+        run: git restore analysis_options.yaml
       - name: Dry-run
         run: flutter pub publish --dry-run
