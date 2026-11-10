@@ -121,14 +121,22 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   }
 
   void setValue(double v) {
-    final newValue = v.clamp(widget.min, widget.max);
-    if (newValue == value) return;
-
+    if (!v.isFinite) return;
+    final clamped = v.clamp(widget.min, widget.max);
+    final newValue = double.parse(_formatText(clamped));
+    // Formatting can round a value beyond a fractional bound (for example
+    // 0.29 becomes 0.3 with one decimal place). Never submit an invalid step.
+    if (!newValue.isFinite ||
+        newValue < widget.min ||
+        newValue > widget.max ||
+        newValue == _value) {
+      return;
+    }
     if (widget.canChange?.call(newValue) == false) return;
 
     widget.beforeChange?.call();
     setState(() => _updateController(value, newValue));
-    widget.onSubmitted?.call(double.parse(_formatText(newValue)));
+    widget.onSubmitted?.call(newValue);
     widget.afterChange?.call();
   }
 
