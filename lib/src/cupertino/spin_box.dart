@@ -283,28 +283,32 @@ class CupertinoSpinBoxState extends State<CupertinoSpinBox> with SpinBoxMixin {
         contextMenuBuilder: widget.contextMenuBuilder,
         keyboardAppearance: widget.keyboardAppearance,
         inputFormatters: [formatter],
-        prefix: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isHorizontal && widget.showButtons)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
-                child: Icon(null, size: widget.decrementIcon.size),
-              ),
-            if (widget.prefix != null) widget.prefix!,
-          ],
-        ),
-        suffix: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.suffix != null) widget.suffix!,
-            if (isHorizontal && widget.showButtons)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpinPadding),
-                child: Icon(null, size: widget.incrementIcon.size),
-              ),
-          ],
-        ),
+        prefix: isHorizontal && widget.showButtons
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: kSpinPadding),
+                    child: Icon(null, size: widget.decrementIcon.size),
+                  ),
+                  if (widget.prefix != null) widget.prefix!,
+                ],
+              )
+            : widget.prefix,
+        suffix: isHorizontal && widget.showButtons
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.suffix != null) widget.suffix!,
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: kSpinPadding),
+                    child: Icon(null, size: widget.incrementIcon.size),
+                  ),
+                ],
+              )
+            : widget.suffix,
         padding: widget.padding,
         decoration: widget.decoration,
         enableInteractiveSelection: widget.enableInteractiveSelection,
