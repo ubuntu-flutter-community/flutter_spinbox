@@ -51,20 +51,28 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late double _cachedValue;
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
+  late SpinFormatter _formatter;
+  late Map<ShortcutActivator, VoidCallback> _bindings;
   bool _updatingController = false;
 
   double get value => _value;
   bool get hasFocus => _focusNode.hasFocus;
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
-  SpinFormatter get formatter => SpinFormatter(
-      min: widget.min, max: widget.max, decimals: widget.decimals);
+  SpinFormatter get formatter => _formatter;
+  Map<ShortcutActivator, VoidCallback> get bindings => _bindings;
 
   String _formatText(double value) {
     return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
   }
 
-  Map<ShortcutActivator, VoidCallback> get bindings {
+  SpinFormatter _createFormatter() => SpinFormatter(
+        min: widget.min,
+        max: widget.max,
+        decimals: widget.decimals,
+      );
+
+  Map<ShortcutActivator, VoidCallback> _createBindings() {
     return {
       // ### TODO: use SingleActivator fixed in Flutter 2.10+
       // https://github.com/flutter/flutter/issues/92717
@@ -82,6 +90,8 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     super.initState();
     _value = widget.value;
     _cachedValue = widget.value;
+    _formatter = _createFormatter();
+    _bindings = _createBindings();
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
     _focusNode = widget.focusNode ?? FocusNode();
@@ -215,6 +225,17 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   @override
   void didUpdateWidget(T oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    final boundsChanged =
+        oldWidget.min != widget.min || oldWidget.max != widget.max;
+    final precisionChanged = oldWidget.decimals != widget.decimals;
+    if (boundsChanged || precisionChanged) {
+      _formatter = _createFormatter();
+    }
+    if ((oldWidget.pageStep == null) != (widget.pageStep == null)) {
+      _bindings = _createBindings();
+    }
+
     if (oldWidget.value != widget.value) {
       _controller.removeListener(_updateValue);
       _value = _cachedValue = widget.value;

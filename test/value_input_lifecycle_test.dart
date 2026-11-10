@@ -64,6 +64,23 @@ void main() {
     expect(state.controller.text, '7');
   });
 
+  testWidgets('input helpers are reused on rebuild', (tester) async {
+    await tester.pumpWidget(_app(SpinBox(value: 5, pageStep: 10)));
+    final state = tester.state<SpinBoxState>(find.byType(SpinBox));
+    final formatter = state.formatter;
+    final bindings = state.bindings;
+
+    await tester.pumpWidget(_app(SpinBox(value: 6, pageStep: 10)));
+    expect(state.formatter, same(formatter));
+    expect(state.bindings, same(bindings));
+
+    await tester.pumpWidget(
+      _app(SpinBox(value: 6, decimals: 2, pageStep: 10)),
+    );
+    expect(state.formatter, isNot(same(formatter)));
+    expect(state.bindings, same(bindings));
+  });
+
   testWidgets('button step sends one numeric change callback', (tester) async {
     final changes = <double>[];
     await tester.pumpWidget(
