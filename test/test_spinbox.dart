@@ -240,7 +240,7 @@ void testInput<S>(TestBuilder builder) {
 
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
-      expect(tester.state(find.byType(S)), hasValue(0));
+      expect(tester.state(find.byType(S)), hasValue(1));
       expect(find.editableText, hasText(''));
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -257,7 +257,7 @@ void testInput<S>(TestBuilder builder) {
 
       tester.testTextInput.updateEditingValue(TextEditingValue.empty);
       await tester.idle();
-      expect(tester.state(find.byType(S)), hasValue(0));
+      expect(tester.state(find.byType(S)), hasValue(1));
 
       find.editableText.focusNode.unfocus();
       await tester.idle();

@@ -403,10 +403,7 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
         enabled: widget.enabled,
         readOnly: widget.readOnly,
         focusNode: focusNode,
-        onSubmitted: (v) {
-          final value = fixupValue(v);
-          widget.onSubmitted?.call(value);
-        },
+        onSubmitted: submitValue,
       ),
     );
 
