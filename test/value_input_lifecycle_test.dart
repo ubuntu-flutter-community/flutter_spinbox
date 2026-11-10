@@ -7,6 +7,16 @@ Widget _app(SpinBox spinBox) {
 }
 
 void main() {
+  testWidgets('button step sends one numeric change callback', (tester) async {
+    final changes = <double>[];
+    await tester.pumpWidget(
+      _app(SpinBox(value: 2, onChanged: changes.add)),
+    );
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    expect(changes, <double>[3]);
+  });
+
   testWidgets('step rounding never escapes fractional bounds', (tester) async {
     await tester.pumpWidget(
       _app(SpinBox(max: 0.29, value: 0.2, step: 0.1, decimals: 1)),

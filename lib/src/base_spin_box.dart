@@ -51,6 +51,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late double _cachedValue;
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
+  bool _updatingController = false;
 
   double get value => _value;
   bool get hasFocus => _focusNode.hasFocus;
@@ -105,6 +106,7 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   void _pageStepDown() => setValue(value - widget.pageStep!);
 
   void _updateValue() {
+    if (_updatingController) return;
     final v = _parseValue(_controller.text);
     if (v == _value) return;
 
@@ -135,7 +137,11 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     if (widget.canChange?.call(newValue) == false) return;
 
     widget.beforeChange?.call();
-    setState(() => _updateController(value, newValue));
+    setState(() {
+      _updateController(_value, newValue);
+      _value = newValue;
+    });
+    widget.onChanged?.call(newValue);
     widget.onSubmitted?.call(newValue);
     widget.afterChange?.call();
   }
@@ -143,16 +149,30 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   void _updateController(double oldValue, double newValue) {
     final text = _formatText(newValue);
     final selection = _controller.selection;
-    final oldOffset = value.isNegative ? 1 : 0;
-    final newOffset = _parseValue(text).isNegative ? 1 : 0;
+    final oldOffset = oldValue.isNegative ? 1 : 0;
+    final newOffset = newValue.isNegative ? 1 : 0;
 
-    _controller.value = _controller.value.copyWith(
-      text: text,
-      selection: selection.copyWith(
-        baseOffset: selection.baseOffset - oldOffset + newOffset,
-        extentOffset: selection.extentOffset - oldOffset + newOffset,
-      ),
-    );
+    final updatedSelection = selection.isValid
+        ? selection.copyWith(
+            baseOffset: (selection.baseOffset - oldOffset + newOffset)
+                .clamp(0, text.length),
+            extentOffset: (selection.extentOffset - oldOffset + newOffset)
+                .clamp(0, text.length),
+          )
+        : selection;
+
+    // Updating the text controller already notifies EditableText. Suppress
+    // our own listener to avoid a second setState/onChanged per button press.
+    _updatingController = true;
+    try {
+      _controller.value = _controller.value.copyWith(
+        text: text,
+        selection: updatedSelection,
+        composing: TextRange.empty,
+      );
+    } finally {
+      _updatingController = false;
+    }
   }
 
   @protected
