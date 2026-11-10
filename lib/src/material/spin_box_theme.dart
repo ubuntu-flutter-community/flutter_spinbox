@@ -50,7 +50,7 @@ class SpinBoxThemeData with Diagnosticable {
   }
 
   @override
-  int get hashCode => Object.hash(iconColor, decoration);
+  int get hashCode => Object.hash(iconSize, iconColor, decoration);
 
   @override
   bool operator ==(Object other) {
