@@ -54,6 +54,9 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late SpinFormatter _formatter;
   late Map<ShortcutActivator, VoidCallback> _bindings;
   bool _updatingController = false;
+  bool _submittedOnBlur = false;
+  bool _submittedFromKeyboard = false;
+  String? _keyboardSubmissionText;
 
   double get value => _value;
   bool get hasFocus => _focusNode.hasFocus;
@@ -206,13 +209,38 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     return _cachedValue;
   }
 
+  /// EditableText invokes onSubmitted after requesting a focus change, but
+  /// FocusNode listeners may be notified before or after that callback.
+  /// Remember both paths so an editing completion is submitted just once.
+  @protected
+  void submitValue(String text) {
+    if (_submittedOnBlur) {
+      _submittedOnBlur = false;
+      return;
+    }
+    final value = fixupValue(text);
+    _submittedFromKeyboard = true;
+    _keyboardSubmissionText = _controller.text;
+    widget.onSubmitted?.call(value);
+  }
+
   void _handleFocusChanged() {
     setState(() {
       if (hasFocus) {
+        _submittedOnBlur = false;
+        _submittedFromKeyboard = false;
+        _keyboardSubmissionText = null;
         _selectAll();
       } else {
         final value = fixupValue(_controller.text);
-        widget.onSubmitted?.call(value);
+        final alreadySubmitted = _submittedFromKeyboard &&
+            _keyboardSubmissionText == _controller.text;
+        _submittedFromKeyboard = false;
+        _keyboardSubmissionText = null;
+        if (!alreadySubmitted) {
+          _submittedOnBlur = true;
+          widget.onSubmitted?.call(value);
+        }
       }
     });
   }

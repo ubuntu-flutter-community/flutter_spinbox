@@ -153,6 +153,58 @@ void main() {
     expect(state.controller.text, '0.2');
   });
 
+  testWidgets('Done submits only once after focus loss', (tester) async {
+    final submissions = <double>[];
+    await tester.pumpWidget(
+      _app(SpinBox(
+        value: 7,
+        autofocus: true,
+        onSubmitted: submissions.add,
+      )),
+    );
+    await tester.showKeyboard(find.byType(SpinBox));
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+    expect(submissions, <double>[7]);
+  });
+
+  testWidgets('focus loss does not resubmit after Done', (tester) async {
+    final submissions = <double>[];
+    await tester.pumpWidget(
+      _app(SpinBox(
+        value: 7,
+        autofocus: true,
+        onSubmitted: submissions.add,
+      )),
+    );
+    await tester.showKeyboard(find.byType(SpinBox));
+    final state = tester.state<SpinBoxState>(find.byType(SpinBox));
+    // ignore: invalid_use_of_protected_member
+    state.submitValue('7');
+    state.focusNode.unfocus();
+    await tester.pump();
+    expect(submissions, <double>[7]);
+  });
+
+  testWidgets('Done after focus loss does not resubmit', (tester) async {
+    final submissions = <double>[];
+    await tester.pumpWidget(
+      _app(SpinBox(
+        value: 7,
+        autofocus: true,
+        onSubmitted: submissions.add,
+      )),
+    );
+    await tester.showKeyboard(find.byType(SpinBox));
+    final state = tester.state<SpinBoxState>(find.byType(SpinBox));
+    state.focusNode.unfocus();
+    await tester.pump();
+    // ignore: invalid_use_of_protected_member
+    state.submitValue('7');
+    await tester.pump();
+    expect(submissions, <double>[7]);
+  });
+
   testWidgets('non-finite programmatic steps are ignored', (tester) async {
     final changes = <double>[];
     await tester.pumpWidget(
