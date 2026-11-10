@@ -51,20 +51,28 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   late double _cachedValue;
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
+  late SpinFormatter _formatter;
+  late Map<ShortcutActivator, VoidCallback> _bindings;
+  bool _updatingController = false;
 
   double get value => _value;
   bool get hasFocus => _focusNode.hasFocus;
   FocusNode get focusNode => _focusNode;
   TextEditingController get controller => _controller;
-  SpinFormatter get formatter => SpinFormatter(
-      min: widget.min, max: widget.max, decimals: widget.decimals);
+  SpinFormatter get formatter => _formatter;
+  Map<ShortcutActivator, VoidCallback> get bindings => _bindings;
 
-  static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) {
     return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
   }
 
-  Map<ShortcutActivator, VoidCallback> get bindings {
+  SpinFormatter _createFormatter() => SpinFormatter(
+        min: widget.min,
+        max: widget.max,
+        decimals: widget.decimals,
+      );
+
+  Map<ShortcutActivator, VoidCallback> _createBindings() {
     return {
       // ### TODO: use SingleActivator fixed in Flutter 2.10+
       // https://github.com/flutter/flutter/issues/92717
@@ -82,6 +90,8 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
     super.initState();
     _value = widget.value;
     _cachedValue = widget.value;
+    _formatter = _createFormatter();
+    _bindings = _createBindings();
     _controller = TextEditingController(text: _formatText(_value));
     _controller.addListener(_updateValue);
     _focusNode = widget.focusNode ?? FocusNode();
@@ -105,56 +115,93 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   void _pageStepDown() => setValue(value - widget.pageStep!);
 
   void _updateValue() {
-    final v = _parseValue(_controller.text);
-    if (v == _value) return;
+    if (_updatingController) return;
+    // Empty input, a lone sign, or a decimal separator is incomplete text.
+    // Keep the last numeric value rather than broadcasting a spurious zero.
+    final parsed = double.tryParse(_controller.text);
+    if (parsed == null || !parsed.isFinite || parsed == _value) return;
 
-    if (widget.canChange?.call(v) == false) {
-      controller.text = _formatText(_cachedValue);
-      setState(() {
-        _value = _cachedValue;
-      });
+    if (widget.canChange?.call(parsed) == false) {
+      final previous =
+          _value >= widget.min && _value <= widget.max ? _value : _cachedValue;
+      _updateController(_value, previous);
+      if (previous != _value) setState(() => _value = previous);
       return;
     }
 
-    setState(() => _value = v);
-    widget.onChanged?.call(v);
+    setState(() => _value = parsed);
+    // A temporarily out-of-range number is allowed while typing, but must
+    // not trigger expensive client-side work until it is a valid value.
+    if (parsed >= widget.min && parsed <= widget.max) {
+      _cachedValue = parsed;
+      widget.onChanged?.call(parsed);
+    }
   }
 
   void setValue(double v) {
-    final newValue = v.clamp(widget.min, widget.max);
-    if (newValue == value) return;
-
+    if (!v.isFinite) return;
+    final clamped = v.clamp(widget.min, widget.max);
+    final newValue = double.parse(_formatText(clamped));
+    // Formatting can round a value beyond a fractional bound (for example
+    // 0.29 becomes 0.3 with one decimal place). Never submit an invalid step.
+    if (!newValue.isFinite ||
+        newValue < widget.min ||
+        newValue > widget.max ||
+        newValue == _value) {
+      return;
+    }
     if (widget.canChange?.call(newValue) == false) return;
 
     widget.beforeChange?.call();
-    setState(() => _updateController(value, newValue));
-    widget.onSubmitted?.call(double.parse(_formatText(newValue)));
+    setState(() {
+      _updateController(_value, newValue);
+      _value = _cachedValue = newValue;
+    });
+    widget.onChanged?.call(newValue);
+    widget.onSubmitted?.call(newValue);
     widget.afterChange?.call();
   }
 
   void _updateController(double oldValue, double newValue) {
     final text = _formatText(newValue);
     final selection = _controller.selection;
-    final oldOffset = value.isNegative ? 1 : 0;
-    final newOffset = _parseValue(text).isNegative ? 1 : 0;
+    final oldOffset = oldValue.isNegative ? 1 : 0;
+    final newOffset = newValue.isNegative ? 1 : 0;
 
-    _controller.value = _controller.value.copyWith(
-      text: text,
-      selection: selection.copyWith(
-        baseOffset: selection.baseOffset - oldOffset + newOffset,
-        extentOffset: selection.extentOffset - oldOffset + newOffset,
-      ),
-    );
+    final updatedSelection = selection.isValid
+        ? selection.copyWith(
+            baseOffset: (selection.baseOffset - oldOffset + newOffset)
+                .clamp(0, text.length),
+            extentOffset: (selection.extentOffset - oldOffset + newOffset)
+                .clamp(0, text.length),
+          )
+        : selection;
+
+    // Updating the text controller already notifies EditableText. Suppress
+    // our own listener to avoid a second setState/onChanged per button press.
+    _updatingController = true;
+    try {
+      _controller.value = _controller.value.copyWith(
+        text: text,
+        selection: updatedSelection,
+        composing: TextRange.empty,
+      );
+    } finally {
+      _updatingController = false;
+    }
   }
 
   @protected
-  double fixupValue(String value) {
-    final v = _parseValue(value);
-    if (value.isEmpty || (v < widget.min || v > widget.max)) {
-      // will trigger notify to _updateValue()
-      _controller.text = _formatText(_cachedValue);
+  double fixupValue(String text) {
+    final parsed = double.tryParse(text);
+    if (parsed == null ||
+        !parsed.isFinite ||
+        parsed < widget.min ||
+        parsed > widget.max) {
+      _updateController(_value, _cachedValue);
+      _value = _cachedValue;
     } else {
-      _cachedValue = _value;
+      _value = _cachedValue = parsed;
     }
     return _cachedValue;
   }
@@ -178,6 +225,17 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
   @override
   void didUpdateWidget(T oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    final boundsChanged =
+        oldWidget.min != widget.min || oldWidget.max != widget.max;
+    final precisionChanged = oldWidget.decimals != widget.decimals;
+    if (boundsChanged || precisionChanged) {
+      _formatter = _createFormatter();
+    }
+    if ((oldWidget.pageStep == null) != (widget.pageStep == null)) {
+      _bindings = _createBindings();
+    }
+
     if (oldWidget.value != widget.value) {
       _controller.removeListener(_updateValue);
       _value = _cachedValue = widget.value;
