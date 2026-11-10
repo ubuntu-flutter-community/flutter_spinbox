@@ -61,8 +61,15 @@ class _SpinGestureState extends State<SpinGesture> {
   @override
   void didUpdateWidget(covariant SpinGesture oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.enabled && !widget.enabled) {
+    if (!widget.enabled) {
       stopTimer();
+    } else if (oldWidget.step != widget.step ||
+        oldWidget.interval != widget.interval ||
+        oldWidget.acceleration != widget.acceleration) {
+      // Keep a held button spinning, but with the updated parameters.
+      final wasSpinning = timer != null;
+      stopTimer();
+      if (wasSpinning) startTimer();
     }
   }
 
@@ -77,6 +84,7 @@ class _SpinGestureState extends State<SpinGesture> {
     return GestureDetector(
       onLongPressStart: widget.enabled ? (_) => startTimer() : null,
       onLongPressEnd: widget.enabled ? (_) => stopTimer() : null,
+      onLongPressCancel: widget.enabled ? stopTimer : null,
       child: widget.child,
     );
   }
@@ -90,12 +98,16 @@ class _SpinGestureState extends State<SpinGesture> {
   }
 
   void startTimer() {
-    if (timer != null) return;
+    if (!widget.enabled || timer != null) return;
+    // A zero interval would spin the event loop continuously.
+    if (widget.interval <= Duration.zero) return;
+    step = widget.step;
     timer = Timer.periodic(widget.interval, (timer) {
-      onStep();
       if (!widget.enabled) {
         stopTimer();
+        return;
       }
+      onStep();
     });
   }
 
