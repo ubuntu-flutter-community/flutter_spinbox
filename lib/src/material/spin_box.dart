@@ -293,7 +293,9 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       text: TextSpan(style: style, text: text),
     );
     painter.layout();
-    return painter.height;
+    final height = painter.height;
+    painter.dispose();
+    return height;
   }
 
   @override
@@ -379,8 +381,12 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
     final inputDecoration = decoration.copyWith(
       border: !hasAnyBorder ? const OutlineInputBorder() : decoration.border,
       errorText: errorText,
-      prefix: buildIcon(widget.decrementIcon, prefix: decoration.prefix),
-      suffix: buildIcon(widget.incrementIcon, suffix: decoration.suffix),
+      prefix: widget.showButtons || decoration.prefix != null
+          ? buildIcon(widget.decrementIcon, prefix: decoration.prefix)
+          : null,
+      suffix: widget.showButtons || decoration.suffix != null
+          ? buildIcon(widget.incrementIcon, suffix: decoration.suffix)
+          : null,
     );
 
     final textField = CallbackShortcuts(
@@ -410,6 +416,8 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       ),
     );
 
+    if (!widget.showButtons) return textField;
+
     final incrementButton = SpinButton(
       step: widget.step,
       color: iconColor.resolve(incrementStates),
@@ -420,8 +428,6 @@ class SpinBoxState extends State<SpinBox> with SpinBoxMixin {
       acceleration: widget.acceleration,
       onStep: (step) => setValue(value + step),
     );
-
-    if (!widget.showButtons) return textField;
 
     final decrementButton = SpinButton(
       step: widget.step,
