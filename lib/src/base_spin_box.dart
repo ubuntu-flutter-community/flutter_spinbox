@@ -61,7 +61,11 @@ mixin SpinBoxMixin<T extends BaseSpinBox> on State<T> {
 
   static double _parseValue(String text) => double.tryParse(text) ?? 0;
   String _formatText(double value) {
-    return value.toStringAsFixed(widget.decimals).padLeft(widget.digits, '0');
+    final text = value.toStringAsFixed(widget.decimals);
+    if (text.startsWith('-')) {
+      return '-${text.substring(1).padLeft(widget.digits - 1, '0')}';
+    }
+    return text.padLeft(widget.digits, '0');
   }
 
   Map<ShortcutActivator, VoidCallback> get bindings {
